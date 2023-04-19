@@ -1,0 +1,551 @@
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-139473341-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-139473341-1', { 'optimize_id': 'GTM-W969HK8'});
+</script>
+
+
+
+
+{? _clientip == '119.192.180.118' || _clientip == '119.192.180.119' || _clientip == '119.192.180.117' }
+<!-- IP 예외처리 삭제 하지마세요. 콘솔 오류 및 웹 로딩 지연 때문. :: S -->
+{:}
+<!-- Facebook Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window,document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+ fbq('init', '220040141868271');
+fbq('track', 'PageView');
+</script>
+<link rel="stylesheet" type="text/css" href="/css/font/Jalnan/Jalnan.css" charset="utf-8"/>
+<noscript>
+ <img height="1" width="1"
+src="https://www.facebook.com/tr?id=220040141868271&ev=PageView
+&noscript=1"/>
+</noscript>
+<!-- End Facebook Pixel Code -->
+{/}<!-- IP 예외처리 삭제 하지마세요. :: E -->
+
+
+
+
+<div id="wrap" class="sky_unfold">
+<!--{? _mode=='cp'}-->
+  <div id="cp_header">
+   <!--{=include_file('include/cp/head_top_menu_cp_basic.inc.htm')}-->
+    <div class="top_logo">
+      <div class="logo">
+      <!--{? _cat_id=='007002'}-->
+      <a href="/cp/?cat_id=007002"><img alt="시대평생교육원" src="/_skin/tpl_skin/images/cp_life/common/logo.jpg" /></a>
+       <!--{: _cat_id == '007025' || _cat_id == '007026'}-->
+      <a href="/cp/?cat_id={_cat_id}"><img alt="한익스프레스" src="/_skin/tpl_skin/cp_bosae/images/main/logo.png" /></a>
+      <!--{:}-->
+      <!--{=DispCategoryLogo(_cat_id,'1')}-->
+      <!--{/}-->
+      </div>
+        <!--{? _cat_id == '007002'}-->
+            <div class="mypage"><!--{? member.mb_id}--><a href="/myroom/?ft=on" target="_blank"><img alt="마이페이지" src="../../images/sdedu/common/mapage_btn.png" width="108" height="26" /></a><!--{/}--></div>
+		<!--{: _cat_id == '007007'}-->
+        <!--{:}-->
+            <div class="mypage"><!--{? member.mb_id}--><a href="/myroom/?ft=on" target="_blank"><img alt="마이페이지" src="../../images/sdedu/common/mapage_btn.png" width="108" height="26" /></a><!--{/}--></div>
+        <!--{/}-->
+
+
+
+    </div>
+    <!--gnb-->
+    <div class="top_navi">
+      <!--{? _cat_id=='007007'}-->
+      <!--{=include_file('include/cp/medi_gnb.inc.htm')}-->
+      <!--{: _cat_id=='007009'}-->
+      <!--{=include_file('include/cp/cpkp_gnb.inc.htm')}-->
+      <!--{: _cat_id=='007014' || _cat_id=='007017'}-->
+      <!--{=include_file('include/cp/gongju_gnb.inc.htm')}-->
+      <!--{: _cat_id=='007008' || _cat_id=='007004' || _cat_id=='007013'}-->
+      <!--{=include_file('include/cp/gnb_list_ahnssam.inc.htm')}-->
+      <!--{: _cat_id=='007002'}-->
+      <!--{=include_file('include/cp/cp_life_gnb.inc.htm')}-->
+      <!--{: _cat_id=='007025' || _cat_id=='007026'}-->
+      <!--{=include_file('include/cp/cp_hanex_gnb.inc.htm')}-->
+      <!--{: }-->
+      <!--{=include_file('include/cp/cp_basic_gnb.inc.htm')}-->
+      <!--{/}-->
+    </div>
+    <!--//gnb-->
+  </div>
+<!--{:}-->
+  <div id="header">
+  {=include_file('include/total_login_head.inc.htm')}
+
+    <link rel="stylesheet" href="/_skin/sidae/js/swiper/swiper.min.css">
+    <script src="/_skin/sidae/js/swiper/swiper.min.js"></script>
+		<div class="main_menu_wrap">
+			<div class="main_menu_con">
+				<!-- 메인 메뉴 타이틀-->
+				<div class="main_menu_title div_table">
+					<div class="div_tablecell">
+						<p class="info_ment">	교육상담안내 1600-3600 <span>평일 9시 ~ 18시 / 토 · 공휴일 휴무</span>	</p>
+					</div>
+					<div class="div_tablecell">
+						<p class="title">	시대에듀 전체 메뉴</p>
+					</div>
+					<div class="div_tablecell">
+						<p class="main_close"><span>+</span></p>
+					</div>
+				</div>
+				<!-- //메인 메뉴 타이틀-->
+				<!--메인 메뉴 탭-->
+				<div class="main_tab">
+					<ul>
+						<li ><a href="javascript:void(0);"  class="{? _bo_table == 'data_gichul' ||  _bo_table == ''}selected{/}" data_bind="popkonlist">동영상 강의</a></li>
+						<li ><a href="javascript:void(0);" class="{? _bo_table == 'dcc_after_apply' ||  _bo_table == 'event' || _bo_table == 'hope' || _bo_table == 'data_gichul' || _bo_table == 'data_law' || _bo_table == 'data_update' || _bo_table == 'data_err' || _bo_table == 'data_d_room' || _bo_table == 'data_prog' || _bo_table == 'data_mp3' || _sca == 'new_join' || _sca == 'gondond' || _f == 'free_list_new'}selected{/} " data_bind="eventlist">합격자 수기 / 학습자료실 / 이벤트</a></li>
+						<li ><a href="javascript:void(0); " class="{? _bo_table == 'dcc_exam' || _bo_table == 'cs_notice' || _bo_table == 'dcc_notice' || _bo_table == 'dcc_sisa' || _bo_table == 'dcc_chinese'  ||  _f == 'freepay' ||  _f == 'cscenter_program' ||  _f == 'cscenter_clean'  ||  _f == 'cscenter_user_guide' ||  _bo_table == 'business'  ||  _bo_table == 'teacher'  ||  _bo_table == 'cs_inquery' }selected{/} " data_bind="cslist" >커뮤니티 / 고객센터</a></li>
+						<!-- <li ><a href="/cp/?cat_id=001100" target="_blank" >동영상 회원권</a></li> -->
+					</ul>
+				</div>
+				<!-- //메인 메뉴 탭-->
+				<div class="main_list_wrap">
+				<div>
+				<!--메인 메뉴 리스트-->
+				<div class="main_list popkonlist">
+					<!--자격증 강의-->
+					<div class="menu_type menu_type1 mgr50">
+						<h3>자격증 강의</h3>
+						<ul style="overflow: visible;">
+							<li>
+								<h4 class="list-title">국가자격/기술자격</h4>
+								<!-- <a href="/cp/?cat_id=001111">가스산업기사</a> -->
+								<a href="/cp/?cat_id=001109" target="_blank">간호조무사 </a>
+								<a href="/cp/?cat_id=001108">감정평가사</a>
+								<a href="/cp/?cat_id=001002" target="_blank">경비지도사 <span class="bull_ebs"></span></a>
+								<a href="/cp/?cat_id=001125" target="_blank">공조냉동기계기능사</a>
+								<a href="/cp/?cat_id=001092" target="_blank">공인노무사 <span class="bull_ebs"></span></a>
+								<!-- <a href="/cp/?cat_id=001010" target="_blank">공인중개사  </a> -->
+								<a href="/cp/?cat_id=001014" target="_blank">관광종사원 </a>
+								<a href="/cp/?cat_id=001050" target="_blank">기계정비산업기사 </a>
+								<a href="/cp/?cat_id=001019" target="_blank">농산물품질관리사 </a>
+								<a href="/cp/?cat_id=001132" target="_blank">법무사</a>
+								<a href="/cp/?cat_id=001110" target="_blank">변리사</a>
+								<a href="/cp/?cat_id=001119" target="_blank">빅데이터분석기사</a>
+								<a href="/cp/?cat_id=001038" target="_blank">사회조사분석사 2급 </a>
+								<!-- <a href="/cp/?cat_id=001102" target="_blank">산업안전기사 </a> -->
+<!--
+								<a href="/cp/?cat_id=001046" target="_blank">수산물품질관리사 </a>
+-->
+								<!-- <a href="/cp/?cat_id=001049" target="_blank">수질환경(산업)기사 </a> -->
+								<a href="/cp/?cat_id=001105" target="_blank">승강기기능사 </a>
+								<a href="/cp/?cat_id=001127" target="_blank">연구실안전관리사</a>
+								<a href="/cp/?cat_id=001126" target="_blank">정보처리기사</a>
+								<a href="/cp/?cat_id=001011" target="_blank">행정사 </a>
+								<a href="/cp/?cat_id=001129" target="_blank">화재감식평가(산업)기사</a>
+								<a href="/cp/?cat_id=001112" target="_blank">화학분석기사 </a>
+								<!-- <a href="/cp/?cat_id=001012" target="_blank">주택관리사 </a> -->
+
+								<h4 class="list-title" style="margin-top:36px">면허증</h4>
+<!--								<a href="/cp/?cat_id=001106" target="_blank">간호사 </a>-->
+								<a href="/cp/?cat_id=001024" target="_blank">영양사 </a>
+								<a href="/cp/?cat_id=001041" target="_blank">위생사 </a>
+							</li>
+							<li>
+								<h4 class="list-title ">소방/전기/위험물</h4>
+								<a href="/cp/?cat_id=001074" target="_blank">소방설비(산업)기사 </a>
+								<a href="/cp/?cat_id=001085" target="_blank">소방시설관리사 </a>
+								<a href="/cp/?cat_id=001054" target="_blank">전기기능사 <span class="bull_ebs"></span></a>
+								<a href="/cp/?cat_id=001063" target="_blank">전기(산업)기사 <span class="bull_ebs"></span></a>
+								<a href="/cp/?cat_id=001083" target="_blank">위험물기능사 </a>
+								<a href="/cp/?cat_id=001094" target="_blank">위험물산업기사 </a>
+								<a href="/cp/?cat_id=001077" target="_blank">위험물기능장 </a>
+
+
+
+								<h4 class="list-title" style="margin-top: 336px;">보험/회계</h4>
+								<!-- <a href="/cp/?cat_id=001031" target="_blank">기초회계 </a> -->
+								<a href="/cp/?cat_id=003006" target="_blank">재경관리사/회계관리  </a>
+								<!-- <a href="/cp/?cat_id=001071" target="_blank">보험심사역 </a> -->
+								<!-- <a href="/cp/?cat_id=003012" target="_blank">보험조사분석사 </a> -->
+								<a href="/cp/?cat_id=001067" target="_blank">손해사정사 </a>
+								<a href="/cp/?cat_id=001058" target="_blank">손해평가사 </a>
+								<!-- <a href="/cp/?cat_id=001097" target="_blank">외환전문역 </a> -->
+							</li>
+							<li>
+								<h4 class="list-title">무역/물류/유통</h4>
+								<a href="/cp/?cat_id=001059" target="_blank">관세사 </a>
+								<!-- <a href="/cp/?cat_id=001057" target="_blank">국제무역사 2급 </a> -->
+								<!-- <a href="/cp/?cat_id=001095" target="_blank">무역영어 1급 </a> -->
+								<a href="/cp/?cat_id=001069" target="_blank">보세사 </a>
+								<a href="/cp/?cat_id=001004" target="_blank">물류관리사 </a>
+								<a href="/cp/?cat_id=001003" target="_blank">유통관리사 2급 </a>
+								<a href="/cp/?cat_id=001073" target="_blank">원산지관리사 </a>
+
+								<h4 class="list-title" style="margin-top:383px">산림/조경</h4>
+								<a href="/cp/?cat_id=001104" target="_blank">나무의사 </a>
+								<a href="/cp/?cat_id=001053" target="_blank">산림(산업)기사 </a>
+								<a href="/cp/?cat_id=001064" target="_blank">조경기능사 </a>
+								<a href="/cp/?cat_id=001065" target="_blank">조경(산업)기사 </a>
+
+								<h4 class="list-title mgt30">경제/경영</h4>
+								<a href="/cp/?cat_id=001093" target="_blank">경영지도사 </a>
+								<a href="/cp/?cat_id=001062" target="_blank">매경테스트 </a>
+								<a href="/cp/?cat_id=001096" target="_blank">한경 TESAT </a>
+							</li>
+							<li>
+								<h4 class="list-title">심리/상담</h4>
+								<a href="/cp/?cat_id=001006" target="_blank">사회복지사 1급 </a>
+								<a href="/cp/?cat_id=001072" target="_blank">소비자전문상담사 2급 </a>
+								<a href="/cp/?cat_id=001013" target="_blank">임상심리사 2급 </a>
+								<a href="/cp/?cat_id=001001" target="_blank">직업상담사 2급 </a>
+								<a href="/cp/?cat_id=001007" target="_blank">청소년상담사 2 · 3급 </a>
+								<a href="/cp/?cat_id=001005" target="_blank">텔레마케팅관리사 </a>
+								<a href="/cp/?cat_id=001008" target="_blank">CS리더스관리사 </a>
+								<!-- <a href="/cp/?cat_id=001035" target="_blank">CS마스터 </a> -->
+
+
+
+								<h4 class="list-title"  style="margin-top: 332px;">기타</h4>
+								<a href="/cp/?cat_id=001103" target="_blank"  style="width:190%;">맞춤형화장품제조관리사 </a>
+								<!-- <a href="/cp/?cat_id=001084" target="_blank">전산응용기계제도기능사</a> -->
+								<!-- <a href="/cp/?cat_id=001088" target="_blank" style="width:190%;">[드론자격증] 초경량비행장치조종자 <span class="bull_ebs"></span></a> -->
+								<a href="/cp/?cat_id=001056" target="_blank" style="width:190%;">스포츠지도사 2급<!--  <span class="bull_ebs"></span> --></a>
+								<!-- <a href="/cp/?cat_id=001039" target="_blank">샵마스터 </a> -->
+							</li>
+						</ul>
+					</div>
+					<!--//자격증 강의-->
+					<!--공무원-->
+					<div class="menu_type menu_type2">
+						<h3>공무원 강의</h3>
+						<ul>
+							<li>
+								<h4 class="list-title">9급 공무원</h4>
+								<!-- <a href="/gov/?cat_id=002055&sidecode=1&pagecode=1" target="_blank">검찰직 </a> -->
+								<a href="/gov/?cat_id=002002&sidecode=1&pagecode=2" target="_blank">계리직 </a>
+								<!-- <a href="/gov/item_dan.php?cat_id=002048" target="_blank">고용노동직  </a> -->
+								<a href="/gov/?cat_id=002014&amp;sidecode=1&amp;pagecode=3" target="_blank">교정직 </a>
+								<!-- <a href="/gov/?cat_id=002054&sidecode=1&pagecode=1" target="_blank">보호직 </a> -->
+								<a href="/gov/?cat_id=002003&sidecode=1&pagecode=2" target="_blank">사회복지직 </a>
+								<!-- <a href="/gov/?cat_id=002020&sidecode=1&pagecode=2" target="_blank">서울시교통지도 </a> -->
+								<!-- <a href="" target="_blank">시설관리 방호직 </a> -->
+								<a href="/gov/?cat_id=002015&sidecode=1&pagecode=3" target="_blank">운전직 </a>
+								<a href="/gov/?cat_id=002016&sidecode=1&pagecode=5" target="_blank">일반행정직 </a>
+								<a href="/gov/?cat_id=002041&sidecode=1&pagecode=1" target="_blank">조리직 </a>
+								<!-- <a href="/gov/?cat_id=002049&sidecode=1&pagecode=2" target="_blank">직업상담직 </a> -->
+								<a href="/gov/?cat_id=002006&sidecode=1&pagecode=2" target="_blank">지역인재 </a>
+								<a href="/gov/?cat_id=002040&sidecode=1&pagecode=6" target="_blank">군무원 </a>
+							</li>
+							<li>
+								<h4 class="list-title">9급 기술직</h4>
+								<a href="/gov/?cat_id=002044&sidecode=1&pagecode=1" target="_blank">기계직 </a>
+								<a href="/gov/item_dan.php?cat_id=002035" target="_blank">농업직  </a>
+								<a href="/gov/?cat_id=002018&sidecode=1&pagecode=1&tab=1" target="_blank">보건직 </a>
+								<a href="/gov/?cat_id=002043&sidecode=1&pagecode=1" target="_blank">전기직 </a>
+								<!-- <a href="/gov/item_dan.php?cat_id=002047" target="_blank">환경직 </a> -->
+								<a href="/gov/?cat_id=002039&sidecode=1&pagecode=1" target="_blank">기술계고졸 </a>
+							</li>
+							<li>
+								<!-- <h4 class="list-title">경찰</h4> -->
+								<!-- <a href="/gov/?cat_id=002026&sidecode=1&pagecode=5" target="_blank">경찰직 </a> -->
+								<!-- <a href="/gov/item_dan.php?cat_id=002030" target="_blank">소방직  </a> -->
+
+								<!-- <a href="/gov/?cat_id=002012&sidecode=1&pagecode=4" target="_blank">청원경찰 </a> -->
+								<!-- <h4 class="list-title mgt30">5 · 7급 공무원</h4>
+								<a href="/gov/?cat_id=002045&sidecode=1&pagecode=1" target="_blank">5급 공채 </a>
+								<a href="/gov/?cat_id=002046&sidecode=1&pagecode=1" target="_blank">5 · 7급 민간경력자 </a> -->
+
+								<h4 class="list-title">기타</h4>
+								<!-- <a href="/cp/?cat_id=002038" target="_blank">의무소방원 </a> -->
+								<a href="/cp/?cat_id=002005" target="_blank">직업상담원</a>
+							</li>
+						</ul>
+					</div>
+					<!--//공무원-->
+				</div>
+				<div class="main_list ">
+					<!--학습 강의-->
+					<div class="menu_type menu_type1 mgr50">
+						<h3>학습 강의</h3>
+						<ul>
+							<li>
+								<h4 class="list-title">언어/외국어</h4>
+								<a href="/cp/?cat_id=001034" target="_blank">KBS한국어능력시험 </a>
+								<a href="/cp/?cat_id=001087" target="_blank">G-TELP 지텔프  </a>
+								<a href="/cp/?cat_id=001130" target="_blank">한국실용글쓰기</a>
+								<!-- <a href="/cp/?cat_id=001068" target="_blank">신HSK </a>
+								<a href="/cp/?cat_id=001086" target="_blank">TOEIC 토익 </a> -->
+							</li>
+							<li>
+								<h4 class="list-title ">검정고시/독학사</h4>
+								<a href="/cp/?cat_id=005001" target="_blank">중/고졸 검정고시 </a>
+								<a href="/cp/?cat_id=005002" target="_blank">독학사 </a>
+							</li>
+							<li>
+								<h4 style="letter-spacing: -1px;" class="list-title ">안쌤 영재교육연구소</h4>
+								<a href="/cp/?cat_id=011001" target="_blank">영재교육원</a>
+								<a href="/cp/?cat_id=011001&sidecode=1&pagecode=4" target="_blank">과고/영재고</a>
+							</li>
+						</ul>
+					</div>
+					<!--//학습 강의-->
+					<!--기업체/취업 강의-->
+					<div class="menu_type menu_type5">
+						<h3>기업체/취업 강의</h3>
+						<ul>
+							<li>
+								<h4 class="list-title">기업체</h4>
+								<!-- <a href="/cp/?cat_id=004024" target="_blank"  style="width:190%;">NCS국가직무능력표준 </a> -->
+								<a href="/cp/?cat_id=004038" target="_blank">인적성검사  </a>
+								<a href="/cp/?cat_id=001070" target="_blank">SPA </a>
+								<a href="/cp/?cat_id=004018" target="_blank">농협 NHAT </a>
+								<a href="/cp/?cat_id=004054&sidecode=1&pagecode=1" target="_blank">현대자동차 생산직</a>
+							</li>
+						</ul>
+						<ul class="mgt30">
+							<li>
+								<h4 class="list-title">ROTC/부사관</h4>
+								<a href="/cp/?cat_id=004003" target="_blank">ROTC/학사장교</a>
+								<a href="/cp/?cat_id=004002" target="_blank">부사관  </a>
+							</li>
+						</ul>
+					</div>
+					<!--//기업체/취업 강의-->
+				</div>
+				<div class="main_list eventlist scroll">
+					<!--학습 자료실-->
+					<div class="menu_type menu_type3 mgr50">
+						<h3>학습 자료실</h3>
+						<ul>
+							<li>
+								<h4 class="list-title">무료특강</h4>
+								<a href="/popkon/?f=free_list_new&tab1" class="{? (_f == 'free_list_new' && _tab == '') || (_f == 'free_list_new' && _tab == 'lec')}selected{/}">자격증/면허증 </a>
+								<a href="/popkon/?f=free_list_new&tab2&tab=gov" class="{?_f == 'free_list_new' && _tab == 'gov'}selected{/}">공무원 </a>
+								<a href="/popkon/?f=free_list_new&tab3&tab=com" class="{?_f == 'free_list_new' && _tab == 'com'}selected{/}">기업체/취업/상식 </a>
+								<a href="/popkon/?f=free_list_new&tab4&tab=stu" class="{?_f == 'free_list_new' && _tab == 'stu'}selected{/}">검정고시/독학사/학습</a>
+							</li>
+							<li>
+								<h4 class="list-title ">학습자료</h4>
+								<a href="/bbs/board.php?bo_table=data_gichul&svs=popkon" class="{? _bo_table == 'data_gichul'}selected{/}">기출문제 </a>
+								<a href="/bbs/board.php?bo_table=data_law&svs=popkon" class="{? _bo_table == 'data_law'}selected{/}">최신개정법령 </a>
+								<a href="/bbs/board.php?bo_table=data_update&svs=popkon" class="{? _bo_table == 'data_update'}selected{/}">도서업데이트 </a>
+								<a href="/bbs/board.php?bo_table=data_err&svs=popkon" class="{? _bo_table == 'data_err'}selected{/}">정오표 </a>
+								<a href="/bbs/board.php?bo_table=data_d_room&svs=popkon" class="{? _bo_table == 'data_d_room'}selected{/}">강의자료실 </a>
+								<a href="/bbs/board.php?bo_table=data_prog&svs=popkon" class="{? _bo_table == 'data_prog'}selected{/}">프로그램 자료실 </a>
+								<a href="/bbs/board.php?bo_table=data_mp3&svs=popkon" class="{? _bo_table == 'data_mp3'}selected{/}">MP3 </a>
+							</li>
+						</ul>
+					</div>
+					<!--//학습 자료실-->
+					<!--합격자 수기-->
+					<div class="menu_type menu_type3 mgr50">
+						<h3>합격자 수기</h3>
+						<ul>
+							<li>
+								<h4 class="list-title"  style="width:190%;">나는 이렇게 합격했다</h4>
+								<a href="/bbs/board.php?bo_table=dcc_after_apply&svs=popkon" class="{? _bo_table == 'dcc_after_apply'}selected{/}">합격문 이벤트 </a>
+								<!-- <a href="/bbs/board.php?bo_table=dcc_after_apply&svs=popkon#nahab_con2">합격수기 등록  </a> -->
+								<a href="/bbs/board.php?bo_table=dcc_after_apply&svs=popkon" class="{? _bo_table == 'dcc_interview'}selected{/}">합격자 인터뷰 </a>
+							</li>
+						</ul>
+					</div>
+					<!--//합격자 수기-->
+					<!--이벤트-->
+					<div class="menu_type menu_type3">
+						<h3>이벤트</h3>
+						<ul>
+							<li>
+								<h4 class="list-title">진행 이벤트</h4>
+								<a href="/popkon/?f=event_main&sca=new_join" class="{? _f == 'event_main' && (_sca == '' || _sca == 'new_join')}selected{/}">회원혜택 </a>
+								<a href="/bbs/board.php?bo_table=event&svs=popkon&&sidecode=&cat_id=&sca=ing" class="{? _bo_table == 'event'}selected{/}">이벤트 존 </a>
+								<a href="/bbs/board.php?bo_table=dcc_new_hope&&svs=popkon&cat_id=&sca=&sidecode=" class="{? _bo_table == 'dcc_new_hope'}selected{/}">희망장학금 프로젝트 </a>
+								<a href="/popkon/?f=event_main&sca=gongdond"  style="width:190%;" class="{? _sca == 'gongdond'}selected{/}">공동구매/재구매 할인안내 </a>
+							</li>
+						</ul>
+					</div>
+					<!--//이벤트-->
+				</div>
+				<div class="main_list cslist scroll">
+					<!--커뮤니티-->
+					<div class="menu_type menu_type3 mgr50">
+						<h3>커뮤니티</h3>
+						<ul>
+							<li>
+								<h4 class="list-title">공지</h4>
+								<a href="/bbs/board.php?bo_table=dcc_exam&svs=popkon" class="{? _bo_table == 'dcc_exam'}selected{/}">최신시험공고 </a>
+								<a href="/bbs/board.php?bo_table=cs_notice&svs=popkon&sidecode=&cat_id=&sca=일반"  class="{? _bo_table == 'cs_notice'}selected{/}">공지사항 </a>
+								<!-- <a href="javascript:void(0);" onclick="alert('준비중 입니다.');">기업체/취업/상식 </a>
+								<a href="javascript:void(0);" onclick="alert('준비중 입니다.');">검정고시/독학사/학습</a> -->
+							</li>
+							<li>
+								<h4 class="list-title ">정보제공</h4>
+								<a href="/bbs/board.php?bo_table=dcc_notice&&svs=popkon&cat_id=&page=0&sca=&sidecode="  class="{? _bo_table == 'dcc_notice'}selected{/}">최신뉴스 </a>
+								<a href="/bbs/board.php?bo_table=dcc_sisa&&svs=popkon&cat_id=&page=0&sca=&sidecode="  class="{? _bo_table == 'dcc_sisa'}selected{/}">오늘의 시사상식 </a>
+								<a href="/bbs/board.php?bo_table=dcc_chinese&&svs=popkon&cat_id=&page=0&sca=&sidecode="  class="{? _bo_table == 'dcc_chinese'}selected{/}">필수 한자성어 </a>
+							</li>
+						</ul>
+					</div>
+					<!--//커뮤니티-->
+					<!--고객센터-->
+					<div class="menu_type menu_type4 ">
+						<h3>고객센터</h3>
+						<ul>
+							<li class="guide_list">
+								<h4 class="list-title">사용자 가이드</h4>
+								<a href="/popkon/?f=cscenter_user_guide"  class="{? _f == 'cscenter_user_guide' && _tab == ''}selected{/}">회원가입</a>
+								<a href="/popkon/?f=cscenter_user_guide&tab=2" class="{? _f == 'cscenter_user_guide' && _tab == '2'}selected{/}">정보수정/탈퇴</a>
+								<a href="/popkon/?f=cscenter_user_guide&tab=3" class="{? _f == 'cscenter_user_guide' && _tab == '3'}selected{/}">수강/휴강 방법</a>
+								<a href="/popkon/?f=cscenter_user_guide&tab=4" class="{? _f == 'cscenter_user_guide' && _tab == '4'}selected{/}">수강연장 신청</a>
+								<a href="/popkon/?f=cscenter_user_guide&tab=5" class="{? _f == 'cscenter_user_guide' && _tab == '5'}selected{/}">주문/배송 조회</a>
+								<a href="/popkon/?f=cscenter_user_guide&tab=6" class="{? _f == 'cscenter_user_guide' && _tab == '6'}selected{/}" >모바일 안내</a>
+							</li>
+							<li>
+								<h4 class="list-title">문의/상담</h4>
+								<a href="/bbs/board.php?bo_table=cs_inquery&svs=popkon&mCate=ser" class="login_check {? _bo_table == 'cs_inquery'}selected{/}">1:1문의</a>
+								<a href="javascript:void(0)" onclick="fmbNew();">상담예약신청</a>
+								<a href="/bbs/board.php?bo_table=teacher&svs=popkon"   class="{? _bo_table == 'teacher'}selected{/}">강사/저자모집</a>
+								<a href="/bbs/board.php?bo_table=business&svs=popkon"   class="{? _bo_table == 'business'}selected{/}">사업제휴 문의</a>
+							</li>
+							<li>
+								<h4 class="list-title">기타</h4>
+								<a href="/popkon/?f=cscenter_clean"  class="{? _f == 'cscenter_clean'}selected{/}">부정 사용자 규제</a>
+								<a href="/popkon/?f=cscenter_program"  class="{? _f == 'cscenter_program'}selected{/}">필요 프로그램 설치</a>
+								<a href="/popkon/?f=freepay"  class="login_check" class="{? _f == 'freepay'}selected{/}">자유결제</a>
+								<a href="https://939.co.kr" target="_blank">PC원격지원</a>
+							</li>
+						</ul>
+						<ul  class="mgt40 pdb100">
+							<li class="faq_list">
+								<h4 class="list-title">자주하는 질문 FAQ</h4>
+								<a href="/popkon/?f=cscenter&from=" class="{? _f == 'cscenter' && _from == ''}selected{/}">질문BEST 10</a>
+								<a href="/popkon/?f=cscenter&from=site" class="{? _f == 'cscenter' && _from == 'site'}selected{/} faq_list2">사이트 이용</a>
+								<a href="/popkon/?f=cscenter&from=popkon" class="{? _f == 'cscenter' && _from == 'popkon'}selected{/} faq_list6">동영상 오류</a>
+								<a href="/popkon/?f=cscenter&from=study" class="{? _f == 'cscenter' && _from == 'study'}selected{/} faq_list3">수강방법</a>
+								<a href="/popkon/?f=cscenter&from=mobile" class="{? _f == 'cscenter' && _from == 'mobile'}selected{/} faq_list7">모바일 안내</a>
+							</li>
+							<li>
+								<a href="/popkon/?f=cscenter&from=pay" class="{? _f == 'cscenter' && _from == 'pay'}selected{/} faq_list4 mgt30">결제</a>
+								<a href="/popkon/?f=cscenter&from=refund" class="{? _f == 'cscenter' && _from == 'refund'}selected{/} faq_list5">환불</a>
+								<a href="/popkon/?f=cscenter&from=mp3" class="{? _f == 'cscenter' && _from == 'mp3'}selected{/} faq_list8">Mp3/첨부파일</a>
+								<a href="/popkon/?f=cscenter&from=etc" class="{? _f == 'cscenter' && _from == 'etc'}selected{/} faq_list9">기타</a>
+							</li>
+						</ul>
+					</div>
+					<!--//고객센터-->
+				</div>
+				<!--  //메인 메뉴 리스트-->
+				</div>
+				</div>
+			</div>
+		</div>
+    <div class="top_header">
+        <ul>
+
+		  	<li class="logo">
+				<a href="/popkon/">
+					<!--{? cpsitecookie=='007008'}--><!--{=DispCategoryLogo(cpsitecookie,'9')}--><!--{:}-->
+					<img alt="팝콘" src="//static-sdedu.akamaized.net/img1/_skin/sidae/popkon/main/2023/logo.png" />
+					<!--{/}-->
+				</a>
+				<span class="sm_notice" style="display:none;">
+				<!-- <a href="/bbs/board.php?bo_table=cs_notice&wr_id=996&svs=popkon" target="_blank">
+					2022 시험일정 안내
+				</a> -->
+				</span>
+			</li>
+
+			<li class="center total_search_wrap">
+				<!-- 검색영역:S -->
+				<div class="search_area">
+					<form name="top_search" id="top_search" class="dis-table search_form" action="/popkon/search_new.php">
+					<input type="hidden" name="site" class="search_txt" value="all" >
+					<input type="text" name="keywd" onkeyup="inputExpFn(this,'1')" class="search_txt input" value="" autocomplete="off" />
+					<input type="submit" class="submit search_submit" value="" />
+					</form>
+				</div>
+				<!-- 검색영역;E -->
+				<!-- 인기검색어;S -->
+				<div class="best_search">
+					<h3>동영상 강좌 인기 검색</h3>
+					<div class="best_pd_list">
+						<ul class="tl ">
+							<li><a href="/cp/?cat_id=001092" class="col-blue">01. 공인노무사</a></li>
+							<li><a href="/cp/?cat_id=001108" class="col-blue">02. 감정평가사</a></li>
+							<li><a href="/cp/?cat_id=001132" class="col-blue">03. 법무사</a></li>
+							<li><a href="/cp/?cat_id=001063">04. 전기(산업)기사</a></li>
+							<li><a href="/cp/?cat_id=001058">05. 손해평가사</a></li>
+						</ul>
+						<ul class="tl">
+							<li><a href="/cp/?cat_id=001110">06. 변리사</a></li>
+							<li><a href="/cp/?cat_id=001067">07. 손해사정사</a></li>
+							<li><a href="/cp/?cat_id=001007">08. 청소년상담사</a></li>
+							<li><a href="/cp/?cat_id=001013">09. 임상심리사</a></li>
+							<li><a href="/cp/?cat_id=001056">10. 스포츠지도사</a></li>
+						</ul>
+					</div>
+				</div>
+				<!-- 인기검색어;E -->
+			</li>
+			<li class="visit">
+				<div class="vst_inner">
+					<span class="to_day">TODAY ♥</span>
+					<span class="count_number">
+						{=number_format(vs_count)}
+						
+					</span>
+				</div>
+
+
+				<!--//{=DispBanner('home','0','svs='+svs)}//-->
+			</li>
+        </ul>
+    </div>
+    <!-- new gnb S-->
+    <div class="top_navi_new">
+		<ul>
+			<li class="gnb">
+				<a href="javascript:void(0)" id="togle_category" class="rollover bg-black">전체 메뉴</a>
+			</li>
+			<li>
+				<a href="/bbs/board.php?bo_table=dcc_after_apply&svs=popkon">합격자 수기</a>
+			</li>
+			<li>
+				<a href="/popkon/?f=free_list_new">학습 자료실</a>
+			</li>
+			<li>
+				<a href="/bbs/board.php?bo_table=event&svs=popkon&&sidecode=&cat_id=&sca=ing">이벤트</a>
+			</li>
+			<li>
+				<a href="/popkon/?f=event_main&sca=new_join">회원혜택</a>
+				<!-- <a href="/bbs/board.php?bo_table=cs_notice&wr_id=996&svs=popkon" target="_blank">2023 시험안내</a> -->
+				<!-- <a href="/bbs/board.php?bo_table=dcc_exam&svs=popkon">시험공고-->
+			</li>
+			<li>
+				<a href="/bbs/board.php?bo_table=dcc_exam&svs=popkon">커뮤니티</a>
+			</li>
+			<li>
+				<a href="/popkon/?f=cscenter">고객센터</a>
+			</li>
+			
+			<li>
+				<a href="javascript:void(0)" onclick="fmbNew();">무료상담</a>
+			</li>
+		</ul>
+    </div>
+    <!-- new gnb E-->
+	<!--무료상담 include-->
+	{= include_file("./../tpl_skin/include/open-fmb-renewal.inc.htm")}
+
+  </div>
+</div>
+<!--{/}-->
+  <!--//header-->
+
+<script src="/_skin/sidae/js/head_popkon.js"></script>
