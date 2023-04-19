@@ -1,0 +1,1537 @@
+@charset "UTF-8";
+@import url('https://webfontworld.github.io/goodchoice/Jalnan.css');
+@import url('https://webfontworld.github.io/gmarket/GmarketSans.css');
+
+html body{
+	min-width: 1500px;
+}
+
+
+
+/*시대에듀 메인 css*/
+.popkon-head{
+	height:auto; 
+}
+/* .popkon-head{
+	height:auto !important; 
+} */
+.main_wrap  {
+	padding:0;
+	overflow: hidden;
+	width: 100%;
+}
+.main_wrap * {
+	/*font-family:'NanumSquare',sans-serif !important; */
+}
+
+
+/* .jalnan {
+	font-family:'jalnan' !important;
+	font-weight:100;
+} */
+.div_table{
+	display:table;
+}
+.div_table > * {
+	display:table-cell;
+	vertical-align:middle;
+}
+.pull-left{float:left;}
+.pull-right{float:right;}
+section{
+	width:100%;
+	clear:both;
+	float:none;
+	position:relative;
+	color:#000;
+	font-size:14px;
+}
+section > div {
+	width:1200px;
+	margin:0 auto;
+	position:relative;
+}
+#main_event {
+	padding-top: 30px;
+}
+#main_event > div {
+	width:100%;
+	min-width:1000px;
+	overflow:hidden;
+	height:133px;
+}
+.top_navi_new.active{
+	position:fixed;
+	background:#fff;
+	top:0;
+	left:0;
+	width:100%;
+	margin:0 auto;
+	z-index:99
+}
+/*head:E*/
+
+/* * N버튼 및 ebs아이콘 S: */
+
+
+/* ebs, new icon: S*/
+/* .popkon-menu .div-td li a span.NEW-icon,
+.popkon-menu .div-td li a span.NEW-icon2,
+.popkon-menu .div-td li a span.EBS-icon{
+	display:inline-block;
+	text-align:center !important;
+	letter-spacing:-1px;
+}
+.popkon-menu .div-td li a span.EBS-icon{
+	width:52px;
+	height:100%;
+	margin-left:5px;
+	text-indent:-9999px;
+	background:url("/_skin/sidae/popkon/images/main/sprite.png") -100px 4px no-repeat;
+}
+.popkon-menu .div-td li a span.NEW-icon,
+.popkon-menu .div-td li a span.NEW-icon2{
+	width:19px;
+	height:17px;
+	margin-left:3px;
+	line-height: 17px;
+	font-size:11px;
+	text-align:center;
+	font-family:'noto6';
+	font-weight:100;
+	border-radius:12px;
+	font-weight: 700;
+}
+.popkon-menu .div-td li a span.NEW-icon{
+	background:#ffd441;
+	color:#000;
+}
+.popkon-menu .div-td li a span.NEW-icon2{
+	background:#f25454;
+	color:#fff;
+} */
+/*ebs, new icon: E*/
+/* * N버튼 및 ebs아이콘 E: */
+
+/*main_rolling:S*/
+.event_wrap {
+	position:relative;
+}
+.event-contents  {
+	height:100% !important;
+}
+.event-contents div {
+	float:none;
+	width:100%;
+	min-height:136px;
+	background: #242cb6;
+}
+.event-contents div h2{
+	font-size:26px;
+	font-weight:100;
+}
+.event-contents div p{
+	font-size:20px;
+}
+
+.event-contents div.main_event_roll1 {
+	background:url('/_skin/sidae/popkon/main/2023/top_event1.png') no-repeat;
+	background-position:calc(50%);
+}
+.event-contents div.main_event_roll1 > a{
+	padding:32px 0 0 160px;
+	color:#fff;
+}
+.event-contents div.main_event_roll1 > a:hover{
+	text-decoration: none;
+}
+.event-contents div.main_event_roll1 > a > p{
+	color:#929292;
+	height:auto;
+}
+.event-contents div.main_event_roll2 {
+	background:url('/_skin/sidae/popkon/main/2023/top_event2.png') no-repeat;
+	background-position:calc(50%);
+}
+.event-contents div.main_event_roll2 > a{
+	padding:32px 0 0 160px;
+	color:#fff;
+}
+.event-contents div.main_event_roll2 > a:hover{
+	text-decoration: none;
+}
+.event-contents div.main_event_roll2 > a > p{
+	color:#929292;
+	height:auto;
+}
+.event-contents div.main_event_roll3 {
+	background:url('/_skin/sidae/popkon/main/2023/top_sdedu_bn.png') no-repeat;
+	background-position:calc(50%);
+}
+.event-contents div.main_event_roll3 > a{
+	padding:32px 0 0 160px;
+	color:#fff;
+}
+.event-contents div.main_event_roll3 > a:hover{
+	text-decoration: none;
+}
+.event-contents div.main_event_roll3 > a > p{
+	color:#929292;
+	height:auto;
+}
+
+
+.event-contents div.main_event_roll14{
+	background:#36c663;
+}
+.event-contents div.main_event_roll14 a {	
+	height:100%;
+	width:1082px;
+	display: block;
+	background:url('/img/event/8897/pc/main_bn.png') 100%  no-repeat;
+	background-size:auto;
+}
+
+/* 이벤트 main_event_roll15  - 이거 이벤트 끝나면 지워도 되영 */
+.event-contents div.main_event_roll15 {
+	background:#141b25;
+	position: relative;
+}
+.event-contents div.main_event_roll15 .event-col2 {
+    max-width: 1080px;
+    margin: 0 auto;
+    /* border: 1px solid #fff; */
+    background: transparent;
+    text-align: center;
+    box-sizing: border-box;
+}
+.event-contents div.main_event_roll15 .event-col2 a:nth-of-type(1) {	
+    float: left;
+    height: 100%;
+    width: 540px;
+    height: 139px;
+    display: block;
+    background: url('/img/event/8760/pc/banner_01.png') 100% no-repeat;
+    background-size: auto;
+}
+.event-contents div.main_event_roll15 .event-col2 a:nth-of-type(2) {
+    float: left;
+    position: relative;
+    height: 100%;
+    width: 540px;
+    height: 139px;
+    display: block;
+    background: url('/img/event/8760/pc/banner_02.png') 100% no-repeat;
+    background-size: auto;
+    z-index: 1;
+}
+.event-contents div.main_event_roll15 .event-col2:after {
+	content:'';
+	display:block;
+	clear:both;
+	width:100%;
+	height:100%;
+	background:#7835f6;
+    position: absolute;
+    left: 50%;
+}
+/* //이벤트 main_event_roll15  - 이거 이벤트 끝나면 지워도 되영 */
+
+
+.event-contents div a{
+	width:1100px;
+	margin:0 auto;
+	display:block;
+	height:100%;
+}
+.event_arrow {
+	position:absolute;
+	top: 33%;
+	left:calc(50% - 573px);
+	z-index: 9;
+	cursor: pointer;
+	width: 1140px;
+}
+
+.event_arrow .event_arrow_next{
+	width: 50px;
+    height: 50px;
+    display: block;
+    position: absolute;
+    right: -55px;
+	background:url('/_skin/sidae/popkon/main/2023/uit/icon.png') -62px -44px no-repeat;
+	z-index:2;
+}
+
+.event_arrow .event_arrow_prev{
+	width: 50px;
+    height: 50px;
+	display:block;
+	position: absolute;
+	left: -55px;
+	background:url('/_skin/sidae/popkon/main/2023/uit/icon.png') -13px -44px no-repeat;
+}
+
+/* .class1 {
+	display:none;
+	color:#fff;
+	position: absolute;
+	top:1px;
+	right: 1px;
+	background: #097d90ad;
+	padding: 6px 44px 6px 24px;
+	border-radius:28px 28px;
+} */
+.class1{
+	 display: block;
+	color: #fff;
+    position: absolute;
+    top: -33px;
+    right: -27px;
+    background: #000;
+    padding: 0px 12px 4px 12px;
+    border-radius: 28px 28px;
+    line-height: 16px;
+    font-size: 12px;
+}
+
+/*main_rolling:E*/
+
+
+/*인기 과정;S*/
+.popularity_pd{
+	width:100%;
+}
+.popularity_pd .main_inner {
+	width:1200px;
+	margin:0 auto;
+	padding-top: 50px;
+}
+.popularity_pd .topic_txt{
+	display: inline-block;
+	color: #010101;
+    font-size: 21px;
+    letter-spacing: -0.8px;
+}
+.popularity_pd .topic_txt > span{
+	font-family: 'noto6';
+}
+.popularity_pd .topic_wrap .swiper-slide{
+	width: 100%;
+}
+.popularity_pd .topic_wrap .img_wrap{
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+}
+.popularity_pd .topic_wrap .topic_nav{
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.popularity_pd .topic_wrap .topic_nav span{
+    background: #b1b1b1;
+    width: 15px;
+    height: 15px;
+    border-radius: 100%;
+    border: none;
+}
+.popularity_pd .topic_wrap .topic_nav span.swiper-pagination-bullet-active{
+	background: #000;
+}
+.popularity_pd .popular_catagory{
+	margin-top: 5px;
+}
+.popularity_pd .popular_catagory ul{
+	display: flex;
+	margin-bottom: 10px;
+	height: 45px;
+}
+.popularity_pd .popular_catagory ul:last-child{
+	margin-bottom: 0;
+}
+.popularity_pd .popular_catagory ul > li:last-child{
+	margin-right: 0;
+}
+.popularity_pd .popular_catagory ul > li{
+	width: calc((100% - 10px) / 6);
+	margin-right: 10px;
+    text-align: center;
+}
+.popularity_pd .popular_catagory ul > li > a{
+	font-size: 15.5px;
+    font-family: 'noto4';
+	display: block;
+    width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	outline: 1px solid #dbdbdb;
+	line-height: 42px;
+	border-radius: 10px;
+}
+.popularity_pd .popular_catagory ul > li > a:hover{
+	outline: 2px solid #433abb;
+}
+
+/*인기과정E*/
+
+
+/*교육과정: S*/
+.popkon-menu {
+	width:1200px;
+	padding: 55px 0 30px;
+}
+.popkon-menu .topic_txt{
+	color: #010101;
+    /* width: 132px; */
+    /* padding: 17px 0; */
+    font-size: 21px;
+    letter-spacing: -0.8px;
+    /* line-height: 140%;*/
+	display: inline-block;
+	margin-bottom: 20px;
+}
+.popkon-menu .topic_txt > span{
+	font-family: 'noto6';
+}
+.popkon-menu .educate_catagory{
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 25px;
+}
+.popkon-menu .educate_catagory > li{
+	width: calc((100% - 10px) / 6);
+	margin-right: 10px;
+	text-align: center;
+}
+.popkon-menu .educate_catagory > li:last-child{
+	margin-right: 0;
+}
+.popkon-menu .educate_catagory > li > a.selected,.popkon-menu .educate_catagory > li > a:hover{
+	background: #000;
+	color: #fff;
+}
+.popkon-menu .educate_catagory li > a{
+	padding: 10px 10px;
+    font-size: 16px;
+	display: block;
+	border-radius: 10px;
+	transition: all 0.3s;
+}
+.popkon-menu .item-box {
+	width:100%;
+}
+.popkon-menu .item-box .item-list{
+	display: flex;
+	flex-wrap: wrap;
+	padding-left: 50px;
+}
+.popkon-menu .item-box .item-list .item-title{
+	width: 20%;
+	margin-bottom:14px;
+	height: 19px;
+	font-size: 14.5px;
+}
+.popkon-menu .item-box > div {
+	width:100%;
+	padding: 30px 0 20px;
+	border-bottom:1px solid #d2d2d2;
+	border-top: 1px solid #d2d2d2;
+	min-height: 260px;
+}
+.popkon-menu .item-box .item-list .item-title > a {
+	color:#464646;
+	/* display:block; */
+	font-family:'noto3';
+	font-weight:100;
+	transition: all 0.3s;
+}
+.popkon-menu .item-box .item-list .item-title > a:hover{
+	text-decoration: none;
+	font-weight: bold;
+	color:#3770e0;
+}
+/*교육과정: E*/
+
+/* 컨텐츠 리포트 S:*/
+.hab_number{
+	padding-top: 100px;
+}
+.hab_number .title{
+	margin-bottom: 80px;
+	text-align: center;
+}
+.hab_number .report > ul{
+	display: flex;
+}
+.hab_number .report > ul > li{
+	float: none;
+	width: calc((100% - 20px) / 4);
+	margin-right: 20px;
+	text-align: center;
+}
+.hab_number .report > ul > li:last-child{
+	margin-right: 0;
+}
+.hab_number .report .count-number{
+	position: relative;
+    font-size: 62px;
+    font-family: 'GmarketSans';
+	background: linear-gradient(130deg, #0439f7, #1e3d7b);
+    color: transparent;
+    -webkit-background-clip: text;
+	letter-spacing: -1.5px;
+}
+.hab_number .report sup{
+	color: #2a3862;
+    font-size: 20px;
+    font-family: 'noto2';
+	vertical-align: top;
+    position: static;
+    line-height: 25px;
+	font-weight: lighter;
+	letter-spacing: -1.5px;
+}
+.hab_number .report li .count-number::after{
+	position: absolute;
+    top: -25px;
+    left: 0px;
+	content: '';
+	width: 19px;
+	height: 18px;
+	background: url('/_skin/sidae/popkon/main/2023/number_data_line.png') no-repeat;
+}
+.hab_number .report .content_txt{
+	margin-top: 10px;
+	display: block;
+    font-size: 18px;
+    font-family: 'noto6';
+    letter-spacing: -0.5px;
+    color: #2a3862;
+}
+
+/* 컨텐츠 리포트 E:*/
+
+/* 분야별 일타강사 & 전임교수 S: */
+.profess{
+	margin-top: 135px;
+}
+.profess .title{
+	margin-bottom: 50px;
+}
+.profess .title > span{
+	font-size: 31px;
+    font-family: 'noto6';
+    letter-spacing: -1px;
+}
+
+.profess .profess_wrap{
+	height: 175px;
+	overflow: inherit;
+}
+.profess .profess_wrap .swiper-slide{
+	display: flex;
+	justify-content: space-between;
+	/* padding-left: 50px; */
+	/* align-items: center; */
+	border-right: 1px solid #dbdbdb;
+}
+
+.profess .profess_wrap .btn-arrow{
+	display: inline-block;
+	background: url('/_skin/sidae/popkon/main/2023/uit/icon.png') no-repeat;
+	width: 37px;
+	height: 37px;
+	position: absolute;
+	right: -40px;
+    top: -90px;
+	cursor: pointer;
+}
+.profess .profess_wrap .btn-arrow.prev{
+	background-position: -14px -104px;
+	margin-right: 45px;
+}
+.profess .profess_wrap .btn-arrow.next{
+	background-position: -58px -104px;
+}
+.profess .txt_wrap{
+	/* position: relative; */
+	/* height: 145px; */
+	height: 135px;
+    overflow: hidden;
+}
+.profess .txt_wrap .txt_wrapper{
+	/* display: flex;
+	flex-wrap: wrap-reverse;
+	flex-direction: column; */
+    width: 84%;
+    /* height: calc(50px * 20); */
+	height:calc(12.5px * 20);
+    /* border-right: 1px solid #dbdbdb; */
+    margin-left: 20px;
+    padding-top: 10px;
+	/* animation: 20s 0s linear infinite txtrole; */
+}
+.profess .txt_wrap .txt_wrapper.original{
+	animation: 20s 0s linear infinite running txtrole1;
+}
+.profess .txt_wrap .txt_wrapper.clone{
+	animation: 20s 0s linear infinite running txtrole2;
+}
+.profess .txt_wrap .txt_wrapper > li{
+	/* height: 30px; */
+}
+@keyframes txtrole1{
+
+	0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-100%);
+    }
+    50.01%{
+        transform: translateY(100%);
+    }
+    100%{
+        transform: translateY(0);
+    }
+}
+@keyframes txtrole2{
+	
+	0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-200%);
+    }
+}
+.profess .txt_wrap li{
+	display: flex;
+	align-items: center;
+	margin-bottom: 5px;
+}
+.profess .txt_wrap li span{
+	font-family: 'noto2';
+}
+.profess .txt_wrap li span:nth-of-type(1){
+	width: 275px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: 16px;
+    /* padding-right: 1px; */
+    margin-right: 7px;
+}
+
+.profess .txt_wrap li i{
+	background: url('/_skin/sidae/popkon/main/2023/uit/icon.png') no-repeat -15px -165px;
+	/* display: block; */
+	width: 73px;
+	height: 13px;
+}
+.profess .txt_wrap .play_go {
+	position: absolute;
+	right: 53px;
+	bottom: 0;
+	background: #eeeeee;
+	padding: 4px 16px;
+	border-radius: 8px;
+	border: 1px solid #dbdbdb;
+	font-size: 13px;
+	display: flex;
+	align-items: center;
+	transition: all 0.3s;
+}
+.profess .txt_wrap .play_go::after{
+  content: '';
+  display: block;
+  margin-left: 10px;
+  font-weight: 700;
+  width: 8px;
+  height: 15px;
+  background-image: url('/_skin/sidae/popkon/main/2023/uit/icon.png');
+  opacity: .7;
+  background-position: -47px -8px;
+  background-repeat: no-repeat;
+}
+.profess .txt_wrap .play_go:hover{
+  color: #fff;
+  background: #000;
+}
+.profess .profess_wrap .swiper-slide:hover .play_go{
+	color: #fff;
+	background: #000;
+}
+.profess .txt_wrap .play_go:hover::after{
+  background-image: url('/_skin/sidae/popkon/main/2023/uit/icon.png');
+  background-position: -25px -9px;
+}
+
+
+
+/* 분야별 일타강사 & 전임교수 E: */
+
+
+/* 합격 후기 인터뷰 슬라이드 S:  */
+#hab_container > .hab_hugi_wrap{
+	width: auto;
+	overflow: inherit;
+	margin-top: 150px;
+	margin-bottom: 165px;
+}
+.hab_hugi_wrap .title{
+	width: 1200px;
+	margin: 0 auto;
+	padding-bottom: 55px;
+}
+.hab_hugi_wrap .title > span{
+	font-size: 30px;
+    font-family: 'noto6';
+    letter-spacing: -1px;
+}
+.hab_hugi_wrap .animation_wrap{
+	width: calc(367px * 16);
+    height:100%;
+    display:flex;
+    flex-wrap:nowrap;
+	animation: 30s linear 0s infinite normal none running animat;
+}
+@keyframes animat{
+	0% { transform: translateX(0); }
+	100% { transform: translateX(calc(-367px * 8))}
+}
+.hab_hugi_wrap .popupVideo{
+	top: 0;
+	width: 100%;
+	height: 100%;
+}
+.hab_hugi_wrap .popupVideo > a{
+	display: block;
+	width: 100%;
+	height: 100%;
+	-webkit-tap-highlight-color: transparent;
+}
+.hab_hugi_wrap .popupVideo > a:focus{
+	outline: none;
+}
+/* .review_new .slick-slide{
+	margin-left: 10px;
+} */
+/* 합격 후기 인터뷰 슬라이드 E:  */
+
+/* 합격생 리스트 S:  */
+#hab_list{
+	position: relative;
+	background:url('/_skin/sidae/popkon/main/2023/review_bg_img.png') 133% top no-repeat #f7d036;
+	padding: 70px 0 130px;
+}
+.pass_person_wrap{
+	width: auto;
+	padding: 88px 0 0;
+}
+.pass_person_wrap > .mid{
+	width: 1200px;
+	margin: 0 auto;
+	position: relative;
+}
+.pass_person_wrap .title{
+	margin-bottom: 60px;
+}
+.pass_person_wrap .title > strong{
+	font-family: 'noto6';
+    font-size: 47px;
+    color: #000;
+    letter-spacing: -4px;
+    line-height: 55px;
+}
+.pass_person_wrap .line_box .hidden {
+	position: relative;
+	overflow: hidden;
+	text-align: left;
+	height:355px;
+}
+.pass_person_wrap .line_box .hidden:after {
+    display: block;
+    content: '';
+    background: linear-gradient(to bottom, #f7d036 -25%, rgba(201,184,166, 0) 65%);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.pass_person_wrap .line_box .slick-list{
+	height: 355px !important;
+}
+.pass_person_wrap .add_txt{
+	text-align:right;
+	position:absolute;
+	right: 50px;
+	bottom: -125px;
+	color: #7a736d;
+	font-size:16px;
+}
+
+.pass_person_wrap .pass_list li{
+	display:table;
+	width:100%;
+	
+}
+.pass_person_wrap .pass_list li dl{
+	display:table-cell;
+	vertical-align:middle;
+	width:20%;
+}
+.pass_person_wrap .pass_list li dl dd{
+	font-size: 19px;
+	padding: 8px 0;
+	text-align: left;
+	font-family: 'noto3';
+}
+/* 합격생 리스트 E:  */
+
+/* 합격생 후기 이미지 리스트 S:  */
+.hab_review_new{
+	width: auto;
+}
+.hab_review_new .hab_review_slide{
+	width: calc(-401px * 102);
+    height:100%;
+    display:flex;
+    flex-wrap:nowrap;
+	animation: 500s linear 0s infinite normal none running anihugi;
+}
+@keyframes anihugi{
+	0% { transform: translateX(0); }
+	100% { transform: translateX(calc(-401px * 102))}
+}
+/* 합격생 후기 이미지 리스트 E:  */
+
+.more_hugi{
+	width: 1200px;
+	margin: 0 auto;
+	text-align: center;
+	margin-top: 75px;
+}
+
+
+/* 이벤트 베너 S: */
+.event_bnr{
+    position: absolute;
+    bottom: -165px;
+    width: 100%;
+    height: 185px;
+	background: url('/_skin/sidae/popkon/main/2023/review_event.png') center no-repeat;
+	background-size: cover;
+}
+.event_bnr a{
+    position: absolute;
+    display: inline-block;
+    width: 166px;
+    height: 45px;
+    bottom: 55px;
+    left: 38%;
+	text-indent: -9999px;
+}
+/* 이벤트 베너 E:*/
+
+/* 취업지원 슬라이드 S: */
+.foundJob{
+	width: auto;
+}
+.foundJob .title{
+	width: 1200px;
+	margin: 0 auto;
+}
+.foundJob .title > span{
+	font-size: 31px;
+    font-family: 'noto4';
+    color: #000;
+    letter-spacing: -1px;
+    line-height: 43px;
+    font-weight: bold;
+}
+.foundJob .foundJob_slideWrap{
+	overflow: inherit;
+	margin-top: 40px;
+	/* min-width: 1920px; */
+}
+.foundJob .btn-arrow{
+	position: absolute;
+	width: 37px;
+	height: 37px;
+	bottom: 0;
+	cursor: pointer;
+}
+.foundJob .btn-arrow.prev{
+	background: url('/_skin/sidae/popkon/main/2023/uit/icon.png') no-repeat -14px -104px;
+}
+.foundJob .btn-arrow.next{
+	background: url('/_skin/sidae/popkon/main/2023/uit/icon.png') no-repeat -58px -104px;
+	right: 0;
+}
+.foundJob .scroll_navi{
+	position: relative;
+	margin: 0 auto;
+    width: 600px;
+	margin-top: 70px;
+}
+.foundJob .scroll_bar{
+	width: 485px;
+    height: 7px;
+    /* padding: 0 82px; */
+    margin: 0 auto;
+    bottom: 13px;
+}
+/* 스크롤바 색깔 */
+.foundJob .scroll_bar > span {
+    background: #818488;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+.foundJob .swiper-slide{
+	display: flex;
+	/* margin-right: 10px; */
+	/* max-width: 269px; */
+}
+.foundJob .swiper-slide ul li{
+	margin-right: 10px;
+}
+.foundJob .swiper-slide .popupVideo{
+	top: 0;
+	width: 100%;
+	height: 100%;
+}
+.foundJob .swiper-slide .popupVideo a{
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+.foundJob .swiper-slide img{
+    width: 100%;
+} 
+.foundJob .swiper-slide .talk_img{
+	width: 269px;
+}
+
+
+
+/* 취업지원 슬라이드 E: */
+
+
+/* 학습자료실 S: */
+#educate_resource{
+	margin-top: 245px;
+}
+#educate_resource .er_inner{
+	width: 1210px;
+}
+.source_box{
+	padding-top: 125px;
+}
+.source_box .title > span{
+	font-size: 31px;
+    font-family: 'noto6';
+    color: #000;
+    letter-spacing: -1px;
+    line-height: 43px;
+}
+.source_box .choice{
+	display: flex;
+	margin-top: 40px;
+	padding-left: 1px;
+}
+.source_box .choice li{
+	width: calc((100% - 10px) / 6);
+	margin-right: 10px;
+}
+.source_box .choice li:last-child{
+	margin-right: 0;
+}
+.source_box .choice li > a{
+	position: relative;
+    display: block;
+    border: 1px solid #dbdbdb;
+    color: #000;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 15px;
+    font-family: 'noto4';
+	transition: all 0.3s;
+}
+.source_box .choice li > a::after{
+	position: absolute;
+    top: 15px;
+    right: 20px;
+	content: '';
+	display: block;
+	width: 7px;
+	height: 11px;
+	background: url('/_skin/sidae/popkon/main/2023/uit/icon.png') no-repeat -36px -11px;
+}
+.source_box .choice li > a:hover{
+	background: #000;
+	color: #fff;
+}
+.source_box .choice li > a:hover::after{
+	background: url('/_skin/sidae/popkon/main/2023/uit/icon.png') no-repeat  -25px -11px;
+}
+.source_box .step_three{
+	display: flex;
+	margin-top: 20px;
+}
+.source_box .step_three li{
+	width: calc((100% - 6px) / 3);
+	margin-right: 10px;
+	box-sizing: border-box;
+}
+.source_box .step_three li:last-child{
+	margin-right: 0;
+}
+.source_box .step_three li > a{
+	display: block;
+	border:2px solid transparent;
+	box-sizing: border-box;
+	transition: all 0.3s;
+}
+.source_box .step_three li > a:hover{
+	border:2px solid #5383d6;
+	border-radius: 10px;
+	box-sizing: border-box;
+}
+.source_box .step_three li > a > img{
+	/* width: 100%; */
+}
+/* 학습자료실 E: */
+
+
+
+/* 회원가입 베너 S : */
+.event_join{
+	width: auto;
+	position: relative;
+	height: 136px;
+	margin-top: 65px;
+	background: url('/_skin/sidae/popkon/main/2023/join_event.png') no-repeat center;
+}
+.event_join > a{
+	position: absolute;
+    display: inline-block;
+    bottom: 18px;
+    left: 37.5%;
+    width: 150px;
+    height: 52px;
+    text-indent: -9999px;
+}
+/* 회원가입 베너 E : */
+
+/* sns 스타일 S: */
+.sns_inner{
+	padding: 95px 0;
+}
+.sns_inner .sns_link{
+	display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    width: 100%;
+    height: 395px;
+    padding-left: 240px;
+    position: absolute;
+    top: 95px;
+    right: 0;
+}
+.sns_inner .sns_link li{
+	width: calc((100% - 295px) / 3);
+    height: 160px;
+    /* margin-right: 138px; */
+    text-indent: -9999px;
+    margin-left: 55px;
+}
+.sns_inner .sns_link li > a{
+	display: block;
+	width: 100%;
+    height: 100%;
+}
+/* sns 스타일 E: */
+
+
+
+
+/* 예전 스타일 S: */
+#main_study {
+	padding:40px 0;
+	border-bottom:2px solid #000;
+}
+.main_right_wrap{
+	position:absolute;
+	left:calc(50% + 560px);
+	top:20px;
+	width:100px;
+	z-index:99;
+}
+.main_right_wrap.active{
+	position:fixed;
+	top:100px;
+}
+.main_right_wrap .main_right_plag{
+	width:55px;
+	height:55px;
+	display: block;
+	background:#383e64;
+	color:#fff;
+	font-size:14px;
+	text-align:center;
+	padding:7px;
+	box-sizing:border-box;
+	position:relative;
+	display:none;
+	border-radius:7px;
+	line-height:15px;
+	margin:0 0 10px 45px;
+}
+.main_right_wrap .main_right_plag:after{
+	position:absolute;
+	bottom:4px;
+	left:calc(50% - 3px);
+	content:'▼';
+	font-size:10px;
+	transition:all .4s;
+}
+.main_right_wrap .main_right_plag:hover:after{
+	bottom:0px;
+}
+.main_right_wrap .main_right_plag:hover {
+	text-decoration:none;
+}
+.main_right_wrap .popup_list {
+	height:0;
+	overflow:hidden;
+}
+.main_right_wrap .popup_list.show{
+	height:auto;
+	transition:all .5s;
+}
+.main_right_wrap .right_wrap_close {
+	display: block;
+	width:20px;
+	height:20px;
+	background:#242b37;
+	color:#fff;
+	text-align: center;
+	line-height: 20px;
+	margin:0 0 2px 80px;
+	cursor:pointer;
+	line-height:17px
+}
+.main_right_wrap .right_wrap_close:hover{
+	border:1px solid #242b37;
+	background:#fff;
+	color:#242b37;
+	box-sizing:border-box;
+}
+.main_right_wrap .btn_top{
+	width:100%;
+	height:25px;
+	background:#fff
+}
+.main_right_wrap .btn_top.s_btn{
+ width:55px;
+  transition:all .3s;
+  	margin:0 0 10px 45px;
+}
+.main_right_wrap .btn_top a{
+	color:#747474;
+	text-align:center;
+	display: block;
+	height:100%;
+	line-height:25px;
+	font-family:'noto3';
+	font-size: 11px;
+	border:1px solid #c5c3c3;
+}
+.main_right_wrap .btn_top a:hover{
+	border:1px solid #000;
+	color:#000;
+	text-decoration:none;
+}
+.main_right_wrap .pop_list_con {
+	width:100px;
+	height:124px;
+  margin-bottom:2px;
+	box-sizing:border-box;
+	padding:8px 0 0 ;
+	font-size:14px;
+}
+.main_right_wrap .pop_list_con b {
+	font-family:'noto6';
+	display: block;
+	font-weight:100;
+}
+.main_right_wrap .pop_list_con{
+	border:1px solid #3c4971;
+	text-align:center;
+	color:#fff;
+	position:relative;
+	box-sizing:border-box;
+}
+.main_right_wrap .pop_list_con a {
+	color:#fff;
+	display:block;
+	width:100%;
+	height:100%;
+}
+.main_right_wrap .pop_list_con a > img{
+}
+.main_right_wrap .pop_list_con a:hover{
+	text-decoration:none;
+}
+
+.main_right_wrap .pop_list_con p{
+	line-height:19px;
+}
+.main_right_wrap .pop_list_con span{
+	display: block;
+	font-size:12px;
+	box-sizing:border-box;
+	letter-spacing: -0.3px;
+}
+
+.main_right_wrap .pop_list_con1{
+	background:#50619f ;
+	height:150px;
+}
+
+.main_right_wrap .pop_list_con1 p{
+	font-size:13px;
+}
+
+.main_right_wrap .pop_list_con1 p:last-child{
+	background:#3c4971;
+	padding-top:3px;
+	margin-top:5px;
+	padding-bottom:2px;
+}
+.main_right_wrap .pop_list_con1 p b{
+	font-family:'noto5';
+	display: block;
+	margin-top:2px;
+}
+
+.main_right_wrap .pop_list_con1 span {
+	display: block;
+	width:83px;
+	height:20px;
+	border-radius: 10px;
+	background:#fff;
+	color:#3c4971;
+	margin:7px auto;
+	font-size:11px;
+	line-height:19px;
+	font-family:'noto6';
+}
+
+.main_right_wrap .pop_list_con3{
+	padding:15px 0;
+    background:#697ae7;
+	border:1px solid #8c7c6f;
+}
+
+.main_right_wrap .pop_list_con3 p{
+    color:#4fffc7;
+}
+.main_right_wrap .pop_list_con3 b{
+	font-size:17px;
+	color:#fff;
+	margin:2px auto;
+}
+
+.main_right_wrap .pop_list_con3 span{
+	background: #202857;
+	width:80px;
+	border-radius: 7px;
+	margin:10px auto;
+	padding: 1px 0;
+}
+
+.main_right_wrap .pop_list_con:hover .link_wrap{
+	opacity:1;
+}
+
+
+.main_right_wrap .pop_list_con4{
+	background:url('/_skin/sidae/popkon/images/popup/membership.png')center 10px no-repeat #e77569;
+	border:1px solid #9c3d33;
+	padding-top:43px;
+	height:150px;
+}
+
+.main_right_wrap .pop_list_con4 p:first-child{
+	font-family:'noto6';
+	letter-spacing: -0.7px;
+	margin-bottom:5px;
+	font-size:13px;
+}
+
+.main_right_wrap .pop_list_con4 p.jalnan{
+	font-size:18px;
+}
+
+.main_right_wrap .pop_list_con4 p.jalnan span{
+	font-size:18px;
+	font-family: 'jalnan';
+	color:#2e2e2e;
+	margin-top:4px;
+}
+
+.main_right_wrap .pop_list_con4  a > span {
+	display: block;
+	width:83px;
+	height:20px;
+	border-radius: 10px;
+	background:#572520;
+	color:#fff;
+	margin:5px auto;
+	font-size:11px;
+	line-height:19px;
+	font-family:'noto6';
+}
+
+.main_right_wrap  .pop_list_con5{
+	height:264px;
+	padding:0;
+	border:none;
+}
+
+.main_right_wrap .pop_list_con .link_wrap{
+	position: absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	background:rgba(0,0,0,0.7);
+		opacity:0;
+	transition:all .3s;
+}
+
+.main_right_wrap .pop_list_con .link_wrap a{
+	width:80%;
+	height:23px;
+	line-height:21px;
+	margin: 0 auto;
+	background:#fff;
+	color:#000;
+	font-size:13px;
+	box-sizing:border-box;
+	font-family: 'noto6';
+	font-weight: 100;
+}
+
+.main_right_wrap .pop_list_con1 .link_wrap{
+	padding:15px 0;
+	box-sizing:border-box;
+}
+
+.main_right_wrap .pop_list_con1 .link_wrap a {
+	margin-bottom:10px;
+	background:#50619f;
+	border:1px solid #50619f;
+	color:#fff;
+}
+
+.main_right_wrap .pop_list_con1 .link_wrap a:hover{
+	background:#fff;
+	color:#50619f
+}
+
+.main_right_wrap .pop_list_con2 .link_wrap{
+	padding-top:45px;
+	box-sizing:border-box;
+}
+
+.main_right_wrap .pop_list_con2 .link_wrap a {
+	background:#4ba761;
+	border:1px solid #4ba761;
+	color:#fff;
+}
+
+.main_right_wrap .pop_list_con2 .link_wrap a:hover{
+	background:#fff;
+	color:#4ba761;
+}
+
+/* 이벤트 팝업 S: */
+.event2_detail_wrap {
+	position:fixed;
+	width:100% ;
+	height:100% !important;
+	left:0;
+	top:0;
+	z-index:999;
+	display:none;
+}
+
+.event2_detail_wrap .event2_bg{
+	background:rgba(0,0,0,0.7);
+	position:absolute;
+	display:block;
+	left:0;
+	top:0;
+	width:100%;
+	height:100%;
+}
+.event2_detail_wrap .event2_detail{
+	position:relative;
+	width:703px;
+	height:72%;
+	top:calc(9%);
+	margin:0 auto;
+}
+
+.event2_detail_wrap .event2_top {
+	width:100%;
+	height:38px;
+	background:linear-gradient(to right, #2b87a4, #bb8ccb);
+	color:#fff;
+	display:table;
+	padding:10px;
+	box-sizing:border-box;
+}
+
+.event2_detail_wrap .event2_top > *{
+	display:table-cell;
+}
+.event2_detail_wrap .event2_top > h2 {
+	font-family:'noto6';
+	font-weight:100;
+	text-align:left;
+	font-size: 18px;
+	line-height: 29px;
+}
+.event2_detail_wrap .event2_top .detail_close{
+	position:relative;
+	 width: 60px;
+	 height: 26px;
+	cursor: pointer;
+	 background: #ffffff;
+	border-radius: 20px;
+	text-align: left;
+	padding-left: 16px;
+	font-family: 'noto3' !important;
+	transition:all .2s;
+	color:#000 !important;
+	font-size: 13px;
+	line-height: 26px;
+}
+.event2_detail_wrap .event2_top .detail_close:hover{
+	color:#ba8ccb !important;
+	font-family:'noto6'  !important;
+}
+.event2_detail_wrap .event2_top .detail_close:before{
+	display: block;
+	position: absolute;
+	content: '+';
+	left:49px;
+	top: 3px;
+	width: 24px;
+	height: 24px;
+	line-height: 22px;
+	color: #fff;
+	background: #ba8ccb;
+	border-radius: 19px;
+	text-align: center;
+	font-size: 22px;
+	transform: rotate(45deg);
+	transition:all .3s;
+	padding-top: 0;
+}
+
+.event2_detail_wrap .event2_top .detail_close:hover:before{
+	background:#ffffff;
+	border:1px solid #ba8ccb;
+	color:#ba8ccb;
+	box-sizing:border-box;
+	text-align: center;
+}
+
+.event2_detail_wrap .event2_con{
+	height:100%;
+	/*! max-height: 630px; */
+	overflow: auto;
+	position:relative;
+	/* background:url("/img/event/8716/image.png") no-repeat #2f3641; */
+	overflow-x: hidden;
+}
+
+.event2_detail_wrap .event2_con .inner a {
+	display:block;
+	width:144px;
+	height:47px;
+	position:absolute;
+	bottom: 22px;
+	right: 11px;
+}
+
+.event2_detail_wrap .event2_con .inner{
+	position:relative;
+}
+/* 이벤트 팝업 E: */
+
+.pop_detail{
+	position:fixed;
+	width:100%;
+	height:100%;
+	top:0;
+	left:0;
+	text-align:center;
+	z-index:9;
+}
+.pop_detail .detail_bg{
+	position:absolute;
+	left:0;
+	top:0;
+	width:100%;
+	height:100%;
+	background:rgba(0,0,0,0.7);
+}
+
+.pop_detail .detail_content{
+	width:718px;
+	height:80%;
+	overflow:auto;
+	overflow-x:hidden;
+	box-sizing:border-box;
+	position:absolute;
+	left:calc(50% - 359px);
+	top:10%;
+	vertical-align:middle;
+	margin:0 auto;
+	background:#fff;
+}
+
+.pop_detail .detail_content div {
+	position: relative;
+}
+
+
+.pop_detail .detail_content a.detail_close{
+	display:block;
+	width:60px;
+	height:60px;
+	position:absolute;
+	right:20px;
+	top:20px;
+}
+
+.pop_detail .detail_content  .map_btn{
+	display:block;
+	width:130px;
+	height:60px;
+	position:absolute;
+	left:90px;
+	bottom:140px;
+}
+
+/* 예전 스타일 E: */
