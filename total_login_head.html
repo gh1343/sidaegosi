@@ -1,0 +1,124 @@
+<link rel="stylesheet" href="/_skin/sidae/css/top_login_head.css">
+
+
+
+<script>
+console.log("nowpagehead = /_skin/sidae/include/total_login_head.inc.htm");
+var g4_userAgent = navigator.userAgent.toLowerCase();
+</script>
+<script type="text/javascript" src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.2.js" charset="utf-8"></script>
+<script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
+<script type="text/javascript" src="/snslogin/js/kakao.min.js"></script>
+<?php
+$web12_domain = @explode(".", $_SERVER["HTTP_HOST"]);
+//이거떄매 web1에서 안되는구만.sd_kandyg
+//if($web12_domain[0] == 'www'){  // 20221117 오류건수정(주석처리 형식변경) sd_kshbx
+?>
+	<script type="text/javascript" src="/snslogin/js/sdedu_sns_login_new.js"></script><!-- src="/snslogin/js/sdedu-sns-login.js?v=1703301530" -->
+<?php
+//} 
+?>
+
+<script type="text/javascript" src="/_skin/sidae/js/total_login_head.js"></script>
+<link type="text/css" rel="stylesheet" href="/snslogin/css/sns-login.css" />
+<!-- <link rel="stylesheet" type="text/css" href="/_skin/sidae/css/total_login_head_new.css" /> -->
+<!-- href="/_skin/sidae/css/total_login_head.css" -->
+
+<input type="hidden" id="topLoginChk" title="" value="{member.mb_id}" name=""/>
+<div class="common-login-wrap">
+	<div class="login-media-width">
+		<!-- <ul class="brand-list">
+			<li><a href="/book" target="_blank"  title="새창으로 열기">도서</a></li>
+			<li><a href="/popkon" target="_blank"  title="새창으로 열기">온라인강의</a></li>
+			<li><a href="/sidaeplus" target="_blank"  title="새창으로 열기">무료동영상</a></li>
+			<li><a href="/pass_sidae_new/"  target="_blank"  title="새창으로 열기">온라인모의고사</a></li>
+			<li><a href="/audio/"  target="_blank"  title="새창으로 열기">오디오북</a></li>
+			<li class="aimoi"><a href="https://www.winsidaero.com/" target="_blank"  title="새창으로 열기">AI모의면접</a></li>
+			<li class="neilbaeum"><a href="http://cyber.sdedu.co.kr/" target="_blank"  title="새창으로 열기">국비지원과정</a></li>
+
+		</ul> -->
+	    <div class="member-util">
+	        {? !member.mb_id }
+<!-- 비로그인 화면 -->
+				<ul class="top_gnb">
+					<li>
+						<form class="login-form" name="login_form" id="form_popkon" action="/member/login_check.php" method="post" dd="test">
+							<input type="hidden" name="svs" value="" />
+							<input type="hidden" name="url" value="" />
+			
+							<div class="login-inputs">
+								<button type="submit" class="btn-login login-inputs-item6 login-inputs-item cs-center-inquery-total">로그인</button>
+								
+								<a href="/_skin/sidae/member/member_join_select.htm" class="btn-join login-inputs-item7 login-inputs-item" target="_blank" >회원가입</a>
+								
+								<!-- 원본 경로 S-->
+								<!-- <a href="/member/member_join_step1.php?svs={? !svs || svs=='question_bank' }popkon{:}{svs}{/}" class="btn-join login-inputs-item7 login-inputs-item" target="_blank" >회원가입</a> -->
+								<!-- 원본 경로 E -->
+							</div>
+						</form>
+					</li>
+					<li><a href="/book" target="_blank">도서</a></li>
+					<li><a href="/popkon" target="_blank">동영상</a></li>
+					<li><a href="/sidaeplus" target="_blank">무료동영상</a></li>
+					<li>
+						
+							{=include_file('/include/select_site.htm')}
+						
+					</li>
+				</ul>
+	        {:}
+
+<!-- 로그인 화면 -->
+	        <div class="member-info-common">
+	            <ul class="member-btns">
+					{? logout_chk == 'myclass'}
+					
+					<li><a href="/bbs/logout.php?svs=myclass" class="btn-logout">{member.mb_name}님 로그아웃</a></li>
+					{:}
+						{? !svs }
+						<li><a href="/bbs/logout.php?svs=sidaeplus" class="btn-logout">{member.mb_name}님 로그아웃</a></li>
+						{: svs == 'question_bank'}
+							{? !bo_table }
+								<li><a href="/bbs/logout.php?svs=pass_sidae_new&url={from_url}" class="btn-logout">{member.mb_name}님 로그아웃</a></li>
+							{:}
+								<li><a href="/bbs/logout.php?svs=pass_sidae_new" class="btn-logout">{member.mb_name}님 로그아웃</a></li>
+							{/}
+						{:}
+						<li><a href="/bbs/logout.php?svs={_gsvs2}&url={from_url}" class="btn-logout">{member.mb_name}님 로그아웃</a></li>
+						{/}
+					{/}
+
+					<li class="my_infor"><a href="/myclass" class="btn-mypage mymenu_btn">마이페이지</a>
+						<div class="myroom_menu myroom_menu_mypage">
+							<a href="/myclass/my_cart.php"><p>장바구니</p> <span>{=GetMemberCartCnt(member.mb_id)}개</span></a>
+							<a href="/myclass/my_coupon.php"><p>보유쿠폰</p> <span>{=GetMemberCouponCnt()}개</span></a>
+							<a href="/myclass/my_board.php?bo_table=cs_inquery"><p>1:1상담 </p><span>{=GetMemberInqueryCnt()}건</span></a>
+							<a href="/myclass/my_order.php" class=""><p>주문배송</p></a>
+							<a href="/myclass/my_information.php" class=""><p>정보수정</p></a>
+						</div>
+					</li>
+					<li class="my_infor"><a href="/myclass/class_mylec.php"
+							class="btn-mypage mymenu_btn">내강의실</a>
+						<div class="myroom_menu myroom_menu_myclass">
+							<a href="/myclass/class_mylec.php?type=membership"><p>수강회원권</p> <span>{=GetMembershipLecCnt (member.mb_id)}개</span></a>
+							<a href="/myclass/class_mylec.php?type=lecture"><p>유료강의</p> <span>{=GetMemberPaidCnt (member.mb_id)}개</span></a>
+							<a href="/myclass/class_mylec.php?type=free"><p>무료강의</p> <span>{=GetMemberFreeCnt (member.mb_id)}개</span></a>
+							<a href="/myclass/class_mylec.php?type=audio"><p>오디오북</p> <span>{=GetMemberAudioCnt (member.mb_id)}개</span></a>
+							<a href="/myclass/class_mylec.php?type=likelist"><p>즐겨찾기</p> <span>{=GetMemberLikeCnt (member.mb_id)}개</span></a>
+						</div>
+					</li>
+					<li><a href="/book" target="_blank">도서</a></li>
+					<li><a href="/popkon" target="_blank">동영상</a></li>
+					<li><a href="/sidaeplus" target="_blank">무료동영상</a></li>
+					<li>
+						{=include_file('/include/select_site.htm')}
+					</li>
+
+	            </ul>
+	         </div>
+	        {/}
+	    </div>
+    </div>
+</div>
+
+
