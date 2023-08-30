@@ -1,0 +1,2467 @@
+<link href="/_skin/sidae/css/top_login_head_test.css" rel="stylesheet">
+<!-- <link rel="stylesheet" type="text/css" href="/_skin/sidae/css/sdedu/common/common.css"> -->
+
+<script>
+console.log("nowpagehead = /_skin/sidae/include/total_login_head.inc._test.htm");
+var g4_userAgent = navigator.userAgent.toLowerCase();
+</script>
+<script charset="utf-8" src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.2.js" type="text/javascript"></script>
+<script src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js" type="text/javascript"></script>
+<script src="/snslogin/js/kakao.min.js" type="text/javascript"></script>
+<?php
+$web12_domain = @explode(".", $_SERVER["HTTP_HOST"]);
+//이거떄매 web1에서 안되는구만.sd_kandyg
+//if($web12_domain[0] == 'www'){  // 20221117 오류건수정(주석처리 형식변경) sd_kshbx
+?>
+	<script src="/snslogin/js/sdedu_sns_login_new.js" type="text/javascript"></script><!-- src="/snslogin/js/sdedu-sns-login.js?v=1703301530" -->
+<?php
+//} 
+?>
+
+<!-- <script src="/_skin/sidae/js/total_login_head_test.js" type="text/javascript"></script> -->
+<link href="/snslogin/css/sns-login.css" rel="stylesheet" type="text/css" />
+<!-- <link rel="stylesheet" type="text/css" href="/_skin/sidae/css/total_login_head_new.css" /> -->
+<!-- href="/_skin/sidae/css/total_login_head.css" -->
+
+<input id="topLoginChk" name="" title="" type="hidden" value="{member.mb_id}"/>
+<div class="common-login-wrap">
+	<div class="login-media-width">
+		<!-- <ul class="brand-list">
+			<li><a href="/book" target="_blank"  title="새창으로 열기">도서</a></li>
+			<li><a href="/popkon" target="_blank"  title="새창으로 열기">온라인강의</a></li>
+			<li><a href="/sidaeplus" target="_blank"  title="새창으로 열기">무료동영상</a></li>
+			<li><a href="/pass_sidae_new/"  target="_blank"  title="새창으로 열기">온라인모의고사</a></li>
+			<li><a href="/audio/"  target="_blank"  title="새창으로 열기">오디오북</a></li>
+			<li class="aimoi"><a href="https://www.winsidaero.com/" target="_blank"  title="새창으로 열기">AI모의면접</a></li>
+			<li class="neilbaeum"><a href="http://cyber.sdedu.co.kr/" target="_blank"  title="새창으로 열기">국비지원과정</a></li>
+
+		</ul> -->
+	    <div class="member-util">
+	        {? !member.mb_id }
+<!-- 비로그인 화면 -->
+				<ul class="top_gnb">
+					<li>
+						<form action="/member/login_check.php" class="login-form" dd="test" id="form_popkon" method="post" name="login_form">
+							<input name="svs" type="hidden" value="" />
+							<input name="url" type="hidden" value="" />
+			
+							<div class="login-inputs">
+								<button class="btn-login login-inputs-item6 login-inputs-item cs-center-inquery-total" type="submit">로그인</button>
+								
+								<a class="btn-join login-inputs-item7 login-inputs-item" href="/_skin/sidae/member/member_join_select.htm" target="_blank" >회원가입</a>
+								
+								<!-- 원본 경로 S-->
+								<!-- <a href="/member/member_join_step1.php?svs={? !svs || svs=='question_bank' }popkon{:}{svs}{/}" class="btn-join login-inputs-item7 login-inputs-item" target="_blank" >회원가입</a> -->
+								<!-- 원본 경로 E -->
+							</div>
+						</form>
+					</li>
+					<li><a href="/book" target="_blank">도서</a></li>
+					<li><a href="/popkon" target="_blank">동영상</a></li>
+					<li><a href="/sidaeplus" target="_blank">무료동영상</a></li>
+					<li>
+						
+							{=include_file('/include/select_site.htm')}
+						
+					</li>
+				</ul>
+	        {:}
+
+<!-- 로그인 화면 -->
+	        <div class="member-info-common">
+	            <ul class="member-btns">
+
+
+					<li class="my_infor"><a class="btn-mypage mymenu_btn" href="/myclass">{member.mb_name}님</a>
+						<div class="myroom_menu myroom_menu_mypage">
+							<a class="btn-mypage mymenu_btn" href="/myclass">마이페이지</a>
+							<a href="/myclass/my_cart.php"><p>장바구니</p> <span>{=GetMemberCartCnt(member.mb_id)}개</span></a>
+							<a href="/myclass/my_coupon.php"><p>보유쿠폰</p> <span>{=GetMemberCouponCnt()}개</span></a>
+							<a href="/myclass/my_board.php?bo_table=cs_inquery"><p>1:1상담 </p><span>{=GetMemberInqueryCnt()}건</span></a>
+							<a class="" href="/myclass/my_order.php"><p>주문배송</p></a>
+							<a class="" href="/myclass/my_information.php"><p>정보수정</p></a>
+
+							{? logout_chk == 'myclass'}
+					
+							<a class="btn-logout" href="/bbs/logout.php?svs=myclass">로그아웃</a>
+							{:}
+								{? !svs }
+								<a class="btn-logout" href="/bbs/logout.php?svs=sidaeplus">로그아웃</a>
+								{: svs == 'question_bank'}
+									{? !bo_table }
+										<a class="btn-logout" href="/bbs/logout.php?svs=pass_sidae_new&url={from_url}">로그아웃</a>
+									{:}
+										<a class="btn-logout" href="/bbs/logout.php?svs=pass_sidae_new">로그아웃</a>
+									{/}
+								{:}
+								<a class="btn-logout" href="/bbs/logout.php?svs={_gsvs2}&url={from_url}">로그아웃</a>
+								{/}
+							{/}
+						</div>
+					</li>
+
+					<li class="alram_icon">
+						<a class="alram_button" href="javascript:void(0)">
+							<span>알림</span>
+							<i></i>
+						</a>
+					</li>
+
+					
+					<li class="my_infor"><a class="btn-mypage mymenu_btn"
+							href="/myclass/class_mylec.php">내강의실</a>
+						<div class="myroom_menu myroom_menu_myclass">
+							<a href="/myclass/class_mylec.php?type=membership"><p>수강회원권</p> <span>{=GetMembershipLecCnt (member.mb_id)}개</span></a>
+							<a href="/myclass/class_mylec.php?type=lecture"><p>유료강의</p> <span>{=GetMemberPaidCnt (member.mb_id)}개</span></a>
+							<a href="/myclass/class_mylec.php?type=free"><p>무료강의</p> <span>{=GetMemberFreeCnt (member.mb_id)}개</span></a>
+							<a href="/myclass/class_mylec.php?type=audio"><p>오디오북</p> <span>{=GetMemberAudioCnt (member.mb_id)}개</span></a>
+							<a href="/myclass/class_mylec.php?type=likelist"><p>즐겨찾기</p> <span>{=GetMemberLikeCnt (member.mb_id)}개</span></a>
+						</div>
+					</li>
+					<li><a href="/book" target="_blank">도서</a></li>
+					<li><a href="/popkon" target="_blank">동영상</a></li>
+					<li><a href="/sidaeplus" target="_blank">무료동영상</a></li>
+					<li>
+						{=include_file('/include/select_site.htm')}
+					</li>
+
+	            </ul>
+	         </div>
+	        {/}
+	    </div>
+    </div>
+</div>
+
+<!-- 전체 알림 팝업 S: -->
+
+<div class="alram_pop">
+	<div class="inner">
+		<div class="navi">
+			<span class="alram_txt">알림</span>
+			<ul class="right_wrap">
+				<li>
+					<a href="javascript:void(0)" class="read_del">
+						읽은 알림 삭제
+					</a>
+				</li>
+				<li>
+					<a href="javascript:void(0)" class="all_del">
+						전체삭제
+					</a>
+				</li>
+				<li class="setting">
+					<i class="open_setting"><!--background--></i>
+				</li>
+				<li class="cancel_alram">
+					<i><!--background--></i>
+				</li>
+			</ul>
+		</div>
+		<span class="non_read">읽지 않은 알림 <span class="readnon_number">0</span>개</span>
+
+
+		<!-- 모든 알림이 꺼져있을 때 & 알림내역도 없을때 S: -->
+		<div class="alram_off">
+			<div class="bell_img">
+				<i></i>
+			</div>
+			<div class="txt_puple">
+				<span>알림 설정을 꺼두셨나요?</span>
+			</div>
+			<div class="ment">
+				<span>다양한 학습 자료와 할인 · 이벤트 혜택을 알 수 있는 알림을 켜보세요.</span>
+			</div>
+			<div class="alram_setting">
+				<a href="javascript:void(0)" class="set_shortcut">알림설정 바로가기</a>
+			</div>
+		</div>
+		<!-- 모든 알림이 꺼져있을 때 & 알림내역도 없을때 E: -->
+
+		<!-- 모든 알림이 꺼져있을 때 & 알림내역은 있을때 S: -->
+		<div class="alram_none">
+			<div class="txt_puple">
+				<span>새로운 알림이 없습니다</span>
+			</div>
+		</div>
+		<!-- 모든 알림이 꺼져있을 때 & 알림내역은 있을때 E: -->
+
+		<!-- 알림 리스트 S: -->
+		<ul class="menu_choice">
+			<li class="all_btn selected">
+				<span>전체</span>
+			</li>
+			<li class="lec_update">
+				<span>강의 업데이트</span>
+			</li>
+			<li class="edu_source">
+				<span>학습자료</span>
+			</li>
+			<li class="profit_event">
+				<span>혜택/이벤트</span>
+			</li>
+			<li class="active_new">
+				<span>활동/소식</span>
+			</li>
+			<li class="exam_date">
+				<span>시험일정</span>
+			</li>
+		</ul>
+		<!-- 알림 리스트 E: -->
+	</div>
+
+	<div class="scroll_box all_content selected">
+		<ul class="list_alram">
+			<!-- 강의 업데이트 예시 S: -->
+			<!-- <li class="alram_lec_update view2">
+				<div class="list_left">
+					<div>
+						<span class="alram_list">강의업데이트</span>
+						<span class="date">2023-05-10</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041" target="_blank">2020 제 22회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="https://static-sdedu.akamaized.net/img1/_skin/tpl_skin/basic_customs2/download/2022_39_customs_1_2.pdf" target="_blank" class="download_source">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li> -->
+			<!-- 강의 업데이트 예시 E: -->
+			<!-- 학습자료 정오표 예시 S: -->
+			<!-- <li class="alram_data_err view3">
+				<div class="list_left">
+					<div>
+						<span class="alram_list">정오표</span>
+						<span class="date">2023-05-11</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041" target="_blank" class="">2020 제 23회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="https://static-sdedu.akamaized.net/img1/_skin/tpl_skin/basic_customs2/download/2022_39_customs_1_2.pdf" target="_blank" class="download_source">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li> -->
+			<!-- 학습자료 정오표 예시 E: -->
+
+			<!-- 학습자료 기출문제 예시 S: -->
+			<!-- <li class="alram_data_gichul view3">
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-12</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041" target="_blank" class="">2020 제 24회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="https://static-sdedu.akamaized.net/img1/_skin/tpl_skin/basic_customs2/download/2022_39_customs_1_2.pdf" target="_blank" class="download_source">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li> -->
+			<!-- 학습자료 기출문제 예시 E: -->
+
+			<!-- 학습자료 최신개정법령 예시 S: -->
+			<!-- <li class="alram_data_law view3">
+				<div class="list_left">
+					<div>
+						<span class="alram_list">최신개정법령</span>
+						<span class="date">2023-05-13</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041" target="_blank" class="">2020 제 25회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li> -->
+			<!-- 학습자료 최신개정법령 예시 E: -->
+
+			<!-- 학습자료 프로그램 자료실 예시 S: -->
+			<!-- <li class="alram_data_prog view3">
+				<div class="list_left">
+					<div>
+						<span class="alram_list">프로그램 자료실</span>
+						<span class="date">2023-05-14</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041" target="_blank" class="">2020 제 26회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li> -->
+			<!-- 학습자료 프로그램 자료실 예시 S: -->
+
+			<!-- 학습자료 MP3 자료실 예시 S: -->
+			<!-- <li class="alram_data_mp3 view3">
+				<div class="list_left">
+					<div>
+						<span class="alram_list">MP3 자료실</span>
+						<span class="date">2023-05-15</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041" target="_blank" class="">2020 제 27회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li> -->
+			<!-- 학습자료 MP3 자료실 예시 E: -->
+
+			<!-- 학습자료 강의 자료실 예시 S: -->
+			<!-- <li class="alram_data_d_room view3">
+				<div class="list_left">
+					<div>
+						<span class="alram_list">강의 자료실</span>
+						<span class="date">2023-05-16</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041" target="_blank" class="">2020 제 27회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li> -->
+			<!-- 학습자료 강의 자료실 예시 E: -->
+
+			<!-- 학습자료 도서 업데이트 예시 S: -->
+			<!-- <li class="alram_data_update view3">
+				<div class="list_left">
+					<div>
+						<span class="alram_list">도서 업데이트</span>
+						<span class="date">2023-05-17</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041" target="_blank" class="">2020 제 27회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li> -->
+			<!-- 학습자료 도서 업데이트 예시 E: -->
+
+			<!-- 혜택/이벤트 이벤트 예시 S: -->
+			<!-- <li class="alram_event">
+				<div class="list_left">
+					<div>
+						<span class="alram_list">이벤트</span>
+						<span class="date">2023-05-17</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041" target="_blank" class="">2020 제 27회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li> -->
+			<!-- 혜택/이벤트 이벤트 예시 E: -->
+
+			<!-- 활동/소식 1:1문의 답변 예시 S: -->
+			<!-- <li class="alram_cs_inquery">
+				<div class="list_left">
+					<div>
+						<span class="alram_list">1:1문의</span>
+						<span class="date">2023-05-17</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041" target="_blank" class="">2020 제 27회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li> -->
+			<!-- 활동/소식 1:1문의 답변 예시 E: -->
+
+			<!-- 활동/소식 결제(주문)완료 예시 S: -->
+			<!-- <li class="alram_my_order">
+				<div class="list_left">
+					<div>
+						<span class="alram_list">결제(주문)완료</span>
+						<span class="date">2023-05-17</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041" target="_blank" class="">2020 제 27회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li> -->
+			<!-- 활동/소식 결제(주문)완료 예시 E: -->
+
+			<!-- 활동/소식 주문취소 예시 S: -->
+			<!-- <li class="alram_my_order">
+				<div class="list_left">
+					<div>
+						<span class="alram_list">주문취소</span>
+						<span class="date">2023-05-17</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041" target="_blank" class="">2020 제 27회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li> -->
+			<!-- 활동/소식 주문취소 예시 E: -->
+
+			<!-- 활동/소식 휴강안내 예시 S: -->
+			<!-- <li class="alram_lecture">
+				<div class="list_left">
+					<div>
+						<span class="alram_list">휴강안내</span>
+						<span class="date">2023-05-17</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041" target="_blank" class="">2020 제 27회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li> -->
+			<!-- 활동/소식 휴강안내 예시 E: -->
+
+			<!-- 활동/소식 수강연장 예시 S: -->
+			<!-- <li class="alram_free">
+				<div class="list_left">
+					<div>
+						<span class="alram_list">수강연장</span>
+						<span class="date">2023-05-17</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041" target="_blank" class="">2020 제 27회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li> -->
+			<!-- 활동/소식 수강연장 예시 E: -->
+
+			<!-- 활동/소식 수강종료 예시 S: -->
+			<!-- <li class="alram_endclass">
+				<div class="list_left">
+					<div>
+						<span class="alram_list">수강종료</span>
+						<span class="date">2023-05-17</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041" target="_blank" class="">2020 제 27회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li> -->
+			<!-- 활동/소식 수강종료 예시 E: -->
+
+			<!-- 활동/소식 공지사항 예시 S: -->
+			<!-- <li class="alram_cs_notice">
+				<div class="list_left">
+					<div>
+						<span class="alram_list">공지사항</span>
+						<span class="date">2023-05-17</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041" target="_blank" class="">2020 제 27회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li> -->
+			<!-- 활동/소식 공지사항 예시 E: -->
+
+			<!--뉴스/상식 최신뉴스 예시 S: -->
+			<!-- <li class="alram_dcc_notice">
+				<div class="list_left">
+					<div>
+						<span class="alram_list">최신뉴스</span>
+						<span class="date">2023-05-17</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041" target="_blank" class="">2020 제 27회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li> -->
+			<!--뉴스/상식 최신뉴스 예시 E: -->
+
+			<!--뉴스/상식 시사상식 예시 S: -->
+			<!-- <li class="alram_dcc_sisa">
+				<div class="list_left">
+					<div>
+						<span class="alram_list">시사상식</span>
+						<span class="date">2023-05-17</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041" target="_blank" class="">2020 제 27회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li> -->
+			<!--뉴스/상식 시사상식 예시 E: -->
+
+			<!--시험일정 시험일정 예시 S: -->
+			<li class="alram_dcc_exam">
+				<div class="list_left">
+					<div>
+						<span class="alram_list">시험일정</span>
+						<span class="date">2023-05-17</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041" target="_blank" class="">2020 제 27회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<!--시험일정 시험일정 예시 E: -->
+		</ul>
+	</div>
+
+	<!-- <div class="scroll_box lec_update_content">
+		<ul class="list_alram">
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-10</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041">2020 제 22회 관세사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-11</span>
+					</div>
+					<div class="alram_name">
+						<a class="">2020 제 23회 관세사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-12</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 24회 관세사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-13</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 25회 관세사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-14</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 26회 관세사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-15</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 27회 관세사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-16</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 28회 관세사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-17</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 29회 관세사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<div class="scroll_box edu_source_content">
+		<ul class="list_alram">
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-10</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041">2020 제 22회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-11</span>
+					</div>
+					<div class="alram_name">
+						<a class="">2020 제 23회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-12</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 24회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-13</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 25회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-14</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 26회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-15</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 27회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-16</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 28회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-17</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 29회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<div class="scroll_box profit_event_content">
+		<ul class="list_alram">
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-10</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041">2020 제 22회 물류관리사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-11</span>
+					</div>
+					<div class="alram_name">
+						<a class="">2020 제 23회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-12</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 24회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-13</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 25회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-14</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 26회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-15</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 27회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-16</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 28회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-17</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 29회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<div class="scroll_box active_new_content">
+		<ul class="list_alram">
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-10</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041">2020 제 22회 임상심리사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-11</span>
+					</div>
+					<div class="alram_name">
+						<a class="">2020 제 23회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-12</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 24회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-13</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 25회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-14</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 26회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-15</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 27회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-16</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 28회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-17</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 29회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<div class="scroll_box exam_date_content">
+		<ul class="list_alram">
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-10</span>
+					</div>
+					<div class="alram_name">
+						<a href="/cp/?cat_id=001041">2020 제 22회 한국실용글쓰기 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-11</span>
+					</div>
+					<div class="alram_name">
+						<a class="">2020 제 23회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-12</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 24회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-13</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 25회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-14</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 26회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-15</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 27회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-16</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 28회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="list_left">
+					<div>
+						<span class="alram_list">기출문제</span>
+						<span class="date">2023-05-17</span>
+					</div>
+					<div class="alram_name">
+						<a href="">2020 제 29회 일반경비지도사 1차 기출문제& 정답'을 확인하세요!</a>
+					</div>
+				</div>
+				<div class="list_right">
+					<div class="alram_download">
+						<a href="">다운로드</a>
+					</div>
+					<div class="cancel_btn">
+						<i></i>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div> -->
+	
+	<span class="guide">최근 1년 내의 알림만 확인할 수 있어요.</span>
+	
+	
+
+</div>
+
+
+<!-- 알림 수신 설정 S: -->
+<div class="alram_recive_setting" style="display: none;">
+<div class="bg"></div>
+	<div class="title_cancel">
+		<div class="topic_name">
+			<span>알림 수신 설정</span>
+		</div>
+		<div class="cancel_alram">
+			<i><!--background--></i>
+		</div>
+	</div>
+
+	<div class="alram_box scroll_bar">
+		<div class="inner_box">
+			<div class="recive_setting_inner">
+				<span class="title">푸시 알림 설정</span>
+				<div class="push_alram psi1">
+					<div class="explain">
+						<div class="">
+							<span class="subject">학습자료/활동/소식</span>
+						</div>
+						<div class="guide_ment">
+							<span>시험정보, 자료, 주문, 답변, 공지 등 모바일앱에서 알림 확인</span>
+						</div>
+					</div>
+					<div class="swichbox">
+						<input id="push_check1" name="swich" type="checkbox" value="approval" checked/>
+						<label for="push_check1"></label>
+					</div>
+				</div>
+				<div class="push_alram psi2">
+					<div class="explain">
+						<div class="">
+							<span class="subject">혜택/이벤트</span>
+						</div>
+						<div class="guide_ment">
+							<span>혜택, 이벤트 할인 등 모바일앱에서 알림 확인</span>
+						</div>
+					</div>
+					<div class="swichbox">
+						<input id="push_check2" name="swich" type="checkbox" value="approval" checked/>
+						<label for="push_check2"></label>
+					</div>
+				</div>
+			</div>
+			<div class="division alram_item">
+				<span class="title">알림 항목</span>
+				<ul class="wrap">
+					<li>
+						<div class="left_area">
+							<span class="subject">관심분야</span>
+							<span class="fav_name">경비지도사</span>
+							<a class="link change" href="javascript:void(0)">변경</a>
+							<!-- <a href="#fav_popup" class="link change">변경</a> -->
+						</div>
+						<div class="swichbox">
+							<input id="fav_check" name="swich" type="checkbox" value="interest" checked />
+							<label for="fav_check"></label>
+						</div>
+					</li>
+					<li>
+						<div class="left_area">
+							<span class="subject">신청한 강의</span>
+							<button class="link lec_confirm">확인</button>
+						</div>
+						<div class="swichbox">
+							<input id="application_check" name="swich" type="checkbox" value="my_lecture" checked />
+							<label for="application_check"></label>
+						</div>
+					</li>
+					<li>
+						<div class="left_area">
+							<span class="subject">등록된 도서</span>
+							<button class="link book_confirm">확인</button>
+							<a href="/myclass/my_isbn.php" class="link isbn" target="_blank">등록</a>
+						</div>
+						<div class="swichbox">
+							<input id="book_check" name="swich" type="checkbox" value="my_book" checked />
+							<label for="book_check"></label>
+						</div>
+					</li>
+				</ul>
+
+				<!-- 알림 항목 팝업 (관심과정,신청한 강의 확인, 등록된 도서 확인) S-->
+
+				<!-- 관심과정 S -->
+
+				<div class="fav_popup" id="fav_popup" style="display: none;">
+					<div class="inner">
+						<div class="top_line">
+							<span>관심과정</span>
+							<i class="cancel"></i>
+						</div>
+						<div class="select_box_fav">
+							<select id="fav_sec" name="">
+								<option value="fav1">자격증</option>
+								<option value="fav2">공무원</option>
+								<option value="fav3">독학사</option>
+								<option value="fav4">학위/입시</option>
+								<option value="fav5">취업</option>
+								<option value="fav6">AI모의고사</option>
+								<option value="fav7">온라인 모의고사</option>
+							</select>
+						</div>
+					</div>
+					<!-- 자격증 리스트 :S-->
+					<div class="fav_list_1 fav_style" id="alram_fav1">
+						<ul class="sub_tab_menu" id="">
+							<li><a class="btn link-tab cho_group1 selected" href="javascript:void(0)">ㄱ~ㅅ</a></li>
+							<li><a class="btn link-tab cho_group2" href="javascript:void(0)">ㅇ~ㅎ</a></li>
+							<li><a class="btn link-tab cho_group3" href="javascript:void(0)">abc</a></li>
+							<li><a class="btn link-tab cho_group4" href="javascript:void(0)">기타</a></li>
+						</ul>
+						<!-- 자격증 ㄱ~ㅅ -->
+						<div class="subtab-contents selected" id="sub_tab1">
+							<ul class="fav_list alram">
+								
+								<!-- cho_text_group1 -->
+								<!-- <li class="">
+									<input type='radio' class="cmRadio" name="favChk" id="fav_lecgroup1_{\\.index_}"  value="{\\.name}">
+									<label for="fav_lecgroup1_{\\.index_}" class="fav_step">{\\.name}</label>
+								</li> -->
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup1" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup1">
+										<i></i>
+										<span>간호조무사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup2" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup2">
+										<i></i>
+										<span>감정평가사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup3" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup3">
+										<i></i>
+										<span>경비지도사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup4" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup4">
+										<i></i>
+										<span>경영지도사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup5" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup5">
+										<i></i>
+										<span>기계정비산업기사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup6" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup6">
+										<i></i>
+										<span>공인노무사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup7" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup7">
+										<i></i>
+										<span>공조냉동기계기능사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup8" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup8">
+										<i></i>
+										<span>관광종사원</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup9" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup9">
+										<i></i>
+										<span>관세사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup10" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup10">
+										<i></i>
+										<span>나무의사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup11" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup11">
+										<i></i>
+										<span>농산물품질관리사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup12" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup12">
+										<i></i>
+										<span>도로교통사고감정사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup13" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup13">
+										<i></i>
+										<span>맞춤형화장품 조제관리사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup14" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup14">
+										<i></i>
+										<span>매경테스트</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup15" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup15">
+										<i></i>
+										<span>물류관리사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup16" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup16">
+										<i></i>
+										<span>법무사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup17" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup17">
+										<i></i>
+										<span>변리사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup18" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup18">
+										<i></i>
+										<span>보세사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup19" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup19">
+										<i></i>
+										<span>빅데이터분석기사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup20" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup20">
+										<i></i>
+										<span>사회복지사 1급</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup21" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup21">
+										<i></i>
+										<span>사회조사분석사 2급</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup22" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup22">
+										<i></i>
+										<span>산림(산업)기사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup23" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup23">
+										<i></i>
+										<span>소방설비기사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup24" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup24">
+										<i></i>
+										<span>소방시설관리사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup25" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup25">
+										<i></i>
+										<span>소비자전문상담사 2급</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup26" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup26">
+										<i></i>
+										<span>손해사정사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup27" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup27">
+										<i></i>
+										<span>손해평가사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup28" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup28">
+										<i></i>
+										<span>스포츠지도사 2급</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup29" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup29">
+										<i></i>
+										<span>승강기기능사</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+						<!-- 자격증 ㅇ~ㅎ -->
+						<div class="subtab-contents" id="sub_tab2" style="display: none;">
+							<ul class="fav_list">
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup30" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup30">
+										<i></i>
+										<span>연구실안전관리사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup31" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup31">
+										<i></i>
+										<span>영양사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup32" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup32">
+										<i></i>
+										<span>원산지관리사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup33" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup33">
+										<i></i>
+										<span>위생사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup34" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup34">
+										<i></i>
+										<span>위험물기능사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup35" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup35">
+										<i></i>
+										<span>위험물기능장</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup36" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup36">
+										<i></i>
+										<span>위험물산업기사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup37" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup37">
+										<i></i>
+										<span>유통관리사 2급</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup38" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup38">
+										<i></i>
+										<span>임상심리사 2급</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup39" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup39">
+										<i></i>
+										<span>전기기능사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup40" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup40">
+										<i></i>
+										<span>전기(산업)기사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup41" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup41">
+										<i></i>
+										<span>정보처리기사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup42" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup42">
+										<i></i>
+										<span>재경관리사/회계관리</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup43" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup43">
+										<i></i>
+										<span>조경기능사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup44" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup44">
+										<i></i>
+										<span>조경(산업)기사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup45" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup45">
+										<i></i>
+										<span>직업상담사 2급</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup46" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup46">
+										<i></i>
+										<span>청소년상담사 2·3급</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup47" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup47">
+										<i></i>
+										<span>텔레마케팅관리사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup48" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup48">
+										<i></i>
+										<span>한국실용글쓰기</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup49" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup49">
+										<i></i>
+										<span>한경 TESAT</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup50" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup50">
+										<i></i>
+										<span>행정사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup51" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup51">
+										<i></i>
+										<span>화재감식평가(산업)기사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup52" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup52">
+										<i></i>
+										<span>화학분석기사</span>
+									</label>
+								</li>
+								
+							</ul>
+						</div>
+						<!-- 자격증 ABC -->
+						<div class="subtab-contents" id="sub_tab3" style="display: none;">
+							<ul class="fav_list">
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup54" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup54">
+										<i></i>
+										<span>CS리더스관리사</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup55" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup55">
+										<i></i>
+										<span>KBS한국어능력시험</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup56" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup56">
+										<i></i>
+										<span>G-TELP</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+						<div class="subtab-contents" id="sub_tab4" style="display: none;">
+							<ul class="fav_list">
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup53" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup53">
+										<i></i>
+										<span>자격증 기타</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<!-- 자격증 리스트 :E-->
+
+					<!-- 공무원 리스트 :S-->
+					<div class="fav_list_2 fav_style" id="alram_fav2" style="display: none;">
+						<div class="subtab-contents sb" id="">
+							<ul class="fav_list">
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup57" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup57">
+										<i></i>
+										<span>9급 공무원 전직렬</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup58" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup58">
+										<i></i>
+										<span>우정서기보(계리직)</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup59" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup59">
+										<i></i>
+										<span>9급 군무원</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup60" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup60">
+										<i></i>
+										<span>9급 기술계 고졸</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup61" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup61">
+										<i></i>
+										<span>9급 지역인재</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup62" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup62">
+										<i></i>
+										<span>9급 운전직</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup63" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup63">
+										<i></i>
+										<span>기타</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<!-- 공무원 리스트 :E-->
+
+					<!-- 독학사 리스트 :S-->
+					<div class="fav_list_3 fav_style" id="alram_fav3" style="display: none;">
+						<div class="subtab-contents sb" id="">
+							<ul class="fav_list">
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup64" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup64">
+										<i></i>
+										<span>경영학</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup65" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup65">
+										<i></i>
+										<span>심리학</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup66" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup66">
+										<i></i>
+										<span>컴퓨터과학</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup67" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup67">
+										<i></i>
+										<span>간호학</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup68" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup68">
+										<i></i>
+										<span>영어영문학</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup69" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup69">
+										<i></i>
+										<span>국어국문학</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup70" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup70">
+										<i></i>
+										<span>교양과정</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup71" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup71">
+										<i></i>
+										<span>기타학과</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<!-- 독학사 리스트 :E-->
+
+					
+					<!-- 학위/입시 리스트 :S-->
+					<div class="fav_list_4 fav_style" id="alram_fav4" style="display: none;">
+						<div class="subtab-contents sb" id="">
+							<ul class="fav_list">
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup72" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup72">
+										<i></i>
+										<span>검정고시</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<!-- 학위/입시 리스트 :E-->
+
+					<!-- 취업 리스트 :S-->
+					<div class="fav_list_5 fav_style" id="alram_fav5" style="display: none;">
+						<div class="subtab-contents sb" id="">
+							<ul class="fav_list">
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup73" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup73">
+										<i></i>
+										<span>농협 NHAT</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup74" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup74">
+										<i></i>
+										<span>부사관</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup75" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup75">
+										<i></i>
+										<span>ROTC/학사장교</span>
+									</label>
+								</li>
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup76" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup76">
+										<i></i>
+										<span>SPA</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<!-- 취업 리스트 :E-->
+
+					<!-- AI 리스트 :S-->
+					<div class="fav_list_6 fav_style" id="alram_fav6" style="display: none;">
+						<div class="subtab-contents sb" id="">
+							<ul class="fav_list">
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup77" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup77">
+										<i></i>
+										<span>AI모의고사</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<!-- AI리스트 :E-->
+
+					<!-- 온라인 모의고사 리스트 :S-->
+					<div class="fav_list_7 fav_style" id="alram_fav7" style="display: none;">
+						<div class="subtab-contents sb" id="">
+							<ul class="fav_list">
+								<li class="">
+									<input class="cmRadio" id="fav_lecgroup78" name="favChk" type="radio"  value="">
+									<label class="fav_step" for="fav_lecgroup78">
+										<i></i>
+										<span>온라인모의고사</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<!-- 온라인 모의고사 리스트 :E -->
+					<button class="check_btn">확인</button>	
+				</div>
+
+				<!-- 관심과정 E -->
+
+				<!-- 신청한 강의 확인 S-->
+				<div class="leced_subscription" style="display: none;">
+					<div class="inner">
+						<div class="top_line">
+							<span>신청한 강의 확인</span>
+							<i></i>
+						</div>
+					</div>
+					<div class="scr_box">
+						<ul>
+							<li class="">
+								<input class="lecRadio" id="lec_lecgroup1" name="lecChk" type="checkbox"  value="">
+								<label class="lecRadioLabel" for="lec_lecgroup1">
+									<span>경비지도사 2023 강력한 1+2차 환급 패키지</span>
+									<i></i>
+								</label>
+							</li>
+							<li class="">
+								<input class="lecRadio" id="lec_lecgroup2" name="lecChk" type="checkbox"  value="">
+								<label class="lecRadioLabel" for="lec_lecgroup2">
+									<span>물류관리사 2024 물류관리사 0원 환급반</span>
+									<i></i>
+								</label>
+							</li>
+							<li class="">
+								<input class="lecRadio" id="lec_lecgroup3" name="lecChk" type="checkbox"  value="">
+								<label class="lecRadioLabel" for="lec_lecgroup3">
+									<span>맞춤형화장품조제관리사 2024 8회 맞춤 0원 합격반</span>
+									<i></i>
+								</label>
+							</li>
+							<li class="">
+								<input class="lecRadio" id="lec_lecgroup4" name="lecChk" type="checkbox"  value="">
+								<label class="lecRadioLabel" for="lec_lecgroup4">
+									<span>공인노무사 2024 마스터플랜 종합반</span>
+									<i></i>
+								</label>
+							</li>
+							<li class="">
+								<input class="lecRadio" id="lec_lecgroup5" name="lecChk" type="checkbox"  value="">
+								<label class="lecRadioLabel" for="lec_lecgroup5">
+									<span>나무의사 2024 10회 나무의사 1차 필기반</span>
+									<i></i>
+								</label>
+							</li>
+							<li class="">
+								<input class="lecRadio" id="lec_lecgroup6" name="lecChk" type="checkbox"  value="">
+								<label class="lecRadioLabel" for="lec_lecgroup6">
+									<span>조경기능사 2024 연간반</span>
+									<i></i>
+								</label>
+							</li>
+							<li class="">
+								<input class="lecRadio" id="lec_lecgroup7" name="lecChk" type="checkbox"  value="">
+								<label class="lecRadioLabel" for="lec_lecgroup7">
+									<span>맞춤형화장품조제관리사 2024 8회 맞춤 0원 합격반</span>
+									<i></i>
+								</label>
+							</li>
+							<li class="">
+								<input class="lecRadio" id="lec_lecgroup8" name="lecChk" type="checkbox"  value="">
+								<label class="lecRadioLabel" for="lec_lecgroup8">
+									<span>조경기능사 2024 연간반</span>
+									<i></i>
+								</label>
+							</li>
+						</ul>
+					</div>
+					<button class="check_btn">확인</button>
+				</div>
+
+
+				
+				<!-- 신청한 강의 확인 E-->
+
+				<!-- 등록된 도서 확인 S-->
+				<div class="book_isbn" style="display: none;">
+					<div class="inner">
+						<div class="top_line">
+							<span>등록된 도서 확인</span>
+							<i></i>
+						</div>
+					</div>
+					<div class="scr_box">
+						<ul>
+							<li class="">
+								<input class="bookRadio" id="book_lecgroup1" name="bookChk" type="checkbox"  value="">
+								<label class="bookRadioLabel" for="book_lecgroup1">
+									<span>2024 SD에듀 YouTube 무료 동영상이 있는 홍선생 Win-Q 조경기능사 필기 단기합격
+									</span>
+									<i></i>
+								</label>
+							</li>
+							<li class="">
+								<input class="bookRadio" id="book_lecgroup2" name="bookChk" type="checkbox"  value="">
+								<label class="bookRadioLabel" for="book_lecgroup2">
+									<span>2024 SD에듀 EBS 공인노무사 1차 민법·사회보험법</span>
+									<i></i>
+								</label>
+							</li>
+							<li class="">
+								<input class="bookRadio" id="book_lecgroup3" name="bookChk" type="checkbox"  value="">
+								<label class="bookRadioLabel" for="book_lecgroup3">
+									<span>2024 SD에듀 YouTube 무료 동영상이 있는 홍선생 Win-Q 조경기능사 필기 단기합격
+									</span>
+									<i></i>
+								</label>
+							</li>
+							<li class="">
+								<input class="bookRadio" id="book_lecgroup4" name="bookChk" type="checkbox"  value="">
+								<label class="bookRadioLabel" for="book_lecgroup4">
+									<span>2024 SD에듀 행정사 1차 기출문제해설 한권으로 끝내기</span>
+									<i></i>
+								</label>
+							</li>
+							<li class="">
+								<input class="bookRadio" id="book_lecgroup5" name="bookChk" type="checkbox"  value="">
+								<label class="bookRadioLabel" for="book_lecgroup5">
+									<span>2024 SD에듀 YouTube 무료 동영상이 있는 홍선생 Win-Q 조경기능사 필기 단기합격
+									</span>
+									<i></i>
+								</label>
+							</li>
+							<li class="">
+								<input class="bookRadio" id="book_lecgroup6" name="bookChk" type="checkbox"  value="">
+								<label class="bookRadioLabel" for="book_lecgroup6">
+									<span>2023 EBS Win-Q 전기기능사 실기 단기합격</span>
+									<i></i>
+								</label>
+							</li>
+							<li class="">
+								<input class="bookRadio" id="book_lecgroup7" name="bookChk" type="checkbox"  value="">
+								<label class="bookRadioLabel" for="book_lecgroup7">
+									<span>2024 SD에듀 YouTube 무료 동영상이 있는 홍선생 Win-Q 조경기능사 필기 단기합격
+									</span>
+									<i></i>
+								</label>
+							</li>
+							<li class="">
+								<input class="bookRadio" id="book_lecgroup8" name="bookChk" type="checkbox"  value="">
+								<label class="bookRadioLabel" for="book_lecgroup8">
+									<span>2023 나무의사 필기 기출문제해설+핵심요약</span>
+									<i></i>
+								</label>
+							</li>
+						</ul>
+					</div>
+					<button class="check_btn">확인</button>
+				</div>
+
+				<!-- 등록된 도서 확인 E-->
+
+
+
+				<!-- 알림 항목 팝업 (관심과정,신청한 강의 확인, 등록된 도서 확인) E-->
+
+
+			</div>
+			<div class="division all_alram_recive">
+				<div class="all_alram">
+					<div>
+						<span class="title">모든 알림 수신 설정</span>
+					</div>
+					<div class="swichbox">
+						<input id="all_check" name="swich" type="checkbox" value="" />
+						<label for="all_check"></label>
+					</div>
+				</div>
+				<ul>
+					<!-- 강의 업데이트 -->
+					<li>
+						<div>
+							<div>
+								<span class="subject">강의 업데이트</span>
+							</div>
+							<div class="guide_ment">
+								<span>신청한 강의 업데이트 알림</span>
+							</div>
+						</div>
+						<div class="swichbox">
+							<input id="lecupdate_check" name="swich" type="checkbox" value="" checked />
+							<label for="lecupdate_check"></label>
+						</div>
+					</li>
+					<!-- 학습자료 -->
+					<li>
+						<div>
+							<div>
+								<span class="subject">학습자료</span>
+							</div>
+							<div class="guide_ment">
+								<span>정오표, 기출문제, 개정법령, 프로그램, MP3, 강의자료실, 도서 업데이트 알림</span>
+							</div>
+						</div>
+						<div class="swichbox">
+							<input id="edu_check" name="swich" type="checkbox" value="" checked />
+							<label for="edu_check"></label>
+						</div>
+					</li>
+					<!-- 혜택/이벤트 -->
+					<li>
+						<div>
+							<div>
+								<span class="subject">혜택/이벤트</span>
+							</div>
+							<div class="guide_ment">
+								<span>각종 할인 혜택, 경품 이벤트 알림</span>
+							</div>
+						</div>
+						<div class="swichbox">
+							<input id="event_check" name="swich" type="checkbox" value="" checked />
+							<label for="event_check"></label>
+						</div>
+					</li>
+					<!-- 활동 -->
+					<li>
+						<div>
+							<div>
+								<span class="subject">활동</span>
+							</div>
+							<div class="guide_ment">
+								<span>1:1문의 답변, 결제(주문), 취소, 휴강안내, 수강연장, 수강종료 알림</span>
+							</div>
+						</div>
+						<div class="swichbox">
+							<input id="active_check" name="swich" type="checkbox" value="" checked />
+							<label for="active_check"></label>
+						</div>
+					</li>
+					<!-- 소식 -->
+					<li>
+						<div>
+							<div>
+								<span class="subject">소식</span>
+							</div>
+							<div class="guide_ment">
+								<span>공지사항 및 정보 알림</span>
+							</div>
+						</div>
+						<div class="swichbox">
+							<input id="cs_notice_check" name="swich" type="checkbox" value="" checked />
+							<label for="cs_notice_check"></label>
+						</div>
+					</li>
+					<!-- 최신뉴스 -->
+					<li>
+						<div>
+							<div>
+								<span class="subject">최신뉴스</span>
+							</div>
+							<div class="guide_ment">
+								<span>채용정보, 자격시험 정보 알림</span>
+							</div>
+						</div>
+						<div class="swichbox">
+							<input id="news_check" name="swich" type="checkbox" value="" />
+							<label for="news_check"></label>
+						</div>
+					</li>
+					<!-- 시사상식 -->
+					<li>
+						<div>
+							<div>
+								<span class="subject">시사상식</span>
+							</div>
+							<div class="guide_ment">
+								<span>취업 면접에 필요한 최신 이슈와 상식 알림</span>
+							</div>
+						</div>
+						<div class="swichbox">
+							<input id="sisa_check" name="swich" type="checkbox" value="" />
+							<label for="sisa_check"></label>
+						</div>
+					</li>
+					<!-- 시험일정 -->
+					<li>
+						<div>
+							<span class="subject">시험일정</span>
+						</div>
+						<div class="swichbox">
+							<input id="exam_check" name="swich" type="checkbox" value="" checked />
+							<label for="exam_check"></label>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 알림 수신 설정 E: -->
+
+
+
+
+<!-- 전체 알림 팝업 E: -->
+<script src="/_skin/sidae/js/total_login_head_test.js" type="text/javascript"></script>
