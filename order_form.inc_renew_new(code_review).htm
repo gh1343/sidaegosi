@@ -1,0 +1,3076 @@
+<!-- ****************구동 방식 설명 *************** -->
+
+<!--
+    페이지 로드 시에 ajax_get_coupon_list함수에서 일반 쿠폰과 추가 쿠폰이 불러와짐.
+    coupon_all함수가 호출 되고, 이 함수 안에는 최대 할인적용되는 식이 있음.
+    사용자가 최대 할인 쿠폰을 누를 동작하는 버튼은 coupon_all에 max_discount 클릭이벤트에 있음.
+    쿠폰 팝업을 누르고 사용자가 쿠폰을 임의로 선택할시 동작하는 함수는 normal_coupon_list와 plus_coupon_list 함수 인데 각각 일반 쿠폰과 추가쿠폰을 선택할 시에 동작한다.(유효성 검사후 적용)
+    사용자가 적립금 팝업을 누른 후 적립금 입력단에 입력 할 시에 동작하는 함수는 re_comp이고, 유효성을 체크하고 계산까지 한다.
+    간편결제 요청을 누를시 forderform_check함수가 동작하여 해당 결제 방식에 따라 pg팝업창이 뜨거나 카카오페이는 페이지가 이동함. 소득공제는 forderform_check2함수가 동작하여 1차결제 후 2스텝 결제
+    
+-->
+<!-- ****************구동 방식 설명 *************** -->
+
+
+<!-- ****************변수 정리 *************** -->
+
+<!-- 쿠폰 관련
+
+    cp_another_use -> 추가 쿠폰 여부 0: 추가 쿠폰 사용불가, 1: 추가쿠폰 선택가능
+    cp_price -> 할인 금액 또는 퍼센트
+    cp_type -> 할인쿠폰, 적립쿠폰 구분 1: 할인쿠폰 , 2: 적립쿠폰
+    cp_max_price -> 적용 가능 금액
+    od_coupon_id -> 적용된 쿠폰 id
+    od_coupon -> 적용된 쿠폰 금액
+    od_cash -> 적용된 적립금 금액
+    od_mem_cash -> 보유적립금
+-->
+
+<!-- 상품 관련 
+    cart_movie_tprice -> 총 동영상 상품 금액
+    cart_movie_tprice2 -> 총 모의고사 상품 금액
+    cart_b_tprice -> 총 도서 상품 금액
+    cpchk -> 기획,또는 할인 불가 상품일 경우 할인 쿠폰,적립금 적용 안되게 하는 조건 1일 경우 해당됨
+    prChk -> 회원가입 5%프로 쿠폰만 먹는 상품 체크 1일 경우 해당됨
+    total_cp_count -> 보유 쿠폰 장수
+
+-->
+
+<!-- 변수 관련 
+    * $('#od_total_price').val(); 담아져 있는 총 상품 가격
+    * $('#od_total_enuri').val(); 에누리 가격
+    * $('#od_settle_price').val(); 세팅 가격 (총 상품 가격)
+    * $('#cart_b_tprice').val() 도서 총 금액
+    * $('#od_coupon').val(); 적용된 쿠폰 가격
+    * $('#od_cash').val(); 적용된 적립금 가격
+    * $("[name='od_mem_cash']").val() 보유 적립금
+    * $('#cart_movie_tprice').val() 동영상 상품 총 금액
+    * $('#it_cc_cash_1').text() 동영상 상품에 대하여 적용된 적립금
+    * $('#it_cc_1').text() 동영상 상품에 대하여 적용된 쿠폰가격
+    * $('#dsp_cash').val() -> 적립금 입력단
+    * $('.cash_kind:checked').data('it_type') -> 적립금 팝업에서 상품 선택시 타입 값 가져오기
+    * $('.order-discount-item.coupon .auto_price') -> 선택한 쿠폰 할인 금액 노출
+    * $('.order-discount-item.cash .auto_price') -> 선택한 적립금 할인 금액 노출
+    * $('#buy_gift').val() -> 증정품 가격
+-->
+
+ <!-- ****************변수 정리 *************** -->
+
+<script type="text/javascript" src="\{cm_path}/js/number.js"></script>
+		<link href="/_skin/sidae/css/cal_popup.css" rel="stylesheet" />
+        <script type="text/javascript" src="/_skin/sidae/js/mypage/gift_select_A.js"></script>
+		
+        <form name="forderform" method="post">
+
+		<!-- ******추가된 사항 ******** S -->
+		{@ list}
+			<input type="hidden" name="cp_price" id="cp_price" value="{.cp_price}" />
+			<input type="hidden" name="cp_period_edate" id="cp_period_edate" value="{.cp_period_edate}" />
+			<input type="hidden" name="cp_another_use" id="cp_another_use" value="{.cp_another_use}" />
+			
+		{/}
+		<input type="hidden" name="cart_b_tprice" id="cart_b_tprice" value="{cart_b_tprice}">
+		<input type="hidden" name="svs" id="svs" value="{svs}">
+		<input type="hidden" name="cart_movie_tprice" id="cart_movie_tprice" value="{cart_movie_tprice}">
+		<input type="hidden" name="cart_movie_tprice2" id="cart_movie_tprice2" value="{cart_movie_tprice2}">
+		<input type="hidden" name="s_site" id="s_site" value="{s_site}">
+		<input type="hidden" name="cpchk" id="cpchk" value="{cpchk}">
+		<input type="hidden" name="cart_2_count" id="cart_2_count" value="{cart_2_count}">
+		<input type="hidden" name="total_cp_count" id="total_cp_count" value="{total_cp_count}">
+		<input type="hidden" name="prChk" id="prChk" value="{prChk}">
+		<!-- ******추가된 사항 ******** E -->
+
+		<!-- <input type="hidden" name="sidecode" id="sidecode" value="{sidecode}"> -->
+
+		<input type="hidden" name="clientip" id="clientip" value="{clientip}">
+        <input type="hidden" name="od_total_price" id="od_total_price" value="{total.price}">
+        <input type="hidden" name="od_total_enuri" id="od_total_enuri" value="{total.enuri}">
+        <input type="hidden" name="dscountval_sum" id="dscountval_sum" value="{total.dis_total_it_price}">
+		<input type="hidden" name="od_settle_price" id="od_settle_price" value="{total.tot_price}">
+		<input type="hidden" name="od_delivery" id="od_delivery" value="{total.delivery}">
+        <input type="hidden" name="book_cat_id" id="book_cat_id" value="{total.book_cat_id}">
+
+        <input type="hidden" name="od_mem_cash" id="od_mem_cash" value="{member.mb_cash}">
+
+		<input type="hidden" name="od_coupon_id" id="od_coupon_id" value="">
+		<input type="hidden" name="od_coupon_use" id="od_coupon_use" value="">
+        <input type="hidden" name="od_coupon" id="od_coupon" value="0">
+        <input type="hidden" name="od_coupon_b" id="od_coupon_b" value="0">
+        <input type="hidden" name="od_coupon_reset" id="od_coupon_reset" value="0">
+        <input type="hidden" name="od_at_coupon_id" id="od_at_coupon_id" value="">
+		<input type="hidden" name="od_at_coupon_use" id="od_at_coupon_use" value="">
+
+		<input type="hidden" name="od_cash" id=od_cash value="0">
+        <input type="hidden" name="od_ahn" id=od_ahn value="0">
+  		<input type="hidden" name="svs" value="{_gsvs2}">
+		<input type="hidden" name="od_reserve" id="od_reserve" value="{total.res_price}">
+        <input type="hidden" name="site" id="site" value="{site}" />
+        <input type="hidden" name="ahnssam_p" id="ahnssam_p" value='{ahnssam_p}'>
+        <input type="hidden" name="memcheck" id="memcheck" value='{memcheck}'>
+        <input type="hidden" name="total_enuri" id="total_enuri" value="{total.enuri}">
+        <input type="hidden" name="mode" id="mode" value="{_mode}">
+        <input type="hidden" name="cat_id" id="cat_id" value="{_cat_id}">
+        <input type="hidden" name="order_type" id="order_type" value="{_order_type}">
+        <input type="hidden" name="mb_id" id="mb_id" value="{member.mb_id}">
+        <input type="hidden" name="t_price" id="t_price" value="{t_price}">
+        <input type="hidden" name="a_price" id="a_price" value="{a_price}">
+        <input type="hidden" name="od_id" value="{od_id}">
+        <input type="hidden" name="chk_dc" id="chk_dc" value="">
+        <input type="hidden" name="mode"  value="{_mode}">
+        <input type="hidden" name="buy_gift" id="buy_gift" value="0">
+        <!-- 특정 쿠폰 적용 시 배송정보 입력 추가 - 2014.12.19 by jhson [시작] -->
+		<input type="hidden" name="need_delivery_coupon"  value="0">
+		<input type="hidden" name="prepend_memo"  value="">
+		<!-- 특정 쿠폰 적용 시 배송정보 입력 추가 - 2014.12.19 by jhson [종료] -->
+
+		<!--도서만 구매인지-->
+		<input type="hidden" name="book_only" value="{is_bookOnly}">
+		<!--도서만 구매인지-->
+
+		<!-- 시대취업지원센터 예외사항 추가 - 2015.01.27 by jhson -->
+		<input type="hidden" name="skin"  value="{_skin}">
+		<input type="hidden" name="sskin"  value="{_sskin}">
+	
+
+	
+
+
+
+
+	{? fromfree =='Y'}
+		<input type="hidden" name="fromfree"  value="{fromfree}">
+		<!-- 자유결제는 할인안돼앵ㅇ-->
+
+	{: member.mb_id }
+	<!-- 할인정보 : 회원 -->
+	<section class="order-discount order-section">
+		<div class="flex_box">
+			<h3 class="order-h3 mgb0">할인 정보</h3>
+			{? s_site == 'popkon' && !cpchk }
+			<span class="max_dscoupon">
+				<input type="checkbox" id="max_discount" name="max_discount" checked/>
+				<label for="max_discount"></label>최대 할인 적용
+			</span>
+			{/}
+		</div>
+		<!-- <div class="order-discount-title order-border clear-after mgb8">
+			<p class="odt-title pull-left">쿠폰/적립금</p>
+			<p class="odt-coupon pull-left list-dot-li mgr35">보유쿠폰&nbsp;&nbsp;<strong>{total_cp_count}장</strong></p>
+			<p class="odt-cash pull-left list-dot-li">총 적립금&nbsp;&nbsp;<strong>{=number_format(member.mb_cash)} 원</strong></p>
+		</div>
+		<ul class="order-notice style1 list-dot mgb25">
+			<li>적립금은 5천원 이상 사용이 가능하며, 동영상 or 도서 상품 중 한가지를 선택하여 사용하실 수 있습니다.<br/>
+		<!-- 	<span style='color:#df1a23;'> ->(단, 상품별 전액 할인은 불가능하며, 카드 결제 시 100원 미만은 LGU+ 오류가 발생하오니 이점 참고바랍니다.)<!-- </span> -></li>
+			<li>추가할인 쿠폰은 지정된 쿠폰을 발급 받으신 경우에만 사용이 가능하며, 할인쿠폰을 먼저 적용 후 사용이 가능합니다.</li>
+			<li>기획상품과 같이 결제할 경우 할인쿠폰이 적용되지 않습니다. <br/>(별도로 결제를 진행하시거나, 1600-3600 고객센터로 연락해주세요.)</li>
+		</ul> -->
+
+
+
+		{? s_site == 'popkon' && !cpchk }
+		<!-- it_none_dc -->
+		<!-- 할인 가능 -->
+		<div class="order-discount-item coupon mgb5">
+			<h4 class="pull-left w90 font-bold topic"><label for="discount_coupon">할인 쿠폰</label></h4>
+
+
+			
+			<div class="ds_coupon">
+				<div>
+					<span class="have">{total_cp_count}</span><span class="paper">장</span> 보유
+				</div>
+				<!-- <div>
+					&nbsp;&nbsp;
+					<span class="coupon_length possible">0</span><span class="paper">장</span> 적용 가능
+				</div> -->
+				<input type="text" class="auto_price" value="0원" readonly />
+				<a href="javascript:void(0)" class="choice">선택</a>
+				<!-- <span class="max_dscoupon">
+					<input type="checkbox" id="check1" name="max_discount" checked/>
+					<label for="check1"></label>최대 할인 적용
+				</span> -->
+			</div>
+			
+		</div>
+		
+		<div class="order-discount-item add-coupon mgb30 pds-pcoupon pds-section"  id="another_coupon_section" style="display:none">
+			<h4 class="pull-left w90 font-bold"><label for="discount_add_coupon">추가할인</label></h4>
+			<div class="order-select pull-left">
+								<select id="coupon_list_another">
+								</select>
+									<ul class="pds-pcoupon-info" style="display:none">
+										<li>할인금액 : <span>10%할인</span></li>
+										<li>발행일 : <span>2018-07-17</span></li>
+										<li>유효기간 : <span>발급일로부터 3일 (2018-07-20)</span></li>
+									</ul>
+			</div>
+		</div>
+		<div class="order-discount-item cash">
+			<h4 class="pull-left w90 font-bold topic"><span>적립금</span></h4>
+			<div class="ds_coupon">
+				<div>
+					<span class="have">{=number_format(member.mb_cash)}</span><span class="paper">원</span> 보유
+				</div>
+				<!-- <div>
+					&nbsp;&nbsp;
+					<span class="cash_applicable possible">0</span>
+					<span class="paper">원</span> 적용 가능
+				</div> -->
+				<input type="text" class="auto_price" value="0원" readonly />
+				<a href="javascript:void(0)" class="choice">선택</a>
+				<!-- <span class="max_dscoupon">
+					<input type="checkbox" id="check2" class="large_dis" checked/>
+					<label for="check2"></label>최대 할인 적용
+				</span> -->
+			</div>
+			<div class="pull-left" style="display: none;">
+				<div class="odi-cach-chk clear-after mgb15">
+					<h5 class="order-h4 pull-left">사용선택</h5>
+					<ul class="pull-right">
+
+
+					</ul>
+				</div>
+				<div class="odi-cach-select mgb5">
+					<label for="discount_cash_item" class="skip">상품선택</label>
+					<div class="order-select" style="display:none">
+						<select id="discount_select_res" class="dsr-select showingg" >
+							<option value="" selected="selected">상품을 선택해 주세요..</option>
+							{cash_use_item}
+						</select>
+
+						<select id="discount_select_res_tmp" class="dsr-select" style="display:none">
+							<option value="" selected="selected" class="view">상품을 선택해 주세요/</option>
+							{cash_use_item}
+						</select>
+						
+						<select id="discount_select_res" class="dsr-select" >
+							<option value="" selected="selected" class="view">상품을 선택해 주세요</option>
+							{cash_use_item}
+						</select>
+
+						<select id="discount_select_res_tmp" class="dsr-select" style="display:hidden">
+							<option value="" selected="selected" class="view">상품을 선택해 주세요</option>
+							{cash_use_item}
+						</select>
+
+						<select id="discount_select_res_book" class="dsr-select">
+							<option value="" selected="selected">상품을 선택해 주세요</option>
+						</select>
+						
+
+                        <!-- *******************************적립금 선택시 상품 타입선택 ***** S -->
+						<script language="javascript" type="text/javascript">
+						//<![CDATA[
+							$(document).ready(function(){
+								$('.kind_chice').change(function(){
+									//$('#discount_select_res').val('');
+									//if($('#od_cash').val() > 0)alert("적용된 적립금을 취소하였습니다.");
+									//$('#od_cash').val(0);
+									//table_clear();
+									//re_comp();
+
+									var kkk = $("#kind_chice option:selected").val();
+									//$('#discount_select_res option').not(".view").remove();
+									//$('#discount_select_res').addClass('selected');
+									//$('.order-select').show();
+									//모의고사 =2
+									if(kkk == 'all'){ //전체
+										$('.main_cash > li').show();
+									}
+									else if(kkk == '1'){ //동영상
+										$('.list_parent_new').show();
+										$('.cart_b').hide();
+										$('.cart_2').hide();
+									}else if(kkk == '0'){ //도서
+										$('.list_parent_new').hide();
+										$('.cart_b').show();
+										$('.cart_2').hide();
+									}else if(kkk == '2'){ //모의고사
+										$('.list_parent_new').hide();
+										$('.cart_b').hide();
+										$('.cart_2').show();
+									}
+									// else{
+									// 	return false;
+									// }
+								});
+							})
+						//]]>
+						</script>
+                        <!-- ******************************적립금 선택시 상품 타입선택 ***** E -->
+					</div>
+				</div>
+				<div class="odi-cash-input clear-after">
+					<label for="discount_cash_price_view" class="skip">적립금 사용 금액</label>
+				</div>
+			</div>
+		</div>
+		<!-- // 할인 가능 -->
+		{/}
+
+
+		<!--****************************** 할인 불가능 S ******-->
+
+		{? svs == 'popkon' && cpchk }
+		<div class="font-bold dan">
+			기획/ 오프특강 상품은 할인 대상이 아닙니다.
+		</div>
+		{/}
+        <!--****************************** 할인 불가능 E ******-->
+
+
+		<!--****************************** 할인 가능할 때만 노출 S ******-->
+		{? svs == 'popkon' && !cpchk || svs == 'book' && !cpchk}
+		<div class="discount_attention">
+			<span>※ 할인쿠폰/적립금은 최대 할인으로 기본 적용됩니다.</span>
+			<span>※ 상품별 전액 할인은 불가능하며, 결제 수단에 따라 300원 미만은 오류가 발생할 수 있습니다.</span>
+		</div>
+		{/}
+        <!--****************************** 할인 가능할 때만 노출 S ******-->
+	</section>
+	<!--//할인정보 : 회원 -->
+	{:}
+	<!-- 할인정보 : 비회원 -->
+	<section class="order-discount order-section" style="display:none">
+		<h3 class="order-h3">할인정보</h3>
+		<div class="list-dot-li font-bold">
+			회원가입 하고 적립금/쿠폰 혜택 받으세요
+		</div>
+	</section>
+	<!--//할인정보 : 비회원 -->
+	{/}
+
+
+
+
+
+{? member.mb_id}
+{:}
+	<!-- 주문자정보 : 비회원-->
+	<a name="nomember_section"></a>
+
+	<section class="order-nonmeminfo order-section">
+
+		<h3 class="order-h3">개인정보 수집 및 이용동의(필수)</h3>
+		<div class="mgb20">
+			<input type="checkbox" id="term_all" class="order-check-input" value="" name=""/>
+			<label for="term_all" class="order-check-label"></label>
+			<span>약관을 확인하였으며, 동의합니다.</span>
+		</div>
+
+		<div class="term-list">
+			<div class="term-item close">
+				<div class="term-head clear-after">
+					<div class="term-input-section pull-left">
+						<input type="checkbox" id="nomember_agree" class="agr order-check-input" value="1" name="nomember_agree"/>
+						<label for="nomember_agree" class="order-check-label"></label>
+						<span>동의</span>
+					</div>
+					<h4 class="pull-left">시대에듀 이용약관</h4>
+					<button type="button" class="term-more pull-right">내용보기</button>
+				</div>
+				<div class="term-body">
+					<div class="order-scollbox">
+						{=include_file('./../sidae/include/terms/term_agreement.inc.htm')}
+					</div>
+				</div>
+			</div>
+			<div class="term-item close">
+				<div class="term-head clear-after">
+					<div class="term-input-section pull-left">
+						<input type="checkbox" id="nomember_agree2" class="agr order-check-input" value="1" name="nomember_agree"/>
+						<label for="nomember_agree2" class="order-check-label"></label>
+						<span>동의</span>
+					</div>
+					<h4 class="pull-left">개인정보 수집 · 이용 동의</h4>
+					<button type="button" class="term-more pull-right">내용보기</button>
+				</div>
+				<div class="term-body">
+					<div class="order-scollbox">
+						{=include_file('./../sidae/include/terms/guest_information.inc.htm')}
+					</div>
+				</div>
+			</div>
+			<div class="term-item close">
+				<div class="term-head clear-after">
+					<div class="term-input-section pull-left">
+						<!-- <input type="checkbox" id="nomember_agree" class="agr order-check-input" value="1" name="nomember_agree"/>
+						<label for="nomember_agree" class="order-check-label">동의</label> -->
+					</div>
+					<h4 class="pull-left">개인정보 위탁 안내</h4>
+					<button type="button" class="term-more pull-right">내용보기</button>
+				</div>
+				<div class="term-body">
+					<div class="order-scollbox">
+						{=include_file('./../sidae/include/terms/guest_third_party.inc.htm')}
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- //주문자정보원 :비회원-->
+{/}
+
+
+	<!-- 주문자정보 : 회원 -->
+	<section class="order-meminfo order-section">
+		<h3 class="order-h3">주문자 정보</h3>
+		<ul class="order-person">
+			<li class="clear-after mgb15">
+				<div class="pull-left w90 topic">주문자</div>
+				<div class="pull-left"><strong class="order_name">{?member.mb_name}{member.mb_name}{:}비회원{/}</strong></div>
+				<input type="hidden" name="order_user_name" id="order_user_name" class="order_user_name" value=""/>
+			</li>
+			<li class="clear-after">
+
+
+				<div class="pull-left w90 topic"><label for="order_mem_hp1">휴대폰번호</label></div>
+				<div class="pull-left w360">
+					<select name="od_hp[]" id="order_mem_hp1" class="order-text-input pull-left w65" onkeydown="numberOnly(event);">
+						<option selected>010</option>
+						<option value="">011</option>
+						<option value="">016</option>
+						<option value="">017</option>
+						<option value="">019</option>
+					</select>
+					<!-- <input type="text" id="order_mem_hp1" name=od_hp[] class="order-text-input pull-left w65" style="ime-mode: disabled;"  maxlength="3" onkeydown="numberOnly(event);" value="{member.mb_hp0}" /> -->
+					<span class="pull-left tc w15">&#45;</span>
+					<label for="order_mem_hp2" class="skip">휴대폰 3~4자리 숫자</label>
+					<input type="text" id="order_mem_hp2" name=od_hp[] class="order-text-input pull-left w70" style="ime-mode: disabled;"  maxlength="4" onkeydown="numberOnly(event);" value="{member.mb_hp1}" />
+					<span class="pull-left tc w15">&#45;</span>
+					<label for="order_mem_hp3" class="skip">휴대폰 마지막 4자리 숫자</label>
+					<input type="text" id="order_mem_hp3" name=od_hp[] class="order-text-input pull-left w70" style="ime-mode: disabled;"  maxlength="4" onkeydown="numberOnly(event);" value="{member.mb_hp2}" />
+				</div>
+			</li>
+		</ul>
+	</section>
+	<!-- //주문자정보 : -->
+
+
+
+
+{? cart_b_count >0 || cart_3_count >0}
+<!-- ****************************** 배송 가능한 상품만 노출 ******************************-->
+<!-- 배송정보 -->
+<section class="order-delivery order-section">
+	<h3 class="order-h3">배송지 정보</h3>
+	
+	<ul class="order-delivery-info">
+
+
+{?member.mb_name}
+
+		<li class="clear-after mgb8">
+			<div class="pull-left w90 font-bold topic">배송지 선택</div>
+			<ul class="pull-left w360 radio_list">
+				<li class="pull-left w120">
+					<input type="radio" id="delivery_desti1" class="order-radio-input" name="delivery_place" value='1' checked>
+					<label for="delivery_desti1" class="order-radio-label">주문자와 동일</label>
+				</li>
+
+				<li class="pull-left w120">
+					<input type="radio" id="delivery_desti2" class="order-radio-input" name="delivery_place" value='0'/>
+					<label for="delivery_desti2" class="order-radio-label">새 배송지</label>
+				</li>
+			</ul>
+		</li>
+{/}
+
+
+
+		<li class="clear-after mgb8">
+			<div class="pull-left w90 font-bold topic">
+				<label for="order_deliv_name">받으시는 분</label>
+			</div>
+			<div class="pull-left ">
+				<input type="text" class="i_rec_name order-text-input pull-left w240" name=od_name id=od_name value="" required itemname='받으시는 분' />
+			</div>
+		</li>
+		<li class="clear-after mgb8">
+			<div class="pull-left w90 font-bold topic">
+				<label for="order_deliv_hp1">휴대폰번호</label>
+			</div>
+			<div class="pull-left">
+				<select name="od_b_hp[]" id="hp1" class="order-text-input pull-left w70 i_tel2" onkeydown="numberOnly(event);" />
+					<option selected>010</option>
+					<option value="">011</option>
+					<option value="">016</option>
+					<option value="">017</option>
+					<option value="">019</option>
+				</select>
+				<!-- <input type="text" name=od_b_hp[] id="hp1" class="order-text-input pull-left w65 i_tel1" style="ime-mode: disabled;"  maxlength="3" onkeydown="numberOnly(event);" value=""  required> -->
+				<span class="pull-left tc w15">&#45;</span>
+				<label for="hp2" class="skip">휴대폰 3~4자리 숫자</label>
+				<input type="text" name=od_b_hp[] id="hp2" class="order-text-input pull-left w70 i_tel2" style="ime-mode: disabled;"  maxlength="4" onkeydown="numberOnly(event);" value="" required>
+				<span class="pull-left tc w15">&#45;</span>
+				<label for="hp3" class="skip">휴대폰 마지막 4자리 숫자</label>
+				<input type="text" name=od_b_hp[] id="hp3" class="order-text-input pull-left w70 i_tel3" style="ime-mode: disabled;"  maxlength="4" onkeydown="numberOnly(event);" value="" required>
+			</div>
+		</li>
+
+
+		<li class="clear-after mgb8">
+			<div class="pull-left w90 font-bold topic">
+				<label for="order_deliv_add1">주소</label>
+			</div>
+			<ul class="pull-left post_wrap">
+				<li class="clear-after mgb5">
+					<label for="order_deliv_zip" class="skip">우편번호</label>
+						<div class="input_bg w65 mgr3 pull-left">
+							<input type="text" name=od_zip1 id=od_zip1 class="i_add order-text-input pull-left w65" value="" readonly required itemname='우편번호'>
+						</div>
+						<div class="input_bg w65 mgr3 pull-left">
+							<input type="text" name=od_zip2 id=od_zip2 class="i_add order-text-input pull-left w65" value="" readonly required itemname='우편번호'>
+						</div>
+
+
+					<button type="button" class="pull-left order-button medium w90" onclick="win_zip('forderform', 'od_zip1', 'od_zip2', 'od_addr1', 'od_addr2');">우편번호</button>
+				</li>
+				<li class="mgb5">
+					<div class="input_bg w480">
+						<label for="od_addr1" class="skip">주소</label>
+						<input type="text" id="od_addr1" name="od_addr1" class="i_text order-text-input w480" value="" readonly required itemname='주소'>
+					</div>
+				</li>
+				<li>
+						<label for="od_addr2" class="skip">주소</label>
+						<input type="text" id="od_addr2" name="od_addr2" class="i_text order-text-input w480" value="" required itemname='상세주소'>
+				</li>
+			</ul>
+		</li>
+
+		<li class="clear-after mgb8">
+			<div class="pull-left w90 font-bold topic">
+				<label for="order_deliv_ment">배송메세지</label>
+			</div>
+			<div class="select_box">
+				<select name="" id="ssss" class="w480 deliver_msg">
+					<option value="" disabled selected>배송 시 요청사항을 선택해 주세요.</option>
+					<option value="" >부재시 경비실에 맡겨주세요</option>
+					<option value="option1">부재시 휴대폰으로 전화 주시거나 문자 남겨 주세요</option>
+					<option value="option2">문 앞에 놓아주세요</option>
+					<option value="option3">택배함에 넣어주세요</option>
+					<option value="option4">직접 입력</option>
+				</select>
+				<input type="text" id="order_deliv_ment" class="order-text-input w480" name="od_memo"  value="" placeholder="요청사항을 입력해주세요." style="display: none;"/>
+			</div>
+
+			<script>
+				$(document).ready(function(){
+					$('#ssss').change(function() {
+						var result = $('#ssss option:selected').val();
+						if (result == 'option4') {
+						$('#order_deliv_ment').show();
+						} else {
+						$('#order_deliv_ment').hide();
+						}
+					}); 
+				});
+			</script>
+			<ul class="order-notice style1 list-dot mgb25">
+				<li>우편번호는 5자리를 사용합니다. 기존 등록된 주소의 6자리는 새로 검색하여 사용하시기 바랍니다.</li>
+				<li>도서는 평일기준 4시 이전 주문건에 한해 당일 출고되며, CJ대한통운택배로 배송됩니다.</li>
+				<li>입금하신 날로부터 2~3일 이내(최장 7일) 입력하신 배송처로 주문 상품이 도착하게 됩니다. <br/>
+				(상품에 따라 배송기간이 상이할 수 있습니다.)</li>
+				<li>배송이 시작된 후 교환 또는 환불을 하실 경우 택배비가 차감될 수 있습니다.</li>
+			</ul>
+		</li>
+	</ul>
+</section>
+<!-- ****************************** 배송 가능한 상품만 노출 ******************************-->
+
+<!-- ****************************** 유효성 검사 ******************************-->
+<script type="text/javascript">
+			$(document).ready(function(){
+				var radioChk =  $('.radio_list input[id=delivery_desti2]');
+				var sHp1 = $("#hp1").val();
+				var sHp2 = $("#hp2").val();
+				var sHp3 = $("#hp3").val();
+
+
+				radioChk.on('click',function(){
+					if((radioChk.is(':checked')) == true){
+						$('#hp1 option:first').prop('selected',true);
+					}
+				
+				});
+
+				//주문자 전화번호가 없을때는 bg처리 안함
+				if( !sHp1 || !sHp2 || !sHp3 ){
+					//console.log('전화번호가 없음');
+					$('.order-person .input_bg').addClass('afternone');
+				}else{
+					$('.order-person .input_bg').removeClass('afternone');
+				}
+
+				//010 번호 default
+				$('#order_mem_hp1 option:eq(0)').prop('selected', true);
+				$('#hp1 option:eq(0)').prop('selected', true);
+			});
+</script>
+<!-- ****************************** 유효성 검사 ******************************-->
+<!-- //배송정보 -->
+{/}
+
+
+<!-- ****************************** 결제 수단 선택 ******************************-->
+<section class="order-payment order-section">
+	<div class="clear-after">
+		<h3 class="order-h3 pull-left">결제수단선택</h3>
+		<a href="#a" class="halbu-popup-show">신용카드 할부안내 ▶</a>
+	</div>
+
+	<ul class="payment-list clear-after">
+		<li class="payment-item kakaopay">
+			<input type="checkbox" id="payment_item7" class="skip" name="od_settle_use" value="kakaopay" onclick="pay_type_check('kakaopay');">
+			<label for="payment_item7">
+				<span>
+					<i></i>
+					카카오페이
+				</span>
+			</label>
+		</li>
+		<li class="payment-item naverpay">
+			<input type="checkbox" id="payment_item6" class="skip" name="od_settle_use" value="naverpay" onclick="pay_type_check('naverpay');">
+			<label for="payment_item6">
+				<span>
+					<i></i>
+					네이버페이
+				</span>
+			</label>
+		</li>
+		<li class="payment-item payment-item3">
+			<input type="checkbox" id="payment_item1" class="skip" name="od_settle_use" value="card" checked="checked" onclick="pay_type_check('nomal');">
+			<label for="payment_item1">
+				<span>신용카드</span>
+			</label>
+			
+		</li>
+		<br/>
+		<li class="payment-item payment-item4">
+			<input type="checkbox" id="payment_item5" class="skip" name="od_settle_use" value="cellphone" onclick="pay_type_check('nomal');">
+			<label for="payment_item5">
+				<span>핸드폰</span>
+			</label>
+		</li>
+		<li class="payment-item payment-item5">
+			<input type="checkbox" id="payment_item2" class="skip" name="od_settle_use" value="real" onclick="pay_type_check('nomal');">
+			<label for="payment_item2">
+				<span>실시간 계좌 이체</span>
+			</label>
+		</li>
+		<li class="payment-item payment-item6">
+			<input type="checkbox" id="payment_item3" class="skip" name="od_settle_use" value="vbank" onclick="pay_type_check('nomal');">
+			<label for="payment_item3">
+				<span>무통장 입금 <br />(가상계좌)</span>
+			</label>
+		</li>
+		<li class="payment-item payment-item7">
+			<input type="checkbox" id="payment_item4" class="skip" name="od_settle_use" value="ars" onclick="pay_type_check('ARS');">
+			<label for="payment_item4">
+				<span>ARS<br />(카드전화결제)</span>
+			</label>
+		</li>
+	</ul>
+
+	<ul class="deduction-chk" style="display:none">
+		<li>
+			<label for="deduction_chk_y">
+				<input type="radio" id="deduction_chk_y" name="deduction_chk" data-target="deduction_step_y"/ value="y" checked>
+				<span>신청</span>
+			</label>
+		</li>
+		{?s_site == 'popkon'}
+		<li>
+			<label for="deduction_chk_n">
+				<input type="radio" id="deduction_chk_n" name="deduction_chk" data-target="deduction_step_n"/ value="n">
+				<span>신청안함</span>
+			</label>
+		</li>
+		{/}
+
+	</ul>
+</section>
+<!-- ****************************** 결제 수단 선택 ******************************-->
+
+
+
+
+<!-- ****************************** 결제 전 유의사항 ******************************-->
+<section class="order-attention order-section">
+	<h3 class="order-h3">결제전 유의사항</h3>
+	<div class="padd_box">
+		<div class="order-scollbox">
+			<h4 class="order-h4">소득 공제용 결제 절차</h4>
+
+			<p>소득공제용 결제하기 (두번 결제 진행)</p>
+			<p class="mgb10">동영상(모의고사) + 도서와 같이 결제 해야 되는 경우만 해당됩니다. <br/>
+			소득공제를 제공하기 위해 도서결제가 별도로 진행되고 있습니다.</p>
+			<p class="mgb20">[예시] 동영상 200원 + 도서 100원 = 총 300원 결제예정 <br/>
+			1. 동영상 200원 결제진행 >>이어서  2. 도서 100원 결제진행 >> 결제완료</p>
+
+			<h5 class="order-h5">한번에 간편 결제하기 (한번 결제 진행)</h5>
+			<p class="mgb10">동영상(모의고사) + 도서 결제를 한번에 결제하는 방식입니다.</p>
+			<p class="mgb20">[예시] 동영상 200원 + 도서 100원 = 총 300원 결제예정 <br/>
+			1. 동영상(모의고사)+도서  300원 결제진행 >> 결제완료</p>
+
+			<h4 class="order-h4">도서/동영상/모의고사 환불규정</h4>
+			<h5 class="order-h5">도서 환불규정</h5>
+
+			<h5 class="order-h6">전액환불</h5>
+			<p class="mgb20">도서를 배송 받은 날로부터 7일 이내 반품/교환/환불이 가능합니다. <br/>
+			단, 고객 변심으로 인한 반품 시 반송료는 고객부담이며, 사용된 할인쿠폰은 반환되지 않습니다. <br/>
+			또한 반품된 도서의 상태를 확인한 후 환불 및 교환을 처리해 드리고 있습니다.<br/>
+			<strong>※ 왕복배송비 5,000원 차감</strong></p>
+
+			<h5 class="order-h6">반품/교환불가</h5>
+			<ul class="list-num mgb30">
+				<li>소비자의 책임 있는 사유로 상품 등이 손실 또는 훼손된 경우  <br/>
+				(단지 확인을 위한 포장 훼손은 제외)</li>
+				<li>일부 사용되었거나 상품가치가 현저히 감소했을 경우 <br/>
+				예) DVD파손, 비닐 랩핑 훼손, 필기, 구김 외 기타</li>
+				<li>구매한 날로부터 7일이 경과한 경우</li>
+			</ul>
+
+			<h4 class="order-h4">동영상 환불규정</h4>
+			<h5 class="order-h6">전액환불</h5>
+			<p class="mgb30">수강신청이 완료된 날로부터 7일 이내 수강을 하지 않았을 경우 전액환불이 가능합니다. <br/>
+			(단 교재 사용시 교재비 제외)</p>
+
+			<h5 class="order-h6">부분환불</h5>
+			<p>수강시작일 이후부터 환불 요청일 기준으로 아래 정책에 따라 산출한 금액의 이용대금 수수료(10%)를 공제한 금액을 환급 해드립니다. 강좌 구매 시 제공된 혜택은 제외되며, 강좌의 수강기간과 정가에 따라이용 금액이 산출됩니다.</p>
+			<ul class="list-num mgb20">
+				<li><span>수강기간 1개월(30일) 이내인 경우</span>
+					<ul class="list-dash">
+						<li>수강시작일로부터 1/3 경과 전 : 부분 환불액 = 실 결제금액 - 수강료 1/3 이용 금액</li>
+						<li>수강시작일로부터 1/2 경과 전 : 부분 환불액 = 실 결제금액 - 수강료 1/2 이용 금액</li>
+						<li>수강시작일로부터 1/2 경과 후 : 환불액 없음</li>
+					</ul>
+				</li>
+				<li><span>수강기간 1개월(30일) 초과하는 경우</span>
+					<ul class="list-dash">
+						<li>환금금액 = [실 결제금액 - 수강료(수강한 일수 / 상품수강기간)] - 이용대금 수수료 10%</li>
+					</ul>
+				</li>
+			</ul>
+
+			<h5 class="order-h6">환불금액의 결정</h5>
+			<p class="mgb30">환불금액 = [실 결제금액 - 수강료(수강한 일수 / 상품수강기간)] - 이용대금 수수료 10%</p>
+
+
+			<h4 class="order-h4">모의고사 환불규정</h4>
+			<p class="mgb10">구매 후 모의고사를 응시하지 않으면 환불이 되지만(30일 이후 90% 환불), 모의고사에 응시하시면 환불이 되지 않습니다. (모의고사 화면 들어간 시점부터 환불 불가)</p>
+			<ul class="list-dash mgb30">
+					<li>풀이 후 환불 불가(풀이 화면 들어간 시점부터)</li>
+					<li>결제 후 풀지 않으면 환불 (30일 이후 90% 환불)</li>
+					<li>추가로 주는 적립금 등 혜택 사용 시 그 부분에 대한 차감 후 환불(적립금은 환급)</li>
+			</ul>
+
+			<strong>※ 참고사항</strong>
+			<ul class="list-dash">
+				<li>1년 이상 상품의 경우 1년(365일 기준)이상 수강 시 환불이 적용되지 않습니다. [ex 평생반, 2년반 외 기타]</li>
+				<li>미성년자 회원일 경우, 안전한전자상거래를 위해 부모님(보호자) 동의 후 환불이 가능합니다.</li>
+				<li>강좌 환불의 경우, 해당강좌의 교재도 반납하여야하며, 상품에 교재를 사용하여 상품 가치에 손상을 입혔을 경우, 환불이 되지 않으며, 상품에서 교재 가격을 제외한 금액으로 산출됩니다.</li>
+				<li>도서가 포함된 강의의 경우 7일을 경과하면 도서 환불 정책에 따라 도서는 환불 되지 않습니다.</li>
+				<li>실제학습한 강의수가 단기간내 과도할 경우, 수강기간 경과율이 아닌 수강 강의수로 학습량을 측정하게 되므로 공제액이 더 많아 질 수 있으니 각별히 주의해 주시기 바랍니다.</li>
+				<li>이용자가 실제 강의를 수강하지 않았더라도 강의를 클릭하였거나 이러닝 콘텐츠를 다운로드 하였다면 수강(이용)한 것으로 체크 됩니다.
+				<li>환불 요청시 추가적인 혜택(수강료, 수강연장, 사은품 외 기타 등)은 반환되어야 하나, 일부 사용되었거나 상품가치가 현저히 감소했을 경우 환불금액에서 공제될 수 있습니다.</li>
+			</ul>
+		</div>
+	</div>
+</section>
+<!-- ****************************** 결제 전 유의사항 ******************************-->
+</form>
+
+
+
+{? member.mb_id}<!--회원일 경우-->
+
+	<!-- ****************************** 쿠폰 팝업 ******************************-->
+    <!-- 폼태그 안에 넣는게 맞다고 생각되어 넣어 봤는데 실행이 안되서 밖으로 빼놨습니다. -->
+	{? list_parent_new_count > 0}<!--쿠폰 적용할 상품이 존재할 경우-->
+	<div class="banner_popup coupon_popup" id="coupon_popup">
+		<div class="container_couponpop">
+			<div class="inner">
+				<div class=" banner_popup_top">
+					<div class="cop_select_top">
+						<div class="flex_box">
+							<h2 class="wrap_title tl">쿠폰선택</h2>
+							<div class="cop_select_bottom">
+								<div class="coupon_have">
+									<span>{total_cp_count}</span><span>장</span> 보유
+									<!-- <span class="coupon_pcs"></span>
+									<span>장</span> 적용 가능 -->
+								</div>
+								<!-- <div class="max_coupon">
+									<input type="checkbox" id="check3" name="max_discount" checked />
+									<label for="check3"></label>
+									<span>최대 할인 적용</span>
+								</div> -->
+							</div>
+						</div>
+						<span class="cencle_btn"><!--background--></span>
+					</div>
+					
+				</div>
+				<div class="scroll_padd">
+					<div class="banner_popup_detail">
+						<div class="pop_content main_cp">
+							<h2>할인 쿠폰</h2>
+							<ul class="sale_list main_coupon" id="main_coupon">
+
+								
+							</ul>
+						</div>
+						<!-- <div class="pop_content sub_coupon" style='display:none;'> -->
+
+
+						
+
+						<div class="pop_content sub_coupon">
+							<h2>추가 할인 쿠폰</h2>
+							<!-- <ul class="sale_list sub_coupon"> -->
+							<ul class="sale_list" id="sale_list">
+								
+							</ul>
+							<p>※ 추가 할인쿠폰은 할인쿠폰을 적용 후 사용이 가능합니다.</p>
+						</div>
+					</div>
+				</div>
+				<div class="tt_calculate" id="dis_coupon">
+					<div class="banner_popup_bottom">
+
+						<div class="total_cop">
+							총 <span class="tc_coupon">0</span>장 쿠폰 사용
+						</div>
+						<div class="total_price">
+							-<span id="" class="tt_dis">0</span>원 할인 적용하기
+						</div>
+						<!-- <ul class="dis-table">
+							<li class="bold">
+								<span class="od_coupon1_text" style='display:none;'>0</span>
+								<span class="od_coupon2_text"  style='display:none;'>0</span>
+							</li>
+							<li class="col-red tr bold "><span class='total_coupon_text'>0</span>원</li>
+						</ul>
+						<p href="#a"class="btn btn-danger btn-xl couponsubmit ">적용</p> -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{/}
+	<!-- ****************************** 쿠폰 팝업 ******************************-->
+
+    <!-- ****************************** 적립금 팝업 ******************************-->
+	<div class="banner_popup cash_pop" id="cash_pop">
+		<div class="container_couponpop">
+			<div class="inner">
+				<div class=" banner_popup_top">
+					<div class="cop_select_top">
+						<div class="flex_box">
+							<h2 class="wrap_title tl">적립금 선택</h2>
+							<div class="cop_select_bottom">
+								<div class="coupon_have">
+									<span class="have_cash">{=number_format(member.mb_cash)}</span><span>원</span> 보유 
+									<!-- <span class="cash_applicable">
+										0 
+									</span>
+									<span>원</span> 적용 가능 -->
+								</div>
+								<!-- <div class="max_coupon">
+									<input type="checkbox" id="check4" class="large_dis" checked />
+									<label for="check4"></label>
+									<span>최대 할인 적용</span>
+								</div> -->
+							</div>
+						</div>
+						<span class="cencle_btn"><!--background--></span>
+					</div>
+					
+				</div>
+				<div class="scroll_padd">
+					<div class="banner_popup_detail">
+						<div class="pop_content">
+							<h2>상품 선택</h2>
+
+							<ul class="list-dot">
+								<li>적립금은 한 개의 상품에만 사용할 수 있으며, 5천원 이상 사용할 수 있습니다.</li>
+							</ul>
+
+							<div class="select_wrap">
+								<select name="" id="kind_chice" class="kind_chice">
+									
+									<option value="all" selected>전체</option>
+									
+									{? cart_movie_tprice > 0}
+										<option value="1">동영상</option>
+									{/}
+									{? cart_b_tprice > 0}
+										<option value="0">도서</option>
+									{/}
+									{? cart_movie_tprice2 > 0 || list_parent_mock > 0}
+										<option value="2">모의고사 </option>
+									{/}
+								</select>
+							</div>
+
+							<ul class="sale_list main_cash">
+
+								{@ list_parent_new}<!-- ! 동영상-->
+									{? list_parent_new_count > 0}
+									<li class="list_parent_new">
+										<input type="checkbox" name="cash_kind" class="cash_kind" id="check{.ca_id}" value="{.it_id}" data-it_type="{.it_type}" data-it_price="{.it_price}" />
+										<label for="check{.ca_id}"> 
+											<div class="inner_box">
+												<div class="txt">
+													<div>
+														<strong>동영상</strong>
+														<span>{.it_name}</span>
+														<span class="cash_price">
+															{=number_format(.it_price)}원
+														</span>
+													</div>
+												</div>
+												<div class="check_box">
+													<i></i>
+												</div>
+											</div>
+										</label>
+										<!-- <input type="radio" id="od_no_coupon" name="od_coupon_id" class="input_radio_round od_no_coupons" value="0" checked="" onclick='changeTestCoupon(this);'>
+										<label for="od_no_coupon" class="radio-round">
+											적용안함
+										</label> -->
+									</li>
+									{/}
+								{/}
+								{@ cart_b_pay} <!-- ! 도서-->
+									{? cart_b_pay_count > 0}
+									<li class="cart_b">
+										<input type="checkbox" name="cash_kind" class="cash_kind" id="check{.ca_id}" value="{.it_id}" data-it_type="{.it_type}" data-it_price="{.it_price}" />
+										<label for="check{.ca_id}">
+											<div class="inner_box">
+												<div class="txt">
+													<div>
+														<strong>도서</strong>
+														<span>{.it_name}</span>
+														<span class="cash_price">
+															{=number_format(.total_price)} 원
+														</span>
+													</div>
+												</div>
+												<div class="check_box">
+													<i></i>
+												</div>
+											</div>
+										</label>
+										<!-- <input type="radio" id="od_no_coupon" name="od_coupon_id" class="input_radio_round od_no_coupons" value="0" checked="" onclick='changeTestCoupon(this);'>
+										<label for="od_no_coupon" class="radio-round">
+											적용안함
+										</label> -->
+									</li>
+									{/}
+								{/}
+								{@ list_new} <!-- ! 모의고사-->
+									{? .it_type == 2 || .it_type == 6 || .it_type == 7}
+									<li class="cart_2">
+										<input type="checkbox" name="cash_kind" class="cash_kind" id="check{.ca_id}" value="{.it_id}" data-it_type="{.it_type}" data-it_price="{.it_price}" />
+										<label for="check{.ca_id}">
+											<div class="inner_box">
+												<div class="txt">
+													<div>
+														<strong>모의고사</strong>
+														<span>{.it_name}</span>
+														<span class="cash_price">
+															{=number_format(.total_price)} 원
+														</span>
+													</div>
+												</div>
+												<div class="check_box">
+													<i></i>
+												</div>
+											</div>
+										</label>
+										<!-- <input type="radio" id="od_no_coupon" name="od_coupon_id" class="input_radio_round od_no_coupons" value="0" checked="" onclick='changeTestCoupon(this);'>
+										<label for="od_no_coupon" class="radio-round">
+											적용안함
+										</label> -->
+									</li>
+									{/}
+								{/}
+							</ul>
+						</div>
+						<!-- <div class="pop_content sub_coupon" style='display:none;'> -->
+						<div class="everage">
+							<div class="ds_money">
+								보유 적립금
+								<span class="cash_applicable red">{=number_format(member.mb_cash)}</span>원 
+							</div>
+							<div class="ds_money_print">
+								<input type="text" name="dsp_cash" id="dsp_cash" class="order-text-input pull-left w185 mgr8 tr" onkeydown="numberOnly(event);" onkeyup="numberCommas(this);" maxlength="10"/>
+								<span class="won">원</span>
+								<!-- <input type="text" name="dsp_cash" id="put_cash" class="order-text-input pull-left w185 tr" style="ime-mode: disabled;" onkeydown="numberOnly(event);" onkeyup="numberCommas(this);" maxlength="10" /> -->
+								<!-- <input type="text" name="dsp_cash" id="dsp_cash" class="order-text-input pull-left w185 mgr8 tr" style="ime-mode: disabled;" onkeydown="numberOnly(event);" onkeyup="numberCommas(this);" maxlength="10" value="{=number_format(cart_movie_tprice + cart_b_tprice + cart_movie_tprice2 -100)}"/> -->
+							</div>
+						</div>
+					</div>
+				</div>
+				<button class="tt_calculate" id="dis_cash">
+					<div class="banner_popup_bottom">
+						<div class="total_price">
+							-<span class="final_cash" id="final_cash">
+								0
+							</span>원 할인 적용하기
+						</div>
+						<!-- <ul class="dis-table">
+							<li class="bold">
+								<span class="od_coupon1_text" style='display:none;'>0</span>
+								<span class="od_coupon2_text"  style='display:none;'>0</span>
+							</li>
+							<li class="col-red tr bold "><span class='total_coupon_text'>0</span>원</li>
+						</ul>
+						<p href="#a"class="btn btn-danger btn-xl couponsubmit ">적용</p> -->
+					</div>
+				</button>
+			</div>
+		</div>
+	</div>
+    <!-- ****************************** 적립금 팝업 ******************************-->
+{/}
+
+
+{mb_iframe}
+
+
+
+<!-- 스트립트 시작!! -->
+<script type="text/javascript">
+
+
+$(window).on('load',function(){
+
+	if( $('#svs').val() == 'popkon' &&  $('#cpchk').val() == '1'){//현사이트가 popkon일 경우 & 결제하려는 상품이 회원가입 5%프로만 적용되는 상품일경우
+	
+	}else{
+	
+
+	// 	if (!location.hash) { 
+
+	// location.hash = '#reload';
+
+	// location.href = location.href;
+
+	// }
+		setTimeout(function() {
+			coupon_all();//페이지 로드시 쿠폰 + 적립금 자동선택
+		}, 2000);
+		
+	}
+
+	//{\\? movie == 'M' & book == ''}
+	$(".icon-deduction").removeClass('icon-deduction');
+	//{\\/}
+
+	var mb_id = $("#mb_id").val();
+	// <!--{\\? prChk}-->
+	// ajax_get_coupon_list( "prchk" , $("#mb_id").val() , "main_coupon" , "t_price" );
+	// <!--{\\:}-->
+	// ajax_get_coupon_list( undefined , $("#mb_id").val() , "main_coupon" , "t_price" );
+	// <!--{\\/}-->
+	//연말 연시 이벤트 참여 대상일 경우 미포함이어도 배송지 입력 처리 2015 12 15 ssajae
+	if(parseInt($("[name='od_mem_cash']").val()) >= 5000){
+		$("#cash_re").show();
+	}
+	ajax_get_coupon_list( undefined , $("#mb_id").val() , "main_coupon" , "t_price" );// 일반쿠폰 가져오는함수
+	ajax_get_coupon_list("another", $("#mb_id").val() , "sale_list" , "a_price" );// 추가쿠폰 가져오는함수
+
+
+});
+	
+
+
+	$('#od_name').val('{member.mb_name}');
+	$('[name^=od_tel]').eq(0).val('{member.mb_tel0}');
+	$('[name^=od_tel]').eq(1).val('{member.mb_tel1}');
+	$('[name^=od_tel]').eq(2).val('{member.mb_tel2}');
+	$('[name^=od_hp]').eq(0).val('{member.mb_hp0}');
+	$('[name^=od_hp]').eq(1).val('{member.mb_hp1}');
+	$('[name^=od_hp]').eq(2).val('{member.mb_hp2}');
+	$('[name^=od_b_hp]').eq(0).val('{member.mb_hp0}');
+	$('[name^=od_b_hp]').eq(1).val('{member.mb_hp1}');
+	$('[name^=od_b_hp]').eq(2).val('{member.mb_hp2}');
+
+	$('#od_zip2').val('{member.mb_zip2}');
+	$('#od_zip1').val('{member.mb_zip1}');
+	$('#od_addr1').val('{member.mb_addr1}');
+	$('#od_addr2').val('{member.mb_addr2}');
+
+	var orderName = $('.order_name').text();
+	//console.log('sdfargahrawrt' + orderName)
+
+	$('#order_user_name').val(orderName);
+
+
+
+
+	//배송정보 폼 유효성테스트
+	function forderform_check(f){
+
+		if($("#order_type").val()=='nomember'){
+			var itemLength = $(".agr").length;
+			var checkedLength = $(".agr:checked").length;
+			if(checkedLength != itemLength){
+				alert('시대교육 필수 이용약관에 모두 동의해 주세요.');
+				location.href='#nomember_section';
+				return false;
+			}
+		}
+
+
+		$('input:radio[name=deduction_chk]:input[value=n]').click();
+
+		var order_type = $("#order_type").val();
+		var order_status =0;
+		// 특정 쿠폰 적용 시 주소 노출 시키는 내용 추가 - 2014.12.19 by jhson
+		var sNeedDeliveryCoupon = $("input[name='need_delivery_coupon']").val();
+		var sPrependMemo = $("input[name='prepend_memo']").val();
+	
+
+		// 주문자의 휴대폰 정보 필수 처리 - 2015.02.24 by jhson [시작]
+		var bPurchaseHpValid = true;
+		var elemPurchaserHp = null;
+
+		$("#wrap_purchaserHp").find("input").each(function(index){
+			switch(index){
+				case 0:
+				case 1:
+					if (this.value.length < 3){
+						bPurchaseHpValid = false;
+						elemPurchaserHp = this;
+					}
+					break;
+				case 2:
+					if (this.value.length < 4){
+						bPurchaseHpValid = false;
+						elemPurchaserHp = this;
+					}
+					break;
+			}
+		});
+
+
+		if($("#order_mem_hp1").val().length <3){
+			alert("휴대폰 번호를 입력해 주세요");
+			$("#order_mem_hp1").focus();
+			return false;
+		}
+
+		if($("#order_mem_hp2").val().length <3){
+			alert("휴대폰 번호를 입력해 주세요");
+			$("#order_mem_hp2").focus();
+			return false;
+		}
+
+		if($("#order_mem_hp3").val().length <4){
+			alert("휴대폰 번호를 입력해 주세요");
+			$("#order_mem_hp3").focus();
+			return false;
+		}
+
+
+		// 주문자의 휴대폰 정보 필수 처리 - 2015.02.24 by jhson [종료]
+		// 도서인경우만 체크해서 이름 주소 입력 필수 체크
+		// 증정품도 같이 체크
+		$('[name^=delivery_it_type]').each(function(i){
+			if($('[name^=delivery_it_type]').eq(i).val() == 0  || $('[name^=delivery_it_type]').eq(i).val() == 10) {
+				order_status = 100;
+			}
+		});
+
+		if(order_status == 100 || sNeedDeliveryCoupon === "1"){
+			var oname = $("#od_name").val();
+			var pattern = /\s/g;
+
+			if( oname.match(pattern) || oname.length < 2 )
+			{
+				alert("받으실 분의 이름을 입력해 주세요.");
+				$("#od_name").focus();
+				return;
+			}
+
+
+			var sHp1 = $("#hp1").val();
+			var sHp2 = $("#hp2").val();
+			var sHp3 = $("#hp3").val();
+
+			if( sHp1.length <3){
+				alert(" 받으실 분의 휴대폰 번호를 입력해 주세요.");
+				$("#hp1").focus();
+				return false;
+			}
+
+			if(sHp2.length <3){
+				alert(" 받으실 분의 휴대폰 번호를 입력해 주세요.");
+				$("#hp2").focus();
+				return false;
+			}
+
+			if(sHp3.length <4){
+				alert(" 받으실 분의 휴대폰 번호를 입력해 주세요.");
+				$("#hp3").focus();
+				return false;
+			}
+
+
+			// 내부구매시 주소 입력 없음
+			if(!$("#od_zip1").val() || !$("#od_zip2").val() || !$("#od_addr1").val() || !$("#od_addr2").val()){
+
+
+				if(!$("#od_addr1").val()){
+					var msgg = "받으실 분의 주소를 입력해주세요";
+				}else{
+					var msgg = "받으실 분의 상세주소를 입력해주세요";
+					$("#od_addr2").focus();
+				}
+				alert(msgg);
+				//alert("우편번호 5자리와 주소를 입력해주세요. ");
+
+				return false;
+			}
+			if( $("#od_zip1").val().length!=3 || $("#od_zip2").val().length!=2 ){
+				alert("우편번호가 5자리가 아닌 경우에는 우편번호 검색을 새로 해주시기 바랍니다.");
+				if( $("#od_zip2").val().length!=2 ) $("#od_zip2").focus();
+				if( $("#od_zip1").val().length!=3 ) $("#od_zip1").focus();
+				return false;
+			}
+
+		}
+
+		if($("#dsp_ahn").val() > 0 && !$("#memcheck").val()){
+				alert("안쌤회원만 구매가 가능합니다.");
+				$("#od_name").focus();
+				return false;
+		}
+
+		if (($("[name='gosimax_agree']").length === 1) && ($("[name='gosimax_agree']").is(":checked") === false)){
+			alert("개인정보제공에 동의 하셔야 합니다.");
+			$("[name='gosimax_agree']").focus();
+
+			return false;
+		}
+
+		// 특정 쿠폰 적용 시 주소 노출 시키는 내용 추가 - 2014.12.19 by jhson
+		if (sPrependMemo !== ""){
+			$("input[name='od_memo']").val( sPrependMemo + " " + $("input[name='od_memo']").val() );
+		}
+
+
+		if($('#term_order_chk').length > 0){
+			var agreetop = $('.order-agreechk').offset().top;
+			if($('#term_order_chk').is(":checked") == false){
+				alert('주문정보 확인에 동의해 주세요');
+					$('html, body').animate({
+					scrollTop : agreetop - 50
+				},500);
+				return false;
+			}
+
+		}
+
+		// 증정품 결제 금액 적용 기준치 체크 2016 10 26 ssajae
+		var param = $("[name='forderform']").serialize();
+		var returnstr ;
+		var ca_id = [];
+		var gift_give_price = [];
+		var gift_item_name = "";
+		$.get("/mypage/ajax_chk_gift_item_order_price.php?"+param,function(result){
+			if(result){
+				returnstr = result.split(":");
+				for(i in returnstr){
+					ca_id.push(returnstr[i].split("&")[0]);
+					gift_give_price.push(returnstr[i].split("&")[1]);
+				}
+				gift_give_price.sort(function(a, b){return a-b});
+				$("#order_list").find("[name^='ca_id']").each(function(idx){
+					var jqThis = $(this);
+					for(i in ca_id){
+						if(jqThis.val() == ca_id[i]){
+							gift_item_name += (gift_item_name)? ", ":"";
+							gift_item_name += $(this).parent().find(".it_real_name").text();
+							$("[name='forderform']").prepend("<input type=\"hidden\" name=\"delete_ca_id[]\" value=\""+jqThis.val()+"\">");
+							$(this).parent().remove();
+						}
+					}
+				});
+				//실 결제 금액이 30만원 미만일 경우 보조배터리가 제공되지 않습니다.
+				alert("실 결제 금액이 "+number_format(gift_give_price[0])+"원 미만일 경우 "+gift_item_name+"는 제공되지 않습니다.");
+				//f.target='movie_book_submit';
+				if (pay_type == 'ARS') {
+					// f.target = 'movie_book_submit';
+					f.action='order_update_renew_no.php';
+					f.submit();
+				} else {
+					$.ajax({
+						type : 'POST',
+						url : 'order_update_renew_no2.php',
+						data : param,
+						datatype : 'json',
+						success : function (data) {
+							const obj = JSON.parse(data);
+							if (obj['check'] == false) {
+								alert(obj['msg']);
+								location.replace(obj['uri']);
+							} else {
+								if (pay_type == 'naverpay') {
+									var script_settle = obj['script_settle'];
+									var settle_proceed = new Function(script_settle);
+									settle_proceed();
+								} else {
+									const form_html = obj['html'];
+									const form_Div = document.getElementById("pay_result_form");
+									form_Div.innerHTML = form_html;
+									///////////////////////////
+									const script_settle = obj['script_settle'];
+									const settle_proceed = new Function(script_settle);
+									settle_proceed();
+									///////////////////////////
+								}
+							}
+						}
+					});
+				}
+
+			}else{
+				if (pay_type == 'ARS') {
+					// f.target = 'movie_book_submit';
+					f.action='order_update_renew_no.php';
+					f.submit();
+				} else {
+					$.ajax({
+						type : 'POST',
+						url : 'order_update_renew_no2.php',
+						data : param,
+						datatype : 'json',
+						success : function (data) {
+							const obj = JSON.parse(data);
+							if (obj['check'] == false) {
+								alert(obj['msg']);
+								location.replace(obj['uri']);
+							} else {
+								if (pay_type == 'naverpay') {
+									var script_settle = obj['script_settle'];
+									var settle_proceed = new Function(script_settle);
+									settle_proceed();
+								} else {
+									const form_html = obj['html'];
+									const form_Div = document.getElementById("pay_result_form");
+									form_Div.innerHTML = form_html;
+									///////////////////////////
+									const script_settle = obj['script_settle'];
+									const settle_proceed = new Function(script_settle);
+									settle_proceed();
+									///////////////////////////
+								}
+							}
+						}
+					});
+				}
+			}
+		});
+	} //forderform_check 끝
+
+
+
+
+	
+	
+	function forderform_check2(f){
+
+		// {\\?movie == 'M' && book == ''}
+			if($(':radio[name="od_settle_use"]:checked').val() == 'cellphone'){
+			//if($(':radio[name="od_settle_use"]:checked').val() == 'cellphone'){
+				forderform_check(document.forderform);
+				return false;
+			}
+		// {\\/}
+
+
+		
+
+		if($("#order_type").val()=='nomember'){
+			var itemLength = $(".agr").length;
+			var checkedLength = $(".agr:checked").length;
+			if(checkedLength != itemLength){
+				alert('시대교육 필수 이용약관에 모두 동의해 주세요.');
+				location.href='#nomember_section';
+				return false;
+			}
+		}
+
+
+		$("input:radio[name=deduction_chk]:input[value='y']").click();
+
+
+		if($(':radio[name="deduction_chk"]:checked').val() == 'y'){
+			if($(':radio[name="od_settle_use"]:checked').val() == 'cellphone'){
+				//forderform_check(document.forderform);
+				alert('핸드폰 결제는 소득공제가 되지 않습니다.\r다른 결제수단을 이용해 주세요');
+				return false;
+			}
+		}
+
+		var order_type = $("#order_type").val();
+		var order_status =0;
+		// 특정 쿠폰 적용 시 주소 노출 시키는 내용 추가 - 2014.12.19 by jhson
+		var sNeedDeliveryCoupon = $("input[name='need_delivery_coupon']").val();
+		var sPrependMemo = $("input[name='prepend_memo']").val();
+	
+
+		// 주문자의 휴대폰 정보 필수 처리 - 2015.02.24 by jhson [시작]
+		var bPurchaseHpValid = true;
+		var elemPurchaserHp = null;
+
+		$("#wrap_purchaserHp").find("input").each(function(index){
+			switch(index){
+				case 0:
+				case 1:
+					if (this.value.length < 3){
+						bPurchaseHpValid = false;
+						elemPurchaserHp = this;
+					}
+					break;
+				case 2:
+					if (this.value.length < 4){
+						bPurchaseHpValid = false;
+						elemPurchaserHp = this;
+					}
+					break;
+			}
+		});
+	
+		// 주문자의 휴대폰 정보 필수 처리 - 2015.02.24 by jhson [종료]
+		if($("#order_mem_hp1").val().length <3){
+			alert("휴대폰 번호를 입력해 주세요.");
+			$("#order_mem_hp1").focus();
+			return false;
+		}
+
+		if($("#order_mem_hp2").val().length <3){
+			alert("휴대폰 번호를 입력해 주세요.");
+			$("#order_mem_hp2").focus();
+			return false;
+		}
+
+		if($("#order_mem_hp3").val().length <4){
+			alert("휴대폰 번호를 입력해 주세요.");
+			$("#order_mem_hp3").focus();
+			return false;
+		}
+
+
+		// 도서인경우만 체크해서 이름 주소 입력 필수 체크
+		// 증정품도 같이 체크
+		$('[name^=delivery_it_type]').each(function(i){
+			if($('[name^=delivery_it_type]').eq(i).val() == 0  || $('[name^=delivery_it_type]').eq(i).val() == 10) {
+				order_status = 100;
+			}
+		});
+
+		if(order_status == 100 || sNeedDeliveryCoupon === "1"){
+			var oname = $("#od_name").val();
+			var pattern = /\s/g;
+
+			if( oname.match(pattern) || oname.length < 2 )
+			{
+				alert("받으실 분의 이름을 입력해 주세요.");
+				$("#od_name").focus();
+				return;
+			}
+	
+
+			var sHp1 = $("#hp1").val();
+			var sHp2 = $("#hp2").val();
+			var sHp3 = $("#hp3").val();
+
+			if( sHp1.length <3){
+				alert(" 받으실 분의 휴대폰 번호를 입력해 주세요 ");
+				$("#hp1").focus();
+				return false;
+			}
+
+			if(sHp2.length <3){
+				alert(" 받으실 분의 휴대폰 번호를 입력해 주세요 ");
+				$("#hp2").focus();
+				return false;
+			}
+
+			if(sHp3.length <4){
+				alert(" 받으실 분의 휴대폰 번호를 입력해 주세요 ");
+				$("#hp3").focus();
+				return false;
+			}
+
+			//if($("#clientip").val()!="58.76.45.204"){// 내부구매시 주소 입력 없음
+				if(!$("#od_zip1").val() || !$("#od_zip2").val() || !$("#od_addr1").val() || !$("#od_addr2").val()){
+
+				if(!$("#od_addr1").val()){
+						var msgg = "받으실 분의 주소, 상세주소를 입력해주세요";
+					}else{
+						var msgg = "받으실 분의 주소, 상세주소를 입력해주세요.";
+						$("#od_addr2").focus();
+					}
+					alert(msgg);
+
+					//$("#od_addr2").focus();
+					return false;
+				}
+
+				if( $("#od_zip1").val().length!=3 || $("#od_zip2").val().length!=2 ){
+					alert("우편번호가 5자리가 아닌 경우에는 우편번호 검색을 새로 해주시기 바랍니다.");
+					if( $("#od_zip2").val().length!=2 ) $("#od_zip2").focus();
+					if( $("#od_zip1").val().length!=3 ) $("#od_zip1").focus();
+					return false;
+				}
+			//}
+		}
+		var sHp1 = $(".i_tel1").eq(1).val();
+		var sHp2 = $(".i_tel2").eq(1).val();
+		var sHp3 = $(".i_tel3").eq(1).val();
+	
+
+
+		if($("#hp1").length > 0){
+			if($("#hp1").val().length <3){
+				alert("주문자 휴대폰번호를 정확히 입력하여 주십시요.");
+				$("#hp1").focus();
+				return false;
+			}
+			if($("#hp2").val().length <3){
+				alert("주문자 휴대폰번호를 정확히 입력하여 주십시요.");
+				$("#hp2").focus();
+				return false;
+			}
+			if($("#hp3").val().length <4){
+				alert("주문자 휴대폰번호를 정확히 입력하여 주십시요.");
+				$("#hp3").focus();
+				return false;
+			}
+		}
+
+
+		if($("#dsp_ahn").val() > 0 && !$("#memcheck").val()){
+				alert("안쌤회원만 구매가 가능합니다.");
+				$("#od_name").focus();
+				return false;
+		}
+
+		if (($("[name='gosimax_agree']").length === 1) &&
+			($("[name='gosimax_agree']").is(":checked") === false)){
+			alert("개인정보제공에 동의 하셔야 합니다.");
+			$("[name='gosimax_agree']").focus();
+
+			return false;
+		}
+
+		// 특정 쿠폰 적용 시 주소 노출 시키는 내용 추가 - 2014.12.19 by jhson
+		if (sPrependMemo !== ""){
+			$("input[name='od_memo']").val( sPrependMemo + " " + $("input[name='od_memo']").val() );
+		}
+
+
+		if($('#term_order_chk').length > 0){
+					var agreetop = $('.order-agreechk').offset().top;
+					if($('#term_order_chk').is(":checked") == false){
+						alert('주문정보 확인에 동의해 주세요');
+							$('html, body').animate({
+							scrollTop : agreetop - 50
+						},500);
+						return false;
+					}
+
+			}
+
+		// 증정품 결제 금액 적용 기준치 체크 2016 10 26 ssajae
+		var param = $("[name='forderform']").serialize();
+		var returnstr ;
+		var ca_id = [];
+		var gift_give_price = [];
+		var gift_item_name = "";
+		$.get("/mypage/ajax_chk_gift_item_order_price.php?"+param,function(result){
+			if(result){
+				returnstr = result.split(":");
+				for(i in returnstr){
+					ca_id.push(returnstr[i].split("&")[0]);
+					gift_give_price.push(returnstr[i].split("&")[1]);
+				}
+				gift_give_price.sort(function(a, b){return a-b});
+				$("#order_list").find("[name^='ca_id']").each(function(idx){
+					var jqThis = $(this);
+					for(i in ca_id){
+						if(jqThis.val() == ca_id[i]){
+							gift_item_name += (gift_item_name)? ", ":"";
+							gift_item_name += $(this).parent().find(".it_real_name").text();
+							$("[name='forderform']").prepend("<input type=\"hidden\" name=\"delete_ca_id[]\" value=\""+jqThis.val()+"\">");
+							$(this).parent().remove();
+						}
+					}
+				});
+				//실 결제 금액이 30만원 미만일 경우 보조배터리가 제공되지 않습니다.
+				alert("실 결제 금액이 "+number_format(gift_give_price[0])+"원 미만일 경우 "+gift_item_name+"는 제공되지 않습니다.");
+				//f.target='movie_book_submit';
+				//f.target = 'movie_book_submit';
+				//f.action='order_update_renew_yes.php';
+				//f.submit();
+				if (pay_type == 'ARS') {
+					// f.target = 'movie_book_submit';
+					f.action='order_update_renew_yes.php';
+					f.submit();
+				} else {
+					$.ajax({
+						type : 'POST',
+						url : 'order_update_renew_yes2.php',
+						data : param,
+						datatype : 'json',
+						success : function (data) {
+							const obj = JSON.parse(data);
+							if (obj['check'] == false) {
+								alert(obj['msg']);
+								location.replace(obj['uri']);
+							} else {
+								if (pay_type == 'naverpay') {
+									var script_settle = obj['script_settle'];
+									var settle_proceed = new Function(script_settle);
+									settle_proceed();
+								} else {
+									const form_html = obj['html'];
+									const form_Div = document.getElementById("pay_result_form");
+									form_Div.innerHTML = form_html;
+									///////////////////////////
+									const script_settle = obj['script_settle'];
+									const settle_proceed = new Function(script_settle);
+									settle_proceed();
+									///////////////////////////
+								}
+							}
+						}
+					});
+				}
+
+			}else{
+				//f.target = 'movie_book_submit';
+				//f.action='order_update_renew_yes.php';
+				//f.submit();
+				if (pay_type == 'ARS') {
+					// f.target = 'movie_book_submit';
+					f.action='order_update_renew_yes.php';
+					f.submit();
+				} else {
+					$.ajax({
+						type : 'POST',
+						url : 'order_update_renew_yes2.php',
+						data : param,
+						datatype : 'json',
+						success : function (data) {
+							const obj = JSON.parse(data);
+							if (obj['check'] == false) {
+								alert(obj['msg']);
+								location.replace(obj['uri']);
+							} else {
+								if (pay_type == 'naverpay') {
+									var script_settle = obj['script_settle'];
+									var settle_proceed = new Function(script_settle);
+									settle_proceed();
+								} else {
+									const form_html = obj['html'];
+									const form_Div = document.getElementById("pay_result_form");
+									form_Div.innerHTML = form_html;
+									///////////////////////////
+									const script_settle = obj['script_settle'];
+									const settle_proceed = new Function(script_settle);
+									settle_proceed();
+									///////////////////////////
+								}
+							}
+						}
+					});
+				}
+			}
+		});
+	}// forderform_check2 끝
+
+
+
+	function change_type(v){
+		switch(v){
+			case 'card':
+				$("#card_info").show();
+				$("#real_info").hide();
+				$("#vbank_info").hide();
+				$("#ars_info").hide();
+			break;
+
+			case 'real':
+				$("#card_info").hide();
+				$("#real_info").show();
+				$("#vbank_info").hide();
+				$("#ars_info").hide();
+			break;
+
+			case 'vbank':
+				$("#card_info").hide();
+				$("#real_info").hide();
+				$("#vbank_info").show();
+				$("#ars_info").hide();
+			break;
+
+			case 'ars':
+				$("#card_info").hide();
+				$("#real_info").hide();
+				$("#vbank_info").hide();
+				$("#ars_info").show();
+			break;
+
+			case 'cellphone': case 'kakaopay' :
+				$("#card_info").hide();
+				$("#real_info").hide();
+				$("#vbank_info").hide();
+				$("#ars_info").hide();
+			break;
+		}
+	}// change_type 끝
+
+	function layer_open(el){
+
+		var temp = $('#' + el);		//레이어의 id를 temp변수에 저장
+		var bg = temp.prev().hasClass('bg');	//dimmed 레이어를 감지하기 위한 boolean 변수
+
+		if(bg){
+			$('.layer').fadeIn();
+		}else{
+			temp.fadeIn();	//bg 클래스가 없으면 일반레이어로 실행한다.
+		}
+
+		// 화면의 중앙에 레이어를 띄운다.
+		if (temp.outerHeight() < $(document).height() ) temp.css('margin-top', '-'+temp.outerHeight()/2+'px');
+		else temp.css('top', '0px');
+		if (temp.outerWidth() < $(document).width() ) temp.css('margin-left', '-'+temp.outerWidth()/2+'px');
+		else temp.css('left', '0px');
+
+		temp.find('a.cbtn').click(function(e){
+			if(bg){
+				$('.layer').fadeOut();
+			}else{
+				temp.fadeOut();		//'닫기'버튼을 클릭하면 레이어가 사라진다.
+			}
+			e.preventDefault();
+		});
+
+		$('.layer .bg').click(function(e){
+			$('.layer').fadeOut();
+			e.preventDefault();
+		});
+	} // layer_open 끝
+
+	// 강좌만 구매할경우 주소랑 이름 입력은 히든 0816 장선용
+	$(function(){
+		chk_cartdeliveryType();
+	});//히든 끝
+
+	function chk_cartdeliveryType(){
+		var order_status = 0;
+		var offline = 0;
+		var iDeliveryItType = "";
+
+		$('[name^=delivery_it_type]').each(function(i){
+			iDeliveryItType = parseInt( $(this).val() );
+			if(iDeliveryItType == 0 || iDeliveryItType == 3 || iDeliveryItType == 5 || iDeliveryItType == 10 ) {
+				order_status = 100;
+			}
+		});
+
+		if(order_status != 100){
+			$('table.information_tbl2 tr').filter('.white').hide();
+			$("#delivery_info").hide();
+		}
+
+		$('[name^=delivery_it_type]').each(function(i){
+			if($('[name^=delivery_it_type]').eq(i).val() == 5 || $('[name^=delivery_it_type]').eq(i).val() == 3 ) {
+				offline = 100;
+			}
+		});
+		if(offline == 100){
+			$("#ars").hide();
+		}
+	}// chk_cartdeliveryType 끝
+
+	$('[name=delivery_place]').click(function(){
+		if( $(this).val()==1) {
+			$('#od_name').val('{member.mb_name}');
+			$('[name^=od_tel]').eq(0).val('{member.mb_tel0}');
+			$('[name^=od_tel]').eq(1).val('{member.mb_tel1}');
+			$('[name^=od_tel]').eq(2).val('{member.mb_tel2}');
+			$('[name^=od_hp]').eq(0).val('{member.mb_hp0}');
+			$('[name^=od_hp]').eq(1).val('{member.mb_hp1}');
+			$('[name^=od_hp]').eq(2).val('{member.mb_hp2}');
+			$('[name^=od_b_hp]').eq(0).val('{member.mb_hp0}');
+			$('[name^=od_b_hp]').eq(1).val('{member.mb_hp1}');
+			$('[name^=od_b_hp]').eq(2).val('{member.mb_hp2}');
+
+			$('#od_zip2').val('{member.mb_zip2}');
+			$('#od_zip1').val('{member.mb_zip1}');
+			$('#od_addr1').val('{member.mb_addr1}');
+			$('#od_addr2').val('{member.mb_addr2}');
+			if( $('#od_zip2').val().length!=2 ) {  /*위치 - 이동금지*/
+				$('#od_zip1').val('');
+				$('#od_zip2').val('');
+				$('#od_addr1').val('');
+				$('#od_addr2').val('');
+				alert("기존 등록된 우편번호가 5자리가 아닌 경우에는 새로 우편번호 검색을 해주세요. ");
+			}
+		} else {
+			$('#od_name').val('');
+			$('#od_zip1').val('');
+			$('#od_zip2').val('');
+			$('#od_addr1').val('');
+			$('#od_addr2').val('');
+			$('[name^=od_tel]').eq(0).val('');
+			$('[name^=od_tel]').eq(1).val('');
+			$('[name^=od_tel]').eq(2).val('');
+			// $('[name^=od_hp]').eq(0).val('');
+			// $('[name^=od_hp]').eq(1).val('');
+			// $('[name^=od_hp]').eq(2).val('');
+			$('[name^=od_b_hp]').eq(0).val('');
+			$('[name^=od_b_hp]').eq(1).val('');
+			$('[name^=od_b_hp]').eq(2).val('');
+
+		}
+	});
+
+    /**************적립금 팝업창에서 적용하기 버튼 이벤트 ********************/
+	$('#dis_cash').click(function(){
+		//$('#add_cash').click(function(){
+		// if($(".main_cash input").is(':checked') == false){
+		// //if($("#discount_select_res").val()==''){
+		// 	alert('적립금을 적용할 상품이 선택되지 않았습니다.');
+		// 	return false;
+		// }
+		
+		$('#chk_dc').val('od_cash');
+		var od_ahn = $('#od_ahn').val();
+		var od_cash = unComma($('#dsp_cash').val());
+		var od_coupon = $('#od_coupon').val();
+		var od_mem_cash = $('#od_mem_cash').val();
+		var settle_price = $('#od_settle_price').val();
+		var buy_gift = $('#buy_gift').val();
+
+		var discount_price_sum = parseInt(od_coupon)+parseInt(od_cash) ;
+
+		var point_kind = $('#kind_chice option:selected').val();//적립금 상품타입 선택
+		//console.log(point_kind);
+		var add_point = unComma($('#dsp_cash').val());//적립금 팝업 안에 적립금 입력박스
+		var it_price_temp = unComma($("#it_price_" + point_kind).html());//우측 결제 내역안에 상품타입별 상품가격노출
+		var it_coupon_temp = unComma($("#it_coupon_" + point_kind).html());//우측 결제 내역에서 선택된 쿠폰 가격 노출
+		var it_cash_temp = unComma($("#it_cash_" + point_kind).html());////우측 결제 내역에서 선택된 적립금 가격 노출
+        var sss = $('#dsp_cash').val();//적립금 입력단
+
+		if( $('.cash_kind:checked').attr('data-it_type') == 1 ){//적립금 팝업에서 선택된 상품이 동영상 일때
+
+			if( parseInt($('.cash_kind:checked').attr('data-it_price') - 300) <  parseInt(unComma($('.final_cash').text())) || parseInt(od_coupon) + parseInt(unComma($('.final_cash').text())) > parseInt($('.cash_kind:checked').attr('data-it_price') - 300)){//체크된 상품가격 < 적용된 적립금 가격 || 쿠폰 + 적용된 적립금 가격 > 체크된 상품가격
+				console.log('적용상품');
+				alert("적용 상품보다 적립금이 많습니다.");
+				//$('.play_cash, .book_cash, .mock_cash, .final_cash').text( 0 );
+				//$('.order-discount-item.cash .auto_price').attr('value',0 +'원');
+				return;
+			}
+
+			}else if( $('.cash_kind:checked').attr('data-it_type') == 0 || $('.cash_kind:checked').attr('data-it_type') == 2 || $('.cash_kind:checked').attr('data-it_type') == 6 || $('.cash_kind:checked').attr('data-it_type') == 7){//도서, 모의고사(2,6,7) 일때
+			if( parseInt($('.cash_kind:checked').attr('data-it_price') - 300) <  parseInt(unComma($('.final_cash').text())) ){//체크된 상품가격 < 적용된 적립금 가격 
+				alert("적용 상품보다 적립금이 많습니다.");
+				return;
+				//$('.play_cash, .book_cash, .mock_cash, .final_cash').text( 0 );
+				//$('.order-discount-item.cash .auto_price').attr('value',0 +'원');
+			}
+		}
+
+		if($("#cat_id").val()=='007002'){
+			alert('시대평생교육원 강의는 적립금 작용이 되지 않습니다.');
+			return false;
+		}
+
+		
+
+
+		// $('.order-discount-item.cash .auto_price').attr('value',$('.final_cash').text() +'원');
+		// console.log("============");
+		// console.log("★add_cash.click");
+		// console.log("point_kind>"+point_kind);
+		// console.log("add_point>"+add_point);
+		// console.log("it_price_temp>"+it_price_temp);
+		// console.log("it_coupon_temp>"+it_coupon_temp);
+		// console.log("it_cash_temp>"+it_cash_temp);
+		// console.log("it_delevery_temp>"+it_delevery_temp);
+		// console.log("it_price_money_temp>"+it_price_money_temp);		
+
+		//console.log('settle_price='+ settle_price+'od_mem_cash='+ od_mem_cash+'od_cash='+ od_cash+'discount_price_sum='+ discount_price_sum);
+
+		if(!parseInt(od_mem_cash)){//od_mem_cash : 보유적립금
+			alert("사용할 적립금이 없습니다.");
+			$("#dsp_cash").focus();
+			return;
+		}
+		if((parseInt(od_cash) + parseInt(buy_gift)) > parseInt(od_mem_cash)){//적용된 적립금 + 증정품 > 보유 적립금
+			alert("보유 적립금을 입력해주세요.");
+			$("#dsp_cash").val( $('.play_cash').text() );//적립금 입력단 val(우측 결제 내역에 동영상 적용금액)
+			$('.final_cash').text( $('.play_cash').text() );//적립금 적용하기 text(우측 결제 내역에 동영상 적용금액)
+			$('.order-discount-item.cash .auto_price').attr('value',$('.final_cash').text() +'원');//할인정보란 val값
+			//$('.play_cash, .book_cash, .mock_cash, .final_cash').text(0);
+			// $('.order-discount-item.cash .auto_price').val(0 + '원');
+			return;
+		}else if(parseInt(od_cash) > parseInt(settle_price) || parseInt(discount_price_sum) > parseInt(settle_price) -300){//적용된 적립금 > 셋팅 가격 || 적용된 쿠폰 + 적용된 적립금 > 셋팅가격
+			alert("결제금액보다 적립금이 많습니다.");
+			$("#dsp_cash").val( $('.play_cash').text() );//적립금 입력단 val(우측 결제 내역에 동영상 적용금액)
+			$('.final_cash').text( $('.play_cash').text() );//적립금 적용하기 text(우측 결제 내역에 동영상 적용금액)
+			$('.order-discount-item.cash .auto_price').attr('value',$('.final_cash').text() +'원');//할인정보란 val값
+			return;
+		}else{
+			///////적립금 타입 분류
+			if( $('.cash_kind:checked').data('it_type') == 1){//상품타입이 동영상일때
+				$("#it_cc_cash_1").html( $('.final_cash').text() );
+			}else if( $('.cash_kind:checked').data('it_type') == 0){//상품타입이 도서일때
+				$("#it_cc_cash_0").html( $('.final_cash').text() );
+			}else if( $('.cash_kind:checked').data('it_type') == 2 || $('.cash_kind:checked').data('it_type') == 6 || $('.cash_kind:checked').data('it_type') == 7){//모의고사이 도서일때
+				$("#it_cc_cash_2").html( $('.final_cash').text() );
+			}
+			$('.order-discount-item.cash .auto_price').attr('value',$('.final_cash').text() +'원');
+			$('#od_cash').val(od_cash);
+			
+
+			
+
+			if( sss.length === 0) {//적립금 입력단에 값이 하나도 없을시
+				
+				alert("다시 입력");
+				$("#dsp_cash").val(0);//적립금 입력단
+				$('.play_cash, .book_cash, .mock_cash, .final_cash').text( 0 );//우측 결제내역(play_cash => 동영상, book_cash=> 도서, mock_cash=> 모의고사) final_cash는 적립금 적용하기 금액
+				$('.order-discount-item.cash .auto_price').attr('value',0 +'원');
+				$('#od_cash').val(0);
+				return;
+			}
+			re_comp();
+		}
+		if(parseInt(od_cash) < 5000){
+			alert("적립금은 5,000원 이상부터 사용할 수 있습니다.");
+			$("#dsp_cash").focus();
+			return;
+		}
+		$('.cash_pop').hide();
+
+		//console.log("============");
+	}); // $('#add_cash').click() 끝
+
+
+	$(".cash_pop .cencle_btn").click(function(){
+
+		var od_cash = unComma($('#dsp_cash').val());//적립금 입력단
+		var buy_gift = $('#buy_gift').val();//증정품
+		var od_mem_cash = $('#od_mem_cash').val();//보유 적립금
+
+		$("#dsp_cash").val( $('.play_cash').text() );//적립금 입력단 val(우측 결제 내역에 동영상 적용금액)
+		$('.final_cash').text( $('.play_cash').text() );//적립금 적용하기 text(우측 결제 내역에 동영상 적용금액)
+		$('.order-discount-item.cash .auto_price').attr('value',$('.final_cash').text() +'원');//할인정보란 val값
+		$('.cash_pop').hide();
+		return;
+	});
+
+	$('#add_ahn').click(function(){
+		var od_ahn = unComma($('#dsp_ahn').val());
+		$('#chk_dc').val('add_ahn');
+		//console.log('od_ahn='+ od_ahn);
+		if(od_ahn=='') od_ahn = 0;
+		$('#od_ahn').val(od_ahn);
+		re_comp();
+	});
+
+	function open_order_coupon() {
+		var url = g4_path+'/mypage/mb_coupon.php';
+		window.open(url, "order_coupon", "width=750, height=700, left=300, top=100, scrollbars=no");
+	}
+
+	//ajax_get_coupon_list( undefined , $("#mb_id").val() , "main_coupon" , "t_price" );
+	//sd_work_pj
+	//ajax_get_coupon_list("another", $("#mb_id").val() , "sale_list" , "a_price" );
+
+
+	function ajax_get_coupon_list( mode , mb_id ,  el , price_id ){//쿠폰 정보 가져오는 함수
+		$.ajax("/popkon/ajax_get_coupon_list_json.php?mb_id="+mb_id+"&mode="+mode,{
+			type:"get",
+			data:{},
+			dataType:"json",
+			success:function(json) {
+				//console.log(json);
+				display_coupon_list(json , el , price_id );
+
+				
+			},
+			error:function(xhr,error,code) {
+
+				if(error=='parsererror') {
+				//파싱에러면 우리가 직접 파싱을 해주면 됩니다.
+				//xhr.responseText는 원래 글자
+					var json = eval(xhr.responseText);
+
+					//alert(json);
+					display_coupon_list(json , el , price_id );
+
+				}else {
+					alert("서버에서 에러가 발생하였습니다");
+				}
+
+			}
+		});
+
+		
+	}
+
+	function display_coupon_list(json , el , price_id ){//쿠폰 상세 정보들
+		var t_price = $("#"+price_id).val();
+		//$("#"+el).append("<option value=''>쿠폰을 선택해 주세요</option>");
+		$(json).each(function(i) {
+			//option생성
+			var option = $("<li class='normal_coupon_list'><input type='checkbox' data-cp_type='"+this.cp_type+"' data-cp_max_price='"+this.cp_max_price+"'  data-cp_id='"+this.cp_id+"' data-cp_another_use='"+this.cp_another_use+"' data-use='"+this.cp_item_use+"' data-cpprice='"+this.cp_price+"' class='check_name' value='"+this.id+":"+this.cp_id+":"+this.cp_type+":0:"+i+":"+this.cp_another+":"+this.cp_another_use+":"+this.cp_item_use+":"+this.cp_price+":"+this.cp_max_price+"' id='check"+this.id+"'> <label for='check"+this.id+"'><div class='inner_box'><div class='txt'><div><strong>"+this.cp_name+"</strong><span class='cp_kind'>쿠폰종류 : "+this.cp_price+"<span class='per'>%</span><span class='unit_won'>원</span> <span class='cp_type1'>할인쿠폰</span> <span class='cp_type2'>적립쿠폰</span><span class='cp_another_use1'>[추가할인 가능]</span><span class='cp_another_use0'>[추가할인 불가]</span></span><span class='available'>유효기간 : "+this.cp_period_edate+"</span> <span class='available availableday'>[D-"+this.cp_end_days+"일 남음]</span><span class='dis_none'>(<span class='cp_max_price'>"+this.cp_max_price+"</span>원 이상 사용가능)</span></div><div class='ds_apply'>할인 적용 <span class='discp_price'>"+this.cp_price+"</span><span class='won'>원</span></div></div><div class='check_box'><i></i></div></div></label></li>");
+			$("#"+el).prepend(option);
+
+			
+		});
+
+
+		var normal_coupon_length = $('#main_coupon input').length; //일반쿠폰 갯수
+		var add_coupon_length = $('#sale_list input').length;// 추가 쿠폰 갯수
+
+		//console.log(normal_coupon_length);
+		//console.log(add_coupon_length);
+
+		if(normal_coupon_length > 0 && add_coupon_length > 0){ //일반쿠폰 & 추가쿠폰 존재할때
+			$('.coupon_pcs').text('2');
+			$('.coupon_length').text('2');
+		}else if(normal_coupon_length == 0){ //일반쿠폰 존재하지 않을때
+			$('.coupon_pcs').text('0');
+			$('.coupon_length').text('0');
+		}else if(normal_coupon_length > 0 && add_coupon_length == 0 ){ // 일반쿠폰은 있고, 추가 쿠폰 없을때
+			$('.coupon_pcs').text('1');
+			$('.coupon_length').text('1');
+		}else{
+			return false;
+		}
+		
+		numberWon();
+		
+	}
+
+	
+
+	/**
+     * 데이터 쿠폰 단위에 따라서 수식 정리(원 -> 가격, 가격 -> 원)
+     * cp_type에 따른 분류, 추가 쿠폰 가능여부, 상품가능금액 여부
+     * */
+	function numberWon(){
+		$('#main_coupon input').each(function(){
+
+			if(  $(this).attr('data-cpprice') > 99){//원가격으로 떨어질경우
+				$(this).siblings().find('.discp_price').text( addComma( $(this).attr('data-cpprice') ) ); 
+				var addComma_cp_max_price = addComma($(this).data('cp_max_price'));//상품 가능금액
+				$(this).siblings().find('.cp_max_price').text( addComma_cp_max_price );
+				$(this).siblings().find('.per').hide();;//퍼센트 노출
+				$(this).siblings().find('.unit_won').show();//원 노출
+			}else{
+				var cart_movie_tprice = $('#cart_movie_tprice').val(); //우측 동영상 상품 금액 총합
+				//if( cart_movie_tprice ){
+				var total_odprice = parseInt(cart_movie_tprice);
+				var percent= parseInt( $(this).attr('data-cpprice') );
+				var discount_price_per = Math.round(total_odprice * (100 - percent) / 100);
+				var discounted_price =  Math.round(total_odprice - discount_price_per);
+				$(this).parent().find('.discp_price').text( addComma(discounted_price) );
+				var addComma_cp_max_price = addComma($(this).data('cp_max_price'));//상품가능금액
+				$(this).siblings().find('.cp_max_price').text( addComma_cp_max_price );
+				//$('#main_coupon .cp_max_price').text(addComma_cp_max_price);
+
+				$(this).siblings().find('.per').show();//퍼센트 노출
+				$(this).siblings().find('.unit_won').hide();//원 노출
+			}
+
+			if( $(this).data('cp_type') == 1 ){
+				$(this).parent().find('.cp_type1').show();
+				$(this).parent().find('.cp_type2').hide();
+			}else if( $(this).data('cp_type') == 2 ){
+				$(this).parent().find('.cp_type1').hide();
+				$(this).parent().find('.cp_type2').show();
+			}
+
+			if( $(this).data('cp_another_use') == 0 ){
+				$(this).parent().find('.cp_another_use0').show();
+				$(this).parent().find('.cp_another_use1').hide();
+			}else if( $(this).data('cp_another_use') == 1 ){
+				$(this).parent().find('.cp_another_use0').hide();
+				$(this).parent().find('.cp_another_use1').show();
+			}
+
+
+			if( $(this).data('cp_max_price') == 0 ){
+				$(this).parent().find('.dis_none').css('display','none');
+			}
+			
+		});
+
+		$('#sale_list input').each(function(){
+			var aaaw = $(this).attr('data-cpprice');//추가쿠폰 금액
+			$(this).parent().find('.discp_price').text(addComma(aaaw));//추가쿠폰 금액 컴마처리
+			var ssdd = $(this).attr('data-cp_max_price');//상품 가능금액
+			$(this).parent().find('.cp_max_price').text(addComma(ssdd));//상품 가능금액 컴마처리
+			$(this).parent().find('.per, .cp_type2, .cp_another_use1, .cp_another_use0').hide();
+		});
+		
+	}
+	
+    
+    /**
+     * 페이지 로드시 적용되는 함수
+     * 페이지 로드시 최대 쿠폰, 최대 적립금 자동적용
+     * 최대할인적용 클릭 이벤트 포함되어 있음 max_discount
+     * maxcash함수가 안에서 이함수 안에서 호출됨
+    */
+	function coupon_all(){ 
+
+		var cmp = parseInt($('#cart_movie_tprice').val());//상품가액
+		
+        /**********일반 쿠폰 최대값 뽑는 코드*********/
+		var grpl = $("#main_coupon input").length;
+		var grparr = new Array(grpl);
+		//var grparr_1 = new Array(grpl);
+		for(var i=0; i<grpl; i++){  
+			grparr[i] = parseInt( unComma($("#main_coupon input").eq(i).siblings().find('.discp_price').text()) );//원가격표기
+			var maxPrice1 = Math.max.apply(null, grparr);
+
+			if( grparr[i] < maxPrice1 && grparr[i]){
+				next_maxprice = grparr[i];
+			}
+			//grparr_1[i] = parseInt( $("#main_coupon input").eq(i).data('cpprice') );//퍼센트값
+			//var maxPrice_1 = Math.max.apply(null, grparr_1);
+		}
+        /**********일반 쿠폰 최대값 뽑는 코드*********/
+
+		/**********추가 쿠폰 최대값 뽑는 코드*********/
+		var grpl2 = $("#sale_list input").length;
+		var grparr2 = new Array(grpl2);
+		for (var i = 0; i < grpl2; i++) {
+			grparr2[i] = parseInt($("#sale_list input").eq(i).data('cpprice'));
+			// var sub_max = grparr2[i];
+			var sub_max = Math.max.apply(null, grparr2);
+			var maxPrice2 = maxPrice1 + sub_max;
+			//var maxPrice2 = Math.max.apply(null, grparr2);
+
+			// 상품가액을 넘지 않는 경우에만 추가쿠폰 체크
+			if(maxPrice2 <= cmp - 300) {
+				$('#sale_list input[data-cpprice="' + sub_max + '"]').eq(0).prop('checked', true);
+			}else{
+				$('#sale_list input[data-cpprice="' + sub_max + '"]').eq(0).prop('checked', false);
+			}
+		}
+        /**********추가 쿠폰 최대값 뽑는 코드*********/
+
+		if( $('#prChk').val() == 1 ){//회원가입 5%프로 쿠폰만 적용되게 하는 코드
+			$('#main_coupon input').prop('checked', false);//초기화
+			//var cp_id_lock = $('#main_coupon input').data('cp_id') == 232;
+			$('#main_coupon input[data-cp_id="' + 232 + '"]').prop('checked', true);
+			$('#main_coupon input').not($('#main_coupon input[data-cp_id="' + 232 + '"]')).prop('checked', false);
+		}
+		
+		if( $('#main_coupon input:checked').attr('data-cp_another_use') == 0 ){//선택된 일반쿠폰 파라미터값이 추가 할인 쿠폰을 사용하면 안되는조건일 경우
+			//alert('추가 할인 쿠폰을 사용할 수 없는 쿠폰입니다.');
+			//$(this).prop('checked',false);
+			$("#sale_list input").prop('checked',false);
+		}
+		
+
+        /**********최대 할인 적용 버튼 이벤트*********/
+		$( "#max_discount").click(function(){//최대 할인 체크박스
+
+			if ($("#max_discount").is(":checked")){
+				$('#main_coupon input').prop('checked', false);// 초기화
+				$('#sale_list input').prop('checked', false);// 초기화
+				$('.cash_kind').prop('checked',false)//적립금선택 초기화
+				$('.play_cash, .book_cash, .mock_cash').text(0);//적립금 내역 초기화
+
+
+				if( $('#prChk').val() == 1 ){//회원가입 5%프로 쿠폰만 적용되게
+					$('#main_coupon input').prop('checked', false);//초기화
+					$('#sale_list input').prop('checked', false);//초기화
+					//var cp_id_lock = $('#main_coupon input').data('cp_id') == 232;
+					$('#main_coupon input[data-cp_id="' + 232 + '"]').prop('checked', true);//회원가입 쿠폰 체크
+					// $('#main_coupon input').not($('#main_coupon input[data-cp_id="' + cp_id_lock + '"]')).prop('checked', false);
+				}
+
+                /*********일반쿠폰 최대값 뽑기*********/
+				$("#main_coupon input").each(function(){
+					var dis_apply = parseInt(unComma($(this).siblings().find('.discp_price').text()));//쿠폰가격
+					var max_cp_max_price = parseInt($(this).data('cp_max_price'));//사용가능금액
+					if (cmp >= max_cp_max_price && dis_apply > maxDisApply && $('#prChk').val() != 1) {
+						maxDisApply = dis_apply;
+						maxDisApplyInput = $(this);
+					}
+				});
+                
+				// 최대값을 가진 input 요소에 대한 동작 수행
+				if (maxDisApplyInput) {
+					maxDisApplyInput.prop("checked", true);
+				}
+                /*********일반쿠폰 최대값 뽑기*********/
+
+
+				//일반쿠폰중 추가쿠폰 불가한 것 선택되어있으면
+				if( $('#main_coupon input:checked').attr('data-cp_another_use') == 0){
+					//alert('추가 할인 쿠폰을 사용할 수 없는 쿠폰입니다.');
+					$('#sale_list input').prop('checked',false);
+				}
+
+				//쿠폰 총액이 동영상 등 상품가격보다 클때
+				if( parseInt(unComma($('#main_coupon input:checked').parent().find('.discp_price').text())) + parseInt($('#sale_list input:checked').attr('data-cpprice')) > cmp){
+				    alert('상품 금액 이상의 할인 쿠폰은 사용할 수 없습니다.');
+				}
+				setTimeout(function() {
+					maxcash();
+				},1000);
+				
+			}else{
+				$('#main_coupon input').prop('checked', false);//일반쿠폰 체크해제
+				$('#sale_list input').prop('checked', false);//추가쿠폰 체크해제
+				$('.cash_kind').prop('checked', false);//적립금상품 체크해제
+				$('#od_cash').val(0);//적립금
+				$('.final_cash, .play_cash, .book_cash, .mock_cash').text(0);//우측 결제내역(play_cash => 동영상, book_cash=> 도서, mock_cash=> 모의고사) final_cash는 적립금 적용하기 금액
+				$('.order-discount-item.cash .auto_price').attr('value',addComma(0) +'원');
+				$('.none_history').show();//우측 결제내역 -> 디폴트가 0 노출
+				$('.play_history, .book_history, .mock_history').hide(); //우측 결제내역 -> 적용된 상품 타입에 따른 적립금 노출 
+				$('.coupon_number, .coupon_ment').hide();
+			}
+
+			normal_coupon_list();//일반 쿠폰 유효성 검사 관련 함수 호출
+			setTimeout(function() {
+				plus_coupon_list();//추가 쿠폰 유효성 검사 관련 함수 호출
+			}, 300);
+		
+			preventDoubleClick();//최대 할인 버튼 클릭시 중복 클릭 막기
+		});
+        /**********최대 할인 적용 버튼 이벤트*********/
+		function preventDoubleClick() {
+			var checkbox = document.getElementById('max_discount');
+			if (checkbox.disabled) {
+				return; // 중복 클릭 방지
+			}
+
+			checkbox.disabled = true;
+
+			// 클릭 이벤트 후에 일정 시간(예: 2초) 이후에 다시 활성화
+			setTimeout(function() {
+				checkbox.disabled = false;
+			}, 1000); // 2초
+		}
+
+        /**********일반 쿠폰 선택 이벤트*********/
+		$('#main_coupon').on('change',function(){//일반쿠폰 상태변화 감지 
+			normal_coupon_list();//일반 쿠폰 유효성 검사 관련 함수 호출
+			setTimeout(function() {
+				plus_coupon_list();//추가 쿠폰 유효성 검사 관련 함수 호출
+			}, 300);
+		});
+
+      
+		$("#main_coupon input").click(function(){
+			
+			if( $(this).attr('data-cp_max_price') > cmp ){
+				$(this).prop('checked', false);
+				alert('사용가능 금액을 확인해 주세요');
+			}
+
+			if ($(this).is(":checked")){
+				$(this).parent().siblings().find('input:checked').prop('checked',false); //선택한 쿠폰 외 다른쿠폰 선택 되어져 있으면 풀기
+				$('#max_discount').prop('checked', false);// 최대할인 체크풀어짐
+				$('#sale_list input').prop('checked',false);//추가쿠폰 체크해제
+				$('.cash_kind').prop('checked', false);//적립금 체크해제
+				$('#od_cash').val(0);//적립금
+				$('.play_cash, .book_cash, .mock_cash, .final_cash').text(0);//우측 결제내역(play_cash => 동영상, book_cash=> 도서, mock_cash=> 모의고사) final_cash는 적립금 적용하기 금액
+				$('.order-discount-item.cash .auto_price').attr('value',addComma(0) +'원');
+
+
+				if( $('#prChk').val() == 1 ){//회원가입 5%프로 쿠폰만 적용되게
+					$('#main_coupon input').prop('checked', false);//초기화
+					//var cp_id_lock = $('#main_coupon input').data('cp_id') == 232;
+					$('#main_coupon input[data-cp_id="' + 232 + '"]').prop('checked', true);
+					$('#main_coupon input').not($('#main_coupon input[data-cp_id="' + 232 + '"]')).prop('checked', false);
+
+					if( $(this).data('cp_id') != 232){
+						alert('적용할 수 없는 쿠폰입니다.');
+					}
+				}
+			}else{
+				$('#sale_list input').prop('checked',false);
+			}
+		});
+        /**********일반 쿠폰 선택 이벤트*********/
+
+
+        /**********추가 쿠폰 선택 이벤트*********/
+		$('#sale_list').on('change',function() {
+			plus_coupon_list();
+		});
+
+		$("#sale_list input").click(function(){
+			
+			if ($(this).is(":checked")){
+				$(this).parent().siblings().find('input:checked').prop('checked',false); //선택한 쿠폰 외 다른쿠폰 선택 되어져 있으면 풀기
+					
+			}else{
+				$('#max_discount').prop('checked',false);
+			}
+			//일반쿠폰중 추가쿠폰 불가한 것 선택되어있으면
+			if( $('#main_coupon input:checked').attr('data-cp_another_use') == 0 && $(this) ){//선택된 일반쿠폰이 추가 할인을 적용할 수 없는 쿠폰 일떄 조건
+				alert('추가 할인 쿠폰을 사용할 수 없는 쿠폰입니다.');
+				//$(this).prop('checked',false);
+				$("#sale_list input").prop('checked',false);
+			}
+
+			//쿠폰 총액이 동영상 등 상품가격보다 클때
+			if( parseInt(unComma($('#main_coupon input:checked').parent().find('.discp_price').text())) + parseInt($(this).attr('data-cpprice')) > cmp){//선택된 일반쿠폰 가격 + 선택된 추가 쿠폰 가격 > 상품가격
+				alert('상품 금액 이상의 할인 쿠폰은 사용할 수 없습니다.');
+				$(this).prop('checked',false);
+			}
+		});
+         /**********추가 쿠폰 선택 이벤트*********/
+
+		normal_coupon_list();//일반 쿠폰 유효성 검사 관련 함수 호출
+        setTimeout(function() {
+            plus_coupon_list();//추가 쿠폰 유효성 검사 관련 함수 호출
+        }, 300);
+		
+		setTimeout(function() {
+			maxcash();//적립 최대 적용 함수 호출
+		},1000);
+	}
+
+	/**
+     * 페이지 로드시 최대 적립금 뽑는 함수 선언
+     * 선택된 상품 타입에 따른 적립금 적용 -> 우측 결제 내역 
+    */
+	function maxcash(){	
+			
+			/*************상품 가격이 높은거 찾기***********/
+			var grpl = $(".cash_kind").length;
+			//배열 생성
+			var grparr = new Array(grpl);
+			//배열에 값 주입
+			for(var i=0; i<grpl; i++){                          
+				grparr[i] = parseInt($(".cash_kind").eq(i).data('it_price'));
+				
+				//console.log(grparr[i]);
+	
+				var maxPrice = Math.max.apply(null, grparr);
+				//console.log(maxPrice);
+				//console.log(mixPrice12);
+			}
+            /*************상품 가격이 높은거 찾기***********/
+
+			var have_cash = parseInt ($('#od_mem_cash').val());//보유금액
+			var expansivePrice = maxPrice;
+			var it_type = $('.cash_kind').data('it_type');//선택된 상품의 타입
+			var od_price = parseInt($('#od_total_price').val());//총 상품의 금액
+			var text_total_coupon= parseInt($('#od_coupon').val());//적용된 적립금값
+			$('.cash_kind[data-it_price="' + maxPrice + '"]').prop('checked', true);//상품가가 제일 큰상품 선택
+			
+			if(have_cash < 5000){//보유금액이  5000미만일 때 
+				
+				$('.order-discount-item.cash .auto_price').attr('value','5,000원 이상 사용 가능');
+            }else if( parseInt($('#cart_movie_tprice').val()) - parseInt(unComma($('#it_cc_1').text())) - 300 < 5000 ){//동영상 총금액 - 적용된 쿠폰 사용 금액 - 300
+                $('.cash_kind').prop('checked',false);//적립금 상품 체크해제
+                $('#dsp_cash').val('');//적립금 입력단 초기화
+                $('#od_cash').val('');//적용된 적립금 초기화
+                $('.order-discount-item.cash .auto_price').attr('value','5,000원 이상 사용 가능');
+            }else{
+
+				if( od_price - text_total_coupon > have_cash - 300){// 총 상품 금액 - 적용된 적립금값 > 보유금액 - 300
+
+					if( $('.cash_kind:checked').attr('data-it_type') == 1){//선택한 상품의 타입이 동영상일떄
+						$('.play_history').css('display','flex');
+						$('.none_history, .book_history, .mock_history').css('display','none');
+						$('.play_cash').text( addComma(have_cash) );//우측 적립금 사용 노출, 동영상(보유적립금)
+						$('.final_cash').text( addComma(have_cash) );//적립금 적용하기 버튼금액(보유적립금)
+						$('#dsp_cash').val( addComma(have_cash) );//적립금 입력단(보유적립금)
+						$('.order-discount-item.cash .auto_price').attr('value',addComma(have_cash) +'원');
+					}else if($('.cash_kind:checked').attr('data-it_type') == 0){//선택한 상품의 타입이 도서일떄
+						$('.book_history').css('display','flex');
+						$('.none_history, .play_history, .mock_history').css('display','none');
+						$('.book_cash').text( addComma(expansivePrice) );//우측 적립금 사용 노출, 도서(최대 상품값 적용)
+						$('.final_cash').text( addComma(expansivePrice) );//적립금 적용하기 버튼금액(최대 상품값 적용)
+						$('#dsp_cash').val( addComma(expansivePrice) );//적립금 입력단(최대 상품값 적용)
+						$('.order-discount-item.cash .auto_price').attr('value',addComma(expansivePrice) +'원');
+					}else if( $('.cash_kind:checked').attr('data-it_type') == 2 && $('.cash_kind:checked').attr('data-it_price') > 5000){///선택한 상품의 타입이 모의고사일떄
+						$('.mock_history').css('display','flex');
+						$('.none_history, .play_history, .book_history').css('display','none');
+						$('.mock_cash').text( addComma(expansivePrice) );//우측 적립금 사용 노출, 모의고사(최대 상품값 적용)
+						$('.book_cash').text( addComma(expansivePrice) );
+						$('.final_cash').text( addComma(expansivePrice) );
+						$('#dsp_cash').val( addComma(expansivePrice) );
+						$('.order-discount-item.cash .auto_price').attr('value',addComma(expansivePrice) +'원');
+					}
+
+				}else{
+					if( $('.cash_kind:checked').attr('data-it_type') == 1){//선택한 상품의 타입이 동영상일떄
+						$('.play_history').css('display','flex');
+						$('.none_history, .book_history, .mock_history').css('display','none');
+						$('.play_cash').text( addComma(od_price - text_total_coupon -300) );
+						$('.final_cash').text( addComma(od_price -text_total_coupon -300) );
+						$('#dsp_cash').val( addComma(od_price -text_total_coupon -300) );
+						$('.order-discount-item.cash .auto_price').attr('value',addComma(od_price - text_total_coupon -300) +'원');
+					}else if($('.cash_kind:checked').attr('data-it_type') == 0){// 도서 일때
+						$('.book_history').css('display','flex');
+						$('.none_history, .play_history, .mock_history').css('display','none');
+						$('.book_cash').text( addComma(expansivePrice -300) );
+						$('.final_cash').text( addComma(expansivePrice -300) );
+						$('#dsp_cash').val( addComma(expansivePrice -300) );
+						$('.order-discount-item.cash .auto_price').attr('value',addComma(expansivePrice -300) +'원');
+					}else if( $('.cash_kind:checked').attr('data-it_type') == 2 && $('.cash_kind:checked').attr('data-it_price') > 5000){// 모의고사 일떄
+						$('.mock_history').css('display','flex');
+						$('.none_history, .play_history, .book_history').css('display','none');
+						$('.mock_cash').text( addComma(expansivePrice -300) );
+						$('.book_cash').text( addComma(expansivePrice -300) );
+						$('.final_cash').text( addComma(expansivePrice -300) );
+						$('#dsp_cash').val( addComma(expansivePrice -300) );
+						$('.order-discount-item.cash .auto_price').attr('value',addComma(expansivePrice -300) +'원');
+					}
+				}
+			}
+			$('#chk_dc').val('od_cash');
+			var od_cash = unComma($('#dsp_cash').val());
+
+			if(od_cash=='') od_cash = 0;
+			$('#od_cash').val(od_cash);
+			re_comp();//계산 해주는 함수
+
+			/************적립금 상품 선택 이벤트************/
+			$(".cash_kind").each(function(){
+				$(this).on('change',function(){
+
+					$(this).parent().siblings().find('input[type="checkbox"]').prop('checked',false); //선택한 쿠폰 외 다른쿠폰 선택 되어져 있으면 풀기
+					$('#max_discount').prop('checked', false);
+					
+					
+					var have_cash = $('#od_mem_cash').val();//보유한 적립금
+					var it_price = $(this).data('it_price');//선택한 것의 상품가격
+					var it_type =$(this).data('it_type')//선택한 것의 상품 타입
+					var coupon_check1 = parseInt(unComma($('#main_coupon input:checked').parent().find('.discp_price').text()));//체크된 일반 쿠폰 가격
+					var coupon_check2 = parseInt(unComma($('#sale_list input:checked').parent().find('.discp_price').text()));//체크된 추가 쿠폰 가격
+					//console.log(coupon_check1 + coupon_check2);
+	
+					if( $(this).is(':checked') == true){//적립금 상품 선택할 경우
+	
+						if(have_cash < od_price && (!$('#main_coupon input:checked') && !$('#sale_list input:checked'))){ //보유하고 있는 금액이 상품가격보다 작을때
+
+							$('.final_cash').text( addComma(have_cash) );//적립금 적용하기 버튼 값(보유적립금)
+							$('#dsp_cash').val( addComma(have_cash) );//적립금 입력단(보유적립금)
+							$('.order-discount-item.cash .auto_price').attr('value',have_cash +'원');
+	
+							//우측 계산 내역 : 상품 타입에 따른 할인 금액 산출 
+							if(it_type == 1){ //동영상 일때
+								$('.play_cash').text( addComma(have_cash) );
+								$('.book_cash').text(0);
+								$('.mock_cash').text( addComma(0) );
+							}else if(it_type == 0){// 도서 일때
+								$('.book_cash').text( addComma(have_cash) );
+								$('.play_cash').text(0);
+								$('.mock_cash').text( addComma(0) );
+							}else if(it_type == 2 || it_type == 6 || it_type == 7){// 모의고사 일떄
+								$('.mock_cash').text( addComma(have_cash) );
+								$('.book_cash').text( addComma(0) );
+								$('.play_cash').text(0);
+							}
+						}else{ //보유하고 있는 금액이 상품가격보다 클때
+
+							if(it_type == 1){ //동영상 일때
+								$('.play_history').css('display','flex');
+								$('.none_history, .book_history, .mock_history').css('display','none');
+								$('.play_cash').text( 0 );//동영상
+								$('.book_cash').text( 0 );//도서
+								$('.mock_cash').text( 0 );//모의고사
+								$('.final_cash').text( 0 );//적립금 적용하기 버튼 값
+								$('#dsp_cash').val( 0 );//적립금 입력단
+								$('.order-discount-item.cash .auto_price').attr('value',addComma(0) +'원');
+							}else if(it_type == 0){// 도서 일때
+								$('.book_history').css('display','flex');
+								$('.none_history, .play_history, .mock_history').css('display','none');
+								$('.book_cash').text( 0 );//도서
+								$('.play_cash').text(0);//동영상
+								$('.mock_cash').text(0);//모의고사
+								$('.final_cash').text( 0 );//적립금 적용하기 버튼 값
+								$('#dsp_cash').val( 0 );//적립금 입력단
+								$('.order-discount-item.cash .auto_price').attr('value',0 +'원');
+							}else if(it_type == 2 || it_type == 6 || it_type == 7){// 모의고사 일떄
+								$('.mock_history').css('display','flex');
+								$('.none_history, .play_history, .book_history').css('display','none');
+								$('.mock_cash').text( 0 );//모의고사
+								$('.book_cash').text(0);//도서
+								$('.play_cash').text(0);//동영상
+								$('.final_cash').text( 0 );//적립금 적용하기 버튼 값
+								$('#dsp_cash').val( 0 );//적립금 입력단
+								$('.order-discount-item.cash .auto_price').attr('value',0 +'원');
+							}
+						}
+
+						var point_kind = $('#kind_chice option:selected').val();//적립금 상품타입 선택
+						//console.log(point_kind);
+						var add_point = unComma($('#dsp_cash').val());//적립금 팝업 안에 적립금 입력박스
+						var it_price_temp = unComma($("#it_price_" + point_kind).html());//우측 결제 내역안에 상품타입별
+						var it_coupon_temp = unComma($("#it_coupon_" + point_kind).html());//우측 결제 내역 > 선택된 쿠폰 가격 노출
+						var it_cash_temp = unComma($("#it_cash_" + point_kind).html());//우측 결제 내역 > 선택된 적립금 가격 노출
+
+						///////적립금 타입 분류
+						if( $('.cash_kind:checked').data('it_type') == 1){//동영상 일때
+							$("#it_cc_cash_1").html( $('.final_cash').text() );
+						}else if( $('.cash_kind:checked').data('it_type') == 0){//도서 일때
+							$("#it_cc_cash_0").html( $('.final_cash').text() );
+						}else if( $('.cash_kind:checked').data('it_type') == 2 || $('.cash_kind:checked').data('it_type') == 6 || $('.cash_kind:checked').data('it_type') == 7){//모의고사 일때
+							$("#it_cc_cash_2").html( $('.final_cash').text() );
+						}
+						//var ssdsd = $("#it_cc_cash_" + point_kind).html( $('.final_cash').text() );
+						//console.log(point_kind);
+						//console.log(ssdsd);
+						// console.log("============");
+						// console.log("★add_cash.click");
+						// console.log("point_kind>"+point_kind);
+						// console.log("add_point>"+add_point);
+						// console.log("it_price_temp>"+it_price_temp);
+						// console.log("it_coupon_temp>"+it_coupon_temp);
+						// console.log("it_cash_temp>"+it_cash_temp);
+						// console.log("it_delevery_temp>"+it_delevery_temp);
+						// console.log("it_price_money_temp>"+it_price_money_temp);
+
+						$('#chk_dc').val('od_cash');
+						var od_ahn = $('#od_ahn').val();
+						var od_cash = unComma($('#dsp_cash').val());//적립금 입력단 가격
+						var od_coupon = $('#od_coupon').val();//적용된 쿠폰 가격
+						var od_mem_cash = $('#od_mem_cash').val();//보유 적립금
+						var settle_price = $('#od_settle_price').val();//세팅 값
+						var buy_gift = $('#buy_gift').val();//증정품 가격
+						var discount_price_sum = parseInt(od_coupon)+parseInt(od_cash) ;//적용된 쿠폰 가격 + 적립금 입력단 가격
+						
+						//if(od_cash=='') od_cash = 0;
+						$('#od_cash').val(od_cash);
+						//re_comp();
+					}else{
+						$('.none_history').css('display','flex');
+						$('.play_history, .book_history, .mock_history').css('display','none');
+						$('.final_cash').text( 0 );
+						$('#dsp_cash').val( 0 );
+						$('.play_cash, .book_cash, .mock_cash').text(0);
+						$('.order-discount-item.cash .auto_price').attr('value',0 +'원');
+
+						$('#od_cash').val(0);
+						//table_clear();
+						re_comp();
+					}
+				});
+			});
+            /************적립금 상품 선택 이벤트************/
+		}
+	
+    /**********일반 쿠폰 유효성 검사*********/
+    /**
+     * 선택된 쿠폰의 value값을 가져온후, split함수를 써서 쪼갠다음 쪼갠 value값 중 쿠폰 id,cp_id를 ajax로 보냄
+     * 보낸 후 받아온 값이 'n'이면 적용 불가, else 이면 상품에 적용해서 계산함
+    */
+    function normal_coupon_list(){
+
+		var cp = $('#main_coupon input:checked').val();
+		var cp_text = "";
+		var coupon_path = "/mypage/ajax_order_coupon_comp_stest_20180625.php";
+		var len = $(".cp_len").length;
+		if(cp) {
+			var coupon = cp.split(':');
+			$.post( coupon_path ,{ id: coupon[0], cp_id: coupon[1] },function(rec) {
+				//console.log( coupon + "|" + rec );
+				if(rec=='n') {
+					alert('적용할 수 없는 쿠폰입니다.');
+					$('#main_coupon input').prop('checked', false);
+					$('#sale_list input').prop('checked', false);
+
+				} else {
+					//console.log(rec);
+					$('#coupon_price_area').show();
+					var rec_coupon = rec.split(':');
+					// 금액이 존재할때만 적용처리
+					var od_coupon = parseInt(rec_coupon[1]);//선택된 일반쿠폰 가격
+					//console.log(rec);
+					var order_status = 0;
+					if( od_coupon ){
+						
+						$('#od_coupon_id').val(coupon[0]);
+						$('#od_coupon_use').val(coupon[2]);
+						$('#od_coupon').val(od_coupon);
+						$('#od_coupon_b').val(od_coupon);
+						re_comp();
+
+						// 특정 쿠폰 적용 시 주소 노출 시키는 내용 추가 - 2014.12.19 by jhson [시작]
+						$('[name^=delivery_it_type]').each(function(i){
+							if($('[name^=delivery_it_type]').eq(i).val() == 0 || $('[name^=delivery_it_type]').eq(i).val() == 3 || $('[name^=delivery_it_type]').eq(i).val() == 10 ) {
+								order_status = 100;
+							}
+						});
+
+						if ( order_status === 100 || coupon[1] === "375" ){
+							$("#delivery_info").show();
+							$("#delivery_info").find("tr").show();
+							$("input[name='need_delivery_coupon']").val(1);
+						}
+						else{
+							$("#delivery_info").hide();
+							$("#delivery_info").find("tr").hide();
+							$("input[name='need_delivery_coupon']").val(0);
+						}
+
+
+						// 특정 쿠폰에 따른 경품 지급에 대한 메모 기능 추가
+						if (coupon[1] === "375"){
+							$("input[name='prepend_memo']").val("(다이어리 증정)");
+						}
+						else if (coupon[1] === "398"){
+							$("input[name='prepend_memo']").val("(보조배터리 증정)");
+						}
+						else{
+							$("input[name='prepend_memo']").val("");
+						}
+						// 특정 쿠폰 적용 시 주소 노출 시키는 내용 추가 - 2014.12.19 by jhson [종료]
+					} else {
+						//alert(rec);
+						alert('적용할 금액이 존재하지 않습니다.');
+					}
+					
+				}
+
+				// 차감 위치 탐색
+				var mb_kind = "1";
+				$("#it_coupon_" + mb_kind).html(addComma(od_coupon*1));
+				//var add_copuon = $('#sale_list input:checked').data('cpprice');// 체크되어 있는 추가쿠폰
+				//$("#it_addcoupon_" + mb_kind).html(add_copuon);
+				var it_price_temp = unComma($("#it_price_" + mb_kind).html());//동영상 상품 가격 출력
+				var it_coupon_temp = unComma($("#it_coupon_" + mb_kind).html());//쿠폰 할인가격 출력
+				var it_addcoupon_temp = unComma($("#it_addcoupon_" + mb_kind).html()); // 추가 쿠폰 할인가격 출력
+				var it_cash_temp = unComma($("#it_cash_" + mb_kind).html());//적립금 할인가격 출력
+				var it_delevery_temp = unComma($("#it_delevery_" + mb_kind).html());//배송
+				var it_price_money_temp = unComma($("#it_price_money_" + mb_kind).html()); //동영상 - 할인 - 적립금
+				$("#it_cc_" + mb_kind).html(addComma(parseInt(it_coupon_temp))); //쿠폰 
+				$(".tt_dis").html(addComma(parseInt(it_coupon_temp) + parseInt(it_cash_temp)));//팝업창 안에 최종 할인내역
+
+				TotalDiscount();//추가 쿠폰도 같이 계산 해야해서 있어야함.
+			});
+
+			
+
+		}else{
+			//선택해제 시 초기화
+			$('#od_coupon_id').val('');
+			$('#od_coupon_use').val('');
+			$('#od_coupon').val(0);
+			$('#od_coupon_b').val(0);
+			$('#it_cc_1').text(0);
+		}
+	}
+	
+	/**********추가 쿠폰 유효성 검사*********/
+    /**
+     * 선택된 쿠폰의 value값을 가져온후, split함수를 써서 쪼갠다음 쪼갠 value값 중 쿠폰 id,cp_id,od_coupon, od_id를 ajax로 보냄
+     * 보낸 후 받아온 값이 'n'이면 적용 불가, n이 아니면 쿠폰 타입과 쿠폰가격을 가져와서 동영상 상품에 적용
+    */
+	function plus_coupon_list(){
+		var cp = $('#sale_list input:checked').val();
+		var cp_text = "";
+		var len = $(".cp_len").length;
+		var od_coupon = $("#od_coupon_b").val();
+		if(cp){
+			$('#coupon_another_info_area').show();
+			var coupon = cp.split(':');
+			for(var i=0;i<len;i++){
+				if(coupon[4]==i){
+					cp_text = $("[name^='cp_another_text']").eq(i).val();
+				}
+			}
+			$("#cp_another_info").val(cp_text);
+			if(od_coupon > 0){
+				$.post('/mypage/ajax_order_coupon_another_comp.php',{ id: coupon[0], cp_id: coupon[1] , od_coupon : od_coupon , od_id : $("[name='od_id']").val() },function(rec) {
+					//console.log( coupon + "|" + rec );
+					if(rec=='n') {
+					alert('추가 할인 쿠폰을 사용 할 수 없습니다.');
+					//location.reload();
+					} else {
+						//console.log(rec);
+						$('#coupon_price_area').show();
+						// 금액이 존재할때만 적용처리
+						
+						var od_coupon = parseInt(rec);
+						var order_status = 0;
+						if( od_coupon ) {
+							$('#od_at_coupon_id').val(coupon[0]);
+							$('#od_at_coupon_use').val(coupon[2]);
+							$('#od_coupon').val(od_coupon);
+
+							$("#it_coupon_1").html(addComma(od_coupon));
+							var mb_kind = "1";
+							var it_price_temp = unComma($("#it_price_" + mb_kind).html());
+							var it_coupon_temp = unComma($("#it_coupon_" + mb_kind).html());
+							var it_cash_temp = unComma($("#it_cash_" + mb_kind).html());
+							var it_delevery_temp = unComma($("#it_delevery_" + mb_kind).html());
+							var it_price_money_temp = unComma($("#it_price_money_" + mb_kind).html());
+
+							$("#it_price_money_" + mb_kind).html(addComma(it_price_temp - (it_coupon_temp*1 + it_cash_temp*1 + it_delevery_temp*1)));
+							re_comp();
+							
+							/////////// 6/20
+							if( parseInt($('#od_coupon').val()) > parseInt($('#od_total_price').val()) ){
+								
+								var sub_cash = parseInt($('#od_coupon').val()) - parseInt($('#od_coupon_b').val());
+								var difference = parseInt($('#od_coupon').val()) - sub_cash;
+								$('#od_coupon').val(difference);
+							}
+							//sd_work_pj
+							$("#it_cc_" + mb_kind).html(addComma(parseInt(it_coupon_temp)));
+						} else {
+
+							alert('적용할 금액이 존재하지 않습니다.');
+						}
+					}
+				});
+			}
+		} else {
+			//체크 해제시
+			
+				$('#od_coupon').val(od_coupon);
+			
+			//console.log('1111:' + od_coupon);
+			//console.log('2222:' + od_coupon);
+			var mb_kind = "1";
+			var it_price_temp = unComma($("#it_price_" + mb_kind).html());
+			var it_coupon_temp = od_coupon;
+			var it_cash_temp = unComma($("#it_cash_" + mb_kind).html());
+			var it_delevery_temp = unComma($("#it_delevery_" + mb_kind).html());
+			var it_price_money_temp = unComma($("#it_price_money_" + mb_kind).html());
+			$("#it_price_money_" + mb_kind).html(addComma(it_price_temp - (it_coupon_temp*1 + it_cash_temp*1 + it_delevery_temp*1)));
+			$("#it_coupon_" + mb_kind).html(addComma($('#od_coupon').val()));
+			$("#it_cc_" + mb_kind).html(addComma(parseInt(it_coupon_temp)));
+			
+		}
+		var normal_checked= $('#main_coupon input').is(':checked');//선택한 일반 쿠폰
+		var add_checked= $('#sale_list input').is(':checked');//선택한 추가 쿠폰
+		if( add_checked == true && normal_checked == false ){//일반 쿠폰 누르지 않고 바로 추가 할인 쿠폰 눌렀을시
+			if( $('#main_coupon input').length == 0 ){
+				$("#max_discount").prop('checked',false);
+			}
+			if( $('#main_coupon input').length > 0){
+				alert('추가할인 쿠폰은 할인 쿠폰 선택 후 사용할 수 있습니다.');
+				$('#total_dc_view').text(0);
+			}
+			$("#sale_list input").prop('checked',false);
+			$('.tc_coupon').text('0');
+			$('.tt_dis').text('0');
+			$('.it_cc_1').text(0);
+			$('.order-discount-item.coupon auto_price').attr('value', 0 + '원');
+		}
+
+		
+
+		re_comp();
+		TotalDiscount(); // 쿠폰 팝업창 쿠폰사용,할인금액 함수
+
+		
+	}
+
+	/**
+     * 선택된 쿠폰 가격, 장수 합계 낸 후 쿠폰 적용하기 버튼에 값과 장수 보냄
+     * 팝업창 밖에 인풋박스 총 할인금액 출력
+    */
+	function TotalDiscount(){
+		var totalPrice = 0;
+		var totalCoupon = 0;
+		var regexp = /\B(?=(\d{3})+(?!\d))/g; // 숫자 콤마찍기 옵션
+
+		$('#main_coupon .normal_coupon_list').each(function(){
+			var selectChk = $(this).find('input[type="checkbox"]:checked');
+			var pricesum = 0;
+			var copuonsum = 0;
+
+			selectChk.each(function(){
+				if( $(this).attr('data-cpprice') < 100 ){
+
+				
+					var total_odprice = parseInt($('#cart_movie_tprice').attr('value'));
+					var percent = parseInt($(this).attr('data-cpprice'));
+					var per_chk = Math.round(total_odprice * (100 - percent) / 100);
+					var discounted_price =  Math.round(total_odprice - per_chk);
+					var thisVal2 = parseInt($(this).attr('data-use'));
+
+				}else{
+					var total_odprice = parseInt($('#cart_movie_tprice').attr('value'));
+					var discounted_price = parseInt($(this).attr('data-cpprice'));
+					//var discount_price = Math.round(total_odprice * (100 - percent) / 100);
+					//var discounted_price =  Math.round(total_odprice - discount_price);
+					var thisVal2 = parseInt($(this).attr('data-use'));
+				}
+				
+				pricesum += discounted_price;
+				copuonsum += thisVal2;
+			});
+			totalPrice += pricesum;
+			totalCoupon += copuonsum;
+		});
+		
+		$('#sale_list .normal_coupon_list').each(function(){
+			var selectChk = $(this).find('input[type="checkbox"]:checked');
+			var pricesum = 0;
+			var copuonsum = 0;
+
+			selectChk.each(function(){
+				var thisVal = parseInt($(this).attr('data-cpprice')); 
+				var thisVal2 = parseInt($(this).attr('data-use'));
+				
+				pricesum += thisVal;
+				copuonsum += thisVal2;
+			});
+			
+			totalPrice += pricesum;
+			totalCoupon += copuonsum;
+		});
+		
+
+		//totalPrice = totalPrice.toString().replace(regexp, ',');
+		$('.tt_dis').text( addComma(totalPrice) );//쿠폰 총 할인 금액
+		//console.log(totalPrice);
+
+		$('.order-discount-item.coupon .auto_price').attr('value',addComma(totalPrice) +'원'); //팝업창 밖에 인풋박스 총 할인금액 출력
+		$('#it_cc_1').text( addComma(totalPrice));
+		totalCoupon = totalCoupon.toString().replace(regexp, ',');
+		$('.tc_coupon').text(totalCoupon);
+		$('.coupon_number').text(totalCoupon);
+
+		if( $('#od_coupon').val() == 0 ){
+			$('.coupon_number').hide();
+			$('.jang').hide();
+		}else{
+			$('.coupon_number').show();
+			$('.jang').show();
+		}
+	}
+
+
+    /**
+     * 적립금 값에 대한 유효성 검사
+    */
+	function re_comp(showMsg){
+
+        /**
+         * $('#od_total_price').val(); 담아져 있는 총 상품 가격
+         * $('#od_total_enuri').val(); 에누리 가격
+         * $('#od_settle_price').val(); 세팅 가격 (총 상품 가격)
+         * $('#cart_b_tprice').val() 도서 총 금액
+         * $('#od_coupon').val(); 적용된 쿠폰 가격
+         * $('#od_cash').val(); 적용된 적립금 가격
+         * $("[name='od_mem_cash']").val() 보유 적립금
+         * $('#cart_movie_tprice').val() 동영상 상품 총 금액
+         * $('#it_cc_cash_1').text() 동영상 상품에 대하여 적용된 적립금
+         * $('#it_cc_1').text() 동영상 상품에 대하여 적용된 쿠폰가격
+         * 
+        */
+
+		//console.log("==================================================");
+		var total_price =  $('#od_total_price').val();
+		var total_enuri =  $('#od_total_enuri').val();
+		var settle_price = $('#od_settle_price').val();
+		var delivery = $('#od_delivery').val(); //20141120 도서정가제로 사용안함 //sun
+		var od_coupon = $('#od_coupon').val();
+		var od_cash = $('#od_cash').val();
+		var od_ahn = $('#od_ahn').val();
+		var dscountval = $('#dscountval_sum').val();
+		var od_mem_cash = parseInt($("[name='od_mem_cash']").val());//보유 적립금
+		var movie_pure = parseInt($('#cart_movie_tprice').val());
+		var movie_discount = parseInt(unComma($('#it_cc_1').text())) + parseInt(unComma($('#it_cc_cash_1').text()));
+		var book_pure = $('#cart_b_tprice').val();
+		var discount_book = parseInt(book_pure) - parseInt(unComma($('.book_cash').text()));
+		var discount_price = parseInt(od_coupon)+parseInt(od_cash)+parseInt(od_ahn)+parseInt(total_enuri);
+		var dst_total_price = parseInt(total_price)+parseInt(delivery)-parseInt(od_cash)-parseInt(od_coupon)-parseInt(od_ahn)-parseInt(total_enuri); //parseInt(od_coupon-od_cash)
+
+		if( parseInt(od_coupon) > parseInt(total_price - 300) ){
+			$('#sale_list input').prop('checked',false);
+			setTimeout(function() {
+				TotalDiscount();//이상 없음
+			}, 200);
+			return;
+		}
+
+		if(od_coupon>0){
+			$('#dsp_coupon').val( addComma(od_coupon));
+			$('#side_coupont_cnt').text( '1개' );
+		}
+		$('#side_pont').text( addComma(od_cash)+'P');
+		$('#discount_price').text( addComma(discount_price)+'원' );
+		$('#total_dc').val( addComma(discount_price) );
+		$('#total_dc_view').text( addComma(discount_price) );
+		$('#total_price').text( addComma(dst_total_price) );
+
+		$('.profitpop .online_span').text( addComma(movie_pure - movie_discount) );
+		$('.profitpop .note .note_span').text( addComma(discount_book) );
+		// 적립금결제로인한 결제금액이 0 원인경우
+		if(parseInt(dst_total_price) ==0){
+			arrText = "&nbsp;<input type=radio name=od_settle_use value='scash' checked='checked'>적립금(쿠폰) 결제";
+			// 해당 테그의 압쪽에 넣는다.
+			$('#radio_cash').html(arrText);    //or this.prepend(arrText.join(''));
+		}else{
+			if($("#cat_id").val()!='007002'){
+				arrText = "<label class='icon-deduction'><input type=radio name=od_settle_use value='card' onclick=\"change_type('card')\" checked> 신용카드</lable>&nbsp;<label class=\"icon-deduction\"><input type=radio name=od_settle_use value='real' onclick=\"change_type('real')\"> 실시간 계좌이체</lable>&nbsp;<label class=\"icon-deduction\"><input type=radio name=od_settle_use value='vbank' onclick=\"change_type('vbank')\"> 무통장(가상계좌)</lable>&nbsp;<label class=\"icon-deduction\"><input type=radio name=od_settle_use value='ars' onclick=\"change_type('ars')\"> ARS</lable>&nbsp;<label class=\"icon-deduction\"><input type=radio name=od_settle_use value='cellphone' onclick=\"change_type('cellphone')\"> 핸드폰</lable>&nbsp;<label class=\"icon-deduction\"><label style='display:none'><input type=\"radio\" name=\"od_settle_use\" value=\"kakaopay\" onclick=\"change_type('kakaopay')\">&nbsp;<img src=\"/_skin/sidae/images/mypage/icon/mark_s.png\" alt=\"카카오페이\"></label>	";
+			}else{
+				arrText = "<input type=radio name=od_settle_use value='card' onclick=\"change_type('card')\" checked> 신용카드&nbsp;<input type=radio name=od_settle_use value='real' onclick=\"change_type('real')\"> 실시간 계좌이체 &nbsp;<input type=radio name=od_settle_use value='vbank' onclick=\"change_type('vbank')\"> 무통장(가상계좌)&nbsp;";
+			}
+			//$('#radio_cash').html(arrText);
+		}
+
+		// 적립금 분할해서 각각의 it_cash에 저장
+		//console.log('dscountval='+ dscountval);
+		var od_id = $("input[name='od_id']").val();
+		var book_cat_id =  $('#book_cat_id').val();
+		var chk_dc = $('#chk_dc').val();
+		var s_site = '{s_site}';
+		var discount_select_res = $(".cash_kind:checked").val();
+
+		var aurl = "/mypage/ajax_order_cash_comp_20181112.php";
+
+		$.post(aurl,{ od_id: od_id, od_cash: od_cash,od_ahn: od_ahn,total_price: total_price, dscountval: dscountval, book_cat_id: book_cat_id, chk_dc:chk_dc, s_site : s_site, discount_select_res:discount_select_res},function(rec){
+			//console.log('rec=>'+ rec);
+			//console.log(showMsg);
+			if(rec!=100&& rec!=300){
+				if ((showMsg === undefined) || (showMsg === true)){
+					//alert('금액을 적용했습니다.');
+					
+					//$('.cash_pop').hide();//팝업창 닫기
+				}
+			}else if(rec==300){
+				re_comp();
+			}
+		});
+
+		$("#member_mb_cash").text(number_format2(od_mem_cash - od_cash - parseInt($("#buy_gift").val())));
+		$("#final_cash").val(od_cash - parseInt($("#buy_gift").val()));
+
+		// 차감 위치 탐색
+		var mb_kind = $(".kind_chice option:selected").val();
+		var it_price_temp = unComma($("#it_price_" + mb_kind).html());
+		var it_coupon_temp = unComma($("#it_coupon_" + mb_kind).html());
+		var it_cash_temp = unComma($("#it_cash_" + mb_kind).html());
+		var it_delevery_temp = unComma($("#it_delevery_" + mb_kind).html());
+		var it_price_money_temp = unComma($("#it_price_money_" + mb_kind).html());
+
+		if(it_cash_temp == 0){
+			$("#it_cash_" + mb_kind).html(addComma(it_cash_temp*1 + od_cash*1));
+		}else{
+			$("#it_cash_" + mb_kind).html(addComma(od_cash*1));
+		}
+
+		var it_price_temp = unComma($("#it_price_" + mb_kind).html());
+		var it_coupon_temp = unComma($("#it_coupon_" + mb_kind).html());
+		var it_cash_temp = unComma($("#it_cash_" + mb_kind).html());
+		var it_delevery_temp = unComma($("#it_delevery_" + mb_kind).html());
+		var it_price_money_temp = unComma($("#it_price_money_" + mb_kind).html());
+
+		$("#it_cc_cash_" + mb_kind).html($('.final_cash').text());
+		$("#it_cc_" + mb_kind).html(addComma(parseInt(it_coupon_temp)));
+		$("#it_price_money_" + mb_kind).html(addComma(it_price_temp - (it_coupon_temp*1 + it_cash_temp*1 + it_delevery_temp*1)));
+		
+	}
+
+	
+
+	//숫자만 입력
+	function chkNumber(){
+		//숫자만 입력되도록 아스키 코드값이 48~57만 입력 되도록
+		if(event.keyCode<48 || event.keyCode>57){
+			event.returnValue=false;
+		}
+	}
+
+	function crImeMode(obg) {
+		obj.value = obg.value.replace(/[\ㄱ-ㅎ가-힣]/g, '');
+	}
+
+
+	$(function(){
+		// 결제 방법 중 무통장 선택 시 알림문구 추가 - 2015.02.24 by jhson
+		var jqRadio = $("input[name='od_settle_use']");
+
+		jqRadio.change(function(){
+			if (this.value === "vbank"){
+				$("#notice_vbank").fadeIn();
+			}
+			else{
+				$("#notice_vbank").hide();
+			}
+		});
+
+		// 결제안내 도우미 위치 이동 기능 - 2015.03.13 by jhson
+		$(".information .btn_account_guide").draggable();
+	});
+
+
+	function addComma(num) {
+	  var regexp = /\B(?=(\d{3})+(?!\d))/g;
+	   return num.toString().replace(regexp, ',');
+	}
+
+	function unComma(num) {
+		num = String(num);
+		return num.replace(/[^\d]+/g, '');
+	}
+
+	function table_clear(){
+
+		//console.log("---------");
+		//console.log("★table_clear");
+		// 차감 위치 탐색
+		var od_cash = "0";
+
+		for(var mb_kind=0;mb_kind<3;mb_kind++){
+
+		//console.log("mb_kind > " +mb_kind);
+			$("#it_cash_" + mb_kind).html(od_cash);
+
+			var it_price_temp = unComma($("#it_price_" + mb_kind).html());
+			var it_coupon_temp = unComma($("#it_coupon_" + mb_kind).html());
+			var it_cash_temp = unComma($("#it_cash_" + mb_kind).html());
+			var it_delevery_temp = unComma($("#it_delevery_" + mb_kind).html());
+			var it_price_money_temp = unComma($("#it_price_money_" + mb_kind).html());
+			//console.log("it_price_temp > "+it_price_temp);
+			//console.log("it_coupon_temp > "+it_coupon_temp);
+			//console.log("it_price_money_temp > "+it_price_money_temp);
+			//console.log("it_cash_temp > "+it_cash_temp);
+			$("#it_cc_" + mb_kind).html(addComma(it_coupon_temp*1));
+			$("#it_price_money_" + mb_kind).html(addComma(it_price_temp - (it_coupon_temp*1 + it_cash_temp*1 + it_delevery_temp*1)));
+
+		}
+		console.log("---------");
+	}
+
+
+	
+
+		
+
+
+
+</script>
+
+<!-- 스트립트 끝!! -->
+
+
+
+

@@ -1,0 +1,521 @@
+<!-- *************************설명**************************** -->
+
+<!-- 
+    주문서 우측 결제 내역 관련 페이지는 여기서 수정합니다.
+
+    인클루드 파일은 각각,order_renew_cart.inc.htm(예외처리 되어 있습니다.), order_form.inc_renew_new.htm
+    order_renew_cart.inc.htm는 결제상품 내역들이 있고,
+	order_form_from_cart_new.inc.htm는 할인,주문자,배송정보가 인클루드 되어 있습니다.
+
+    소득공제 팝업 추가 되어 있습니다.
+    소득공제 제외한 나머지 상품은 스텝2로 넘어가지 않고 pg결제 후에 완료됩니다.
+    소득공제 결제 방식은 팝업 -> 결제하기 -> 도서 상품 제외한 나머지 상품 결제 -> 결제 완료 후 도서 결제
+    소득공제 1차 결제 후 도서 결제시 스텝 2로 넘어가서 pg창 뜹니다. 뒷배경은 스텝 1 레이아웃을 따라 갑니다. 
+    개발쪽에서 추가된 소스는 아래쪽에 체크해 두었습니다.
+    네이버페이 및 결제타입에 따른 스크립트가 추가 되어 있습니다.
+-->
+
+
+<!-- *************************설명**************************** -->
+
+
+<link rel="stylesheet" type="text/css" href="//down.isidae.com/data/fonts/SpoqaHanSanskr/SpoqaHanSanskr.css" charset="utf-8"/>
+<!-- css 원본은  order_form_renew.css 입니다.-->
+<link rel="stylesheet" type="text/css" href="/_skin/sidae/css/popkon/order_form_renew_test.css" charset="utf-8"/>
+<!-- js 원본은  order_form_renew.js 입니다.-->
+<script type="text/javascript" src="/_skin/sidae/js/order_form_from_cart_test.js" charset="utf-8"></script>
+
+<script> 
+	$(document).ready(function(){
+		//카드 팝업 이고 그 결제 안된다는 메시진가?
+	    var serverDate = new Date();
+	    var serverStart = new Date(new Date('April 05 2021 00:00:00 GMT+0900 (대한민국 표준시)'));
+	    var serverEnd = new Date(new Date('April 06 2021 07:00:00 GMT+0900 (대한민국 표준시)'));
+
+	    $(".small_notice_popup .layerpop-close").click(function(e){
+	        $(".small_notice_popup").hide();
+	    });
+
+	    if (serverDate > serverStart &&  serverDate < serverEnd){
+	        $(".small_notice_popup").show();
+
+	        if(get_cookie("small_notice_popup_kakao2021_04") == 'done'){
+	            $(".small_notice_popup").hide();
+	        }else{
+	            $(".small_notice_popup").show();
+	        }
+	    }else{
+	       $(".small_notice_popup").hide();
+	    }
+
+	    if(serverDate > serverStart &&  serverDate < serverEnd){
+	        $(".small_notice_popup .layerpop-notToday").click(function(e){
+	            e.preventDefault();
+	            set_cookie("small_notice_popup_kakao2021_04","done", 24);
+	            $(".small_notice_popup").hide();
+	        });
+	    };
+
+
+	    $(window).scroll(function(){
+	    	var scrTop = $(window).scrollTop();
+
+	    	if(scrTop > 100 ){
+	    		$('#small_notice_popup').removeClass('act');
+	    		$('#right_notice_popup').addClass('act');
+	    	}else{
+	    		$('#small_notice_popup').addClass('act');
+	    		$('#right_notice_popup').removeClass('act');
+	    	}
+	    });
+	});	
+	$(document).on("click", "#cash_re22", function(event){
+		var bool = confirm("결제를 취소하시겠습니까?");
+		if( bool ){
+			//window.close();
+			/* location.replace('/myroom/?p=my_cart'); */
+			location.replace('/myclass/my_cart.php'); /* 21/1/10 마이페이지 리뉴얼 suhyl */
+		}
+	});
+</script>
+<style>
+	.order-form-wrap{position: relative}
+	/*롯데카드 팝업*/
+	.small_notice_popup {
+		width:261px;
+		text-align:center;
+		font-family:'noto3';
+		box-sizing: border-box;
+		display:none;
+		position: absolute;
+		z-index: 2;
+		top:-112px;
+		left:-265px;
+	}
+	.small_notice_popup.act{
+		top:static;
+		left:static;
+		position:static;
+		margin:40px auto;
+	}
+	.small_notice_popup .event-bg{
+		position: relative;
+		background:#db2650;
+		padding:20px 0 10px;
+		color:#fff;
+	}
+	.small_notice_popup.act .event-bg{
+		position: relative;
+	}
+	.small_notice_popup img{
+		display: block;
+		margin:0 auto;
+		max-width: 100%;
+	}
+	.small_notice_popup .event-bg p{
+		font-size:18px;
+		font-family: 'jalnan' !important;
+		margin:0 0 10px;
+	}
+	.small_notice_popup .event-bg p b{
+		font-family: 'jalnan' !important;
+		display: block;
+		font-size:22px;
+		line-height:140%;
+	}
+	.small_notice_popup .event-bg p em{
+		display: block;
+		color:#fcff00;
+		font-size:17px;
+	}
+	.small_notice_popup .event-bg .bg{
+		background:#a81d3d;
+		line-height:140%;
+		padding:10px 0;
+	}
+
+
+	.small_notice_popup .layerpop-close {
+		background:#000;
+		color:#fff;
+		text-align:center;
+		font-family:'noto5';
+		font-size:10px;
+		line-height:10px;
+		text-indent:0;
+		width:25px;
+		height:25px;
+		position:absolute;
+		right:0;
+		top:0;
+	}
+	.small_notice_popup .bottom .layerpop-notToday{
+		font-size:12px;
+		line-height:25px;
+		cursor: pointer;
+		background:#000;
+		color:#fff;
+		text-indent:0;
+		display:block;
+		width:100%;
+		font-family:'noto3';
+	}
+</style>
+
+ 
+<div class="continer order-continer">
+	<div class="order-logo clear-after">
+		<h1 class="pull-right">시대에듀</h1>
+	</div>
+	<div class="order-form-wrap">
+		<div class="order-title clear-after mgb45">
+			<h2 class="order-h2 pull-left">주문/결제</h2>
+			<div class="order-location pull-right">
+				01 장바구니 > <strong>02 주문/결제</strong> > 03 주문완료
+			</div>
+		</div>
+
+		<div id="order_form" class="order-form">
+			<!-- 결제 : 좌측영역 -->
+			<div class="order-form-left">
+				<!-- 주문상품정보 -->
+				<!--{=include_file( "include/order_renew_cart.inc.htm" ) }-->
+				<!-- //주문상품정보 -->
+
+				<!-- 할인,주문자,배송정보-->
+				<!--{=include_file('include/order_form_from_cart_new.inc.htm')}-->
+				<!-- //할인,주문자,배송정보-->
+			</div>
+			<!-- //결제 : 좌측영역 -->
+
+
+			<!-- *********************** it_coupon_1 , it_cash_1, it_addcoupon_1 display : none 해놓은건 지우셔도 됩니다. 계산 어떻게 되는지 확인하려 넣었던 겁니다. ************************* -->
+			<div id="order_form_right" class="order-form-right">
+				<div id="order_form_right_inner" class="order-form-right-inner">
+					<h2 class="skip">주문내역 확인</h2>
+					<ul class="order-list">
+
+						<li>
+							<h3 class="order-h3">결제 예상 금액</h3>
+						</li>
+						{? cart_movie_tprice >0}<!-- 동영상 총금액 > 0 -->
+						<li class="order-item">
+							
+							<h3 class="order-item-title"><strong>동영상</strong></h3>
+
+							<!-- <div class="order-item-price1">
+								{? fromfree !='Y'}
+								<p class="pull-left mgr4"><span id="it_price_1">{=number_format(cart_movie_tprice)}</span>원</p>
+								<p class="pull-left">- 할인 <span id="it_cc_1">0</span>원</p>
+								{/}
+								<span style = "display:none;" id="it_coupon_1">0</span>
+								<span style = "display:none;" id="it_cash_1">0</span>
+
+							</div> -->
+							<span style = "display:none;" id="it_coupon_1">0</span>
+							<span style = "display:none;" id="it_cash_1">0</span>
+							<span style = "display:none;" id="it_addcoupon_1">0</span>
+							<p class="order-item-price2">
+
+								<strong id="it_price_1" class="play_movie">{=number_format(cart_movie_tprice)}</strong>원
+
+								<strong id="it_price_money_1" class="play_movie" style="display: none;">
+									{=number_format(cart_movie_tprice)}
+								</strong>
+							</p>
+						</li>
+						{/}
+
+
+						{? cart_b_tprice >0}<!-- 도서 총금액 > 0 -->
+						<li class="order-item">
+							<h3 class="order-item-title"><strong>도서</strong></h3>
+
+							<!-- <div class="order-item-price1">
+								{? fromfree !='Y'}
+								<p class="pull-left mgr4"><span id="it_price_0">{=number_format(cart_b_tprice)}</span>원</p>
+								<p class="pull-left">- 할인 <span id="it_cc_0">0</span>원</p>
+								{/}
+								<span style = "display:none;" id="it_coupon_0">0</span>
+								<span style = "display:none;" id="it_cash_0">0</span>
+							</div> -->
+							<span style = "display:none;" id="it_coupon_0">0</span>
+							<span style = "display:none;" id="it_cash_0">0</span>
+							<p class="order-item-price2">
+								<strong id="it_price_0" class="book_price">{=number_format(cart_b_tprice)}</strong>원
+							</p>
+						</li>
+						{/}
+
+
+						{? cart_movie_tprice2 > 0}<!--모의고사 총금액 > 0-->
+							
+							<li class="order-item">
+								<h3 class="order-item-title"><strong>모의고사</strong></h3>
+
+								<!-- <div class="order-item-price1">
+									{? fromfree !='Y'}
+									<p class="pull-left mgr4"><span id="it_price_2">{=number_format(cart_movie_tprice2)}</span>원</p>
+									<p class="pull-left">- 할인 <span id="it_cc_2">0</span>원</p>
+									{/}
+									
+								</div> -->
+								<span style = "display:none;" id="it_coupon_2">0</span>
+								<span style = "display:none;" id="it_cash_2">0</span>
+								<p class="order-item-price2">
+									<strong id="it_price_2" class="mock_price">{=number_format(cart_movie_tprice2)}</strong>원
+									<!-- <strong id="it_price_money_2"> -->
+								</p>
+							</li>
+							
+						{/}
+
+
+						<li class="order-item">
+							<h3 class="order-item-title"><strong>배송비</strong></h3>
+							<p class="order-item-price2"><strong>0</strong>원</p>
+						</li>
+
+						{? fromfree !='Y'}<!--자유결제 아닐때-->
+						<li class="order-item order-item-sale">
+							<h3 class="order-item-title"><strong>할인 금액</strong><i></i></h3>
+							<p class="order-item-price2 col_red">-<strong id="total_dc_view" class="total_discount_money">0</strong>원</p>
+						</li>
+						<li class="copon_line">
+							<span>ㄴ 쿠폰 사용 <span class="coupon_number">0</span><span class="coupon_ment">장(동영상)</span></span>
+							<p class="order-item-price2">
+								<strong class="tt_movie" id="it_cc_1">0</strong>원
+							</p>
+						</li>
+
+							<li class="money_use none_history" style="display: none;">
+								<span class="list_price">
+									ㄴ 적립금 사용
+								</span>
+								<p class="order-item-price2">
+									<strong class="none_cash" id="">0</strong>원</p>
+									<!-- <strong class="play_cash" id="it_cc_cash_1">0</strong>원</p> -->
+							</li>
+							<!-- {? list_parent_new_count > 0} --><!--동영상 상품 갯수-->
+							<li class="money_use play_history" style="display: none;">
+								<span class="list_price">
+									ㄴ 적립금 사용 (동영상)
+								</span>
+								<p class="order-item-price2">
+									<strong class="play_cash" id="it_cc_cash_1">0</strong>원</p>
+									<!-- <strong class="play_cash" id="it_cc_cash_1">0</strong>원</p> -->
+							</li>
+							<!-- {/} -->
+							<!-- {? cart_b_pay_count > 0} --><!--도서 상품갯수-->
+							<li class="money_use book_history" style="display: none;">
+								<span class="list_price">
+									ㄴ 적립금 사용 (도서)
+								</span>
+								<p class="order-item-price2">
+									<strong class="book_cash" id="it_cc_cash_0">0</strong>원</p>
+									<!-- <strong class="book_cash" id="it_cc_cash_0">0</strong>원</p> -->
+							</li>
+							<!-- {/} -->
+							<!-- {? cart_movie_tprice2 > 0 || list_parent_mock > 0 || (cart_2_count == 0  && list_parent_mock ==0)} --><!--모의고사 상품 갯수-->
+							<li class="money_use mock_history" style="display: none;">
+								<span class="list_price">
+									ㄴ 적립금 사용 (모의고사)
+								</span>
+								<p class="order-item-price2">
+									<strong class="mock_cash" id="it_cc_cash_2">0</strong>원</p>
+									<!-- <strong class="mock_cash" id="it_cc_cash_2">0</strong>원</p> -->
+							</li>
+							<!-- {/} -->
+						{/}
+
+					</ul>
+
+					<div class="total-price">
+						<strong class="total-price-title">총 결제 금액</strong>
+						<div class="number_won">
+							<span class="num price_total" id="total_price">
+								<input type="hidden" data-cart_movie_tprice="{cart_movie_tprice}" data-cart_b_tprice="{cart_b_tprice}" data-cart_movie_tprice2="{cart_movie_tprice2}" value="{cart_movie_tprice + cart_b_tprice + cart_movie_tprice2}"/>
+								{=number_format(cart_movie_tprice + cart_b_tprice + cart_movie_tprice2)}</span>
+							<span class="won">원</span>
+						</div>
+					</div>
+
+					<div class="button-section">
+
+
+					{?(old_payment_sum >0)}
+
+						<!--
+						<div class="order-btn-wrap {?((it_tax_else_sum >= 1)||(movie == 'M' && book == ''))}item1{:}item2{/}">
+							<button type="button" class="btn-order btn-order1" onclick="forderform_check(document.forderform); return false;">결제하기</button>
+						</div>
+						-->
+						<a href="#" class="order-button large arrow style1" onclick="forderform_check(document.forderform); return false;">간편 결제 요청</a>
+
+
+
+					{: fromfree =='Y'}<!-- 자유결제 일때 -->
+
+						<a href="#" class="order-button large arrow style1" onclick="forderform_check(document.forderform); return false;">자유결제요청</a>
+
+					{:}
+
+						<!--
+						<div class="order-btn-wrap {?((it_tax_else_sum >= 1)||(movie == 'M' && book == ''))}item1{:}item2{/}">
+							<button type="button" class="btn-order btn-order1" onclick="forderform_check{?movie == 'M' && book == ''}2{:}{/}(document.forderform); return false;">결제하기</button>
+							<button type="button" class="btn-order btn-order2" onclick="forderform_check2(document.forderform); return false;">소득공제용 결제하기</button>
+						</div>
+						-->
+
+
+						<a href="#" class="order-button large arrow style1" onclick="forderform_check(document.forderform); return false;">간편 결제 요청</a>
+
+						{? cart_b_tprice >0}<!--도서 총 금액 > 0-->
+						<a href="#" class="order-button large arrow style2 mgb5 profit" onclick="available_check(document.forderform); return false;">소득공제용 결제요청</a>
+						{/}
+						<!-- 원본 S:  -->
+						<!-- <a href="#" class="order-button large arrow style2 w275 mgb5" onclick="forderform_check2(document.forderform); return false;">소득공제용 결제요청</a> -->
+						<!-- 원본 E:  -->
+
+
+					{/}
+
+						<!--<a href="#" class="order-button large arrow w275 style3" onclick="history.back(-1);return false;">결제 취소</a>-->
+						<a  class="order-button large arrow style3" id="cash_re22">결제 취소하기</a>
+
+					</div>
+
+					<!-- <div class="popup-button-section mgb5">
+							<div class="popupVideo type2">
+								   <a href="https://www.youtube.com/embed/yqs3uwr1GHE" data-video=""><span>영상으로 보는 결제 가이드 ></span></a>
+							</div>
+							<div class="video-popup">
+								<div class="video-bg"></div>
+								<div class="video-content">
+									<div class="video-popup-closer"><img src="/_skin/tpl_skin/common_images/close_Btn.png"/></div>
+								</div>
+							</div>
+						<button type="submit" id="btn_special" class="order-button medium arrow style3 w275 mgb5 tl">도서 소득공제 결제 시 특이사항</button>
+						<button type="submit" id="btn_erro" class="order-button medium arrow style3 w275  tl">결제 시 오류 조치 가이드</button>
+					</div> -->
+					<!-- <div class="cs-center clear-after">
+						<div class="cs-center-left pull-left">
+							<h2>고객지원센터</h2>
+							<span>1600-3600</span>
+						</div>
+						<div class="cs-center-right pull-left">
+							평일:09:00~18:00<br/>
+							토요일·공휴일 휴무
+						</div>
+					</div> -->
+					<!--카드사 팝업-->
+						<div id="right_notice_popup" class="index_popup small_notice_popup">
+							<div class="event-bg">
+								<button type="button" class="layerpop-close">&#x2573;</button>
+								<p>
+									보안강화 작업으로 인한
+									<b>토스페이먼츠 결제<br/>서비스 일시 중단 안내</b>
+									<em>2022.03.03(목) 04:00~05:00</em>
+								</p>
+								<div class="bg">
+									카드/핸드폰/무통장/계좌이체/ARS 해당<br />자세한 내용은 토스페이먼츠<br />사이트에서 확인바랍니다.
+								</div>
+							</div>
+							<div class="bottom">
+								<button type="button" class="layerpop-notToday">오늘 하루 열지 않기</button>
+							</div>
+						</div>
+					<!--//카드사 팝업-->
+
+					<div class="agree_txt">
+						<span>상품, 가격, 배송 등을 확인하였으며 결제에 동의합니다.</span>
+					</div>
+				</div>
+			</div>
+			<!-- *********************** it_coupon_1 , it_cash_1, it_addcoupon_1 display : none 해놓은건 지우셔도 됩니다. 계산 어떻게 되는지 확인하려 넣었던 겁니다. ************************* -->
+		</div>
+	</div>
+	<div id="order_bottom"></div>
+
+	<!-- 도서 소득공제 결제 특이사항 / 결제 페이지 오류 팝업 -->
+	<!--{=include_file('include/order_renew_popup.inc.htm')}-->
+	<!-- // 도서 소득공제 결제 특이사항 / 결제 페이지 오류 팝업 -->
+
+</div>
+{= include_file("../../_skin/tpl_skin/include/halbu_popup.htm")}
+
+
+<!-- ********************개발 추가 된 부분(네이버 페이 및 결제 타입 선택)*********************** -->
+<script src="https://nsp.pay.naver.com/sdk/js/naverpay.min.js"></script>
+<script language='javascript' src='https://xpay.uplus.co.kr/xpay/js/xpay_crossplatform.js' type='text/javascript'></script>
+<div id="pay_result_form"></div> 
+
+<script>
+	let pay_type;
+
+	function pay_type_check(type) {
+		pay_type = type;
+	}
+	function payment_return() {
+		var fDoc;
+
+		fDoc = lgdwin.contentWindow || lgdwin.contentDocument;
+
+		if (fDoc.document.getElementById('LGD_RESPCODE').value == "0000") {
+
+			document.getElementById("LGD_PAYKEY").value = fDoc.document.getElementById('LGD_PAYKEY').value;
+			document.getElementById("LGD_PAYINFO").target = "_self";
+			//document.getElementById("LGD_PAYINFO").target = "movie_book_submit";
+			document.getElementById("LGD_PAYINFO").action = "/settle/dacom_act_none_20180625/payres_new.php";
+			document.getElementById("LGD_PAYINFO").submit();
+
+			closeIframe();
+		} else {
+			// alert("LGD_RESPCODE (결과코드) : " + document.getElementById('LGD_RESPCODE').value + "\n" + "LGD_RESPMSG (결과메시지): " + document.getElementById('LGD_RESPMSG').value);
+			alert("결제가 취소 되었습니다.");
+
+			const formDiv = document.getElementById("pay_result_form");
+			formDiv.textContent = "";
+
+			closeIframe();
+		}
+	}
+
+	function getFormObject() {
+		return document.getElementById('LGD_PAYINFO');
+	}
+</script>
+<!-- ********************개발 추가 된 부분(네이버 페이 및 결제 타입 선택)*********************** -->
+
+
+
+
+<!-- ************************소득공제 팝업 ***********************-->
+<div class="profitpop" id="profitpop">
+	<div class="container_profitpop">
+		<div class="inner">
+			<div class="top">
+				도서 소득공제를 받으시려면 <br />
+				<span>총 2회 결제가 필요합니다.</span>
+			</div>
+			<div class="middle">
+				<div class="mgb15 online">
+					1회 : 온라인 콘텐츠 : <span class="online_span">{cart_movie_tprice}</span><span>원</span><br />
+					(동영상/모의고사/기타)
+				</div>
+				<div class="note">
+					2회 : 도서 (소득공제 대상) : <span class="note_span">{cart_b_tprice}</span><span>원</span>
+				</div>
+			</div>
+			<div class="bottom">
+				온라인 콘텐츠 결제 진행 완료 후 <br />
+				<span>이어서 도서 결제가 진행됩니다.</span>
+			</div>
+			<a href="#" class="order-button large arrow style2 profit" onclick="forderform_check2(document.forderform); return false;">결제하기</a>
+			<a href="javascript:void(0)" class="close_pop">닫기 X</a>
+		</div>
+
+	</div>
+</div>
+<!-- ************************소득공제 팝업 ***********************-->
+
